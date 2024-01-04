@@ -115,6 +115,13 @@
 	.modal span:hover {
 	    background-color: #f1f1f1;
 	}
+	.maxHight {
+	    height: 200px;  
+	    max-height: 300px; /* 최대 높이 설정 */
+	    overflow-y: auto; /* 세로 스크롤 적용 */
+	    overflow-x: hidden; /* 가로 스크롤 비활성화 */
+	}
+	
 </style>
 
 <script type="text/javascript">
@@ -276,6 +283,10 @@
 					</li>
 				</c:if>
 				
+				<li>
+					<a class="nav-link ml-5" href="<%= ctxPath %>/vacation_chart.gw">휴가 통계</a>
+				</li>
+				
 			</ul>
 		</div>
 	</nav>
@@ -285,10 +296,10 @@
    <div class='listContainer border mb-5' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
    	
       <h5 class='mb-3 ml-5' style="font-weight: bold;">승인 대기중인 휴가</h5>
-	
+	  <div class='maxHight'>
       <table class="table ml-5" style="width: 90%;">
          <thead>
-            <tr class='row' class="table_tr" style="background-color: #e3f2fd;">
+            <tr class='row' class="table_tr" style="background-color: #ccff99;">
                	<th class='col col-1'>no</th>
 	        	<th class='col col-1'>이름</th>
 	            <th class='col col-2'>신청휴가종류</th>
@@ -358,6 +369,7 @@
          </tbody>
       </table>
       </div>
+      </div>
       <form name="seq_delete">
       	<input type="hidden" name="vacation_seq"/>
       </form>
@@ -367,10 +379,10 @@
    <div class='listContainer border' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
    	
       <h5 class='mb-3 ml-5' style="font-weight: bold;" >승인 완료된 휴가</h5>
-	
+	  <div class='maxHight'>
       <table class="table ml-5" style="width: 90%;">
          <thead>
-            <tr class='row' class="table_tr" style="background-color: #e3f2fd;">
+            <tr class='row' class="table_tr" style="background-color: #ccff99;">
                	<th class='col col-1'>no</th>
 	        	<th class='col col-1'>이름</th>
 	            <th class='col col-2'>신청휴가종류</th>
@@ -436,15 +448,17 @@
          </tbody>
       </table>
       </div>
+      </div>
       <%-- 승인된휴가 [끝] --%>
       
       
       <%-- 반려휴가 [시작] --%>
-      <div class='listContainer border mt-5' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
+      <div class='listContainer border mt-5 mb-5' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
       <h5 class='mb-5 ml-5' style="font-weight: bold;">반려된 휴가</h5>
+      <div class='maxHight'>
       <table class="table ml-5" id="emptbl" style="width: 90%;">
          <thead>
-            <tr class='row' class="table_tr" style="background-color: #e3f2fd;">
+            <tr class='row' class="table_tr" style="background-color: #ccff99;">
             	<th class='col col-1'>no</th>
 	        	<th class='col col-1'>이름</th>
 	            <th class='col col-2'>신청휴가종류</th>
@@ -515,6 +529,7 @@
 	        </c:if>
          </tbody>
       </table>
+      </div>
       </div>
       <%-- 반려휴가 [끝] --%>
       

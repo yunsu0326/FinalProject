@@ -180,6 +180,10 @@ window.onclick = function(event) {
 					</li>
 				</c:if>
 				
+				<li>
+					<a class="nav-link ml-5" href="<%= ctxPath %>/vacation_chart.gw">휴가 통계</a>
+				</li>
+				
 			</ul>
 		</div>
 	</nav>
@@ -268,7 +272,7 @@ window.onclick = function(event) {
       <div class="max-form">
       <table class="table" style="width: 95%;">
          <thead>
-            <tr class='row'>
+            <tr class='row' style='background-color: #ccff99;'>
 	        	<th class='col' style="margin-left: 5%;">연차</th>
 	            <th class='col'>가족돌봄</th>
 	            <th class='col'>군소집훈련</th>

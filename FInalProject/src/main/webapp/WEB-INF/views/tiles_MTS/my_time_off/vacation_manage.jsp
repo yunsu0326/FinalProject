@@ -194,79 +194,78 @@
             $("input:checkbox[name='checkNo']").prop('checked', $(this).prop('checked'));
         });
 		
+		var myGrade = $("input:hidden[id='myGradeLevel']").val(); // 로그인 한 유저의 gradelevel
 		
-   		$(document).on("click", "table#emptbl tr#empinfo", function (e) {
-   			
-   			// 행 클릭이 아닌 체크박스를 클릭했을땐 체크박스만 체크되고 모달창이 뜨지 않게 함
-   			if ($(e.target).is(":checkbox")) { 
-   		        return;
-   		    }
-   			
-			const gradelevel = parseInt('${sessionScope.loginuser.gradelevel}');
-			
-			if(gradelevel < 5) {
-				alert("결재 권한이 없습니다.");
-				return;
-			}
-			else {
-				const vacation_seq = $(this).find("td:eq(0) > div > input").val();
-	       		const name = $(this).find("td#name").text();
-	       		const employee_id = $(this).find("td#employee_id").text();
-	       		const vacation_start_date = $(this).find("td#vacation_start_date").text();
-	       		const vacation_end_date = $(this).find("td#vacation_end_date").text();
-	       		const vacation_confirm = $(this).find("td#vacation_confirm").text();
-	       		const vacation_type = $(this).find("td#vacation_type").text();
-	       		
-	       		// alert(vacation_seq);
-	       		
-	       		$('#openModal').modal('show', vacation_seq);
-	       		
-				// 값 꽂아주기
-	    	    $("input#vacation_seq").val(vacation_seq);
-	    	    $("td#frm_name").text(name);
-	    	    $("td#frm_employee_id").text(employee_id);
-	    	    $("td#frm_vacation_start_date").text(vacation_start_date);
-	    	    $("td#frm_vacation_end_date").text(vacation_end_date);
-	    	    $("td#frm_vacation_confirm").text(vacation_confirm);
-	    	    $("td#frm_vacation_type").text(vacation_type);
-	    	    
-	    	    $("input#employee_id").val(employee_id);
-	    	    
-	    	    // alert(vacation_seq);
-	    	    
-	    	    // 확인 클릭시
-	    	    $("input#vacation_return_button").click(function(){
-	    	    	
-	    	    	if($("input#vacation_return_reason").val().trim() == "") {
-	    	    		alert("사유를 입력하세요");
-	    	    		return false;
-	    	    	}
-	    	    	else {
-	    	    		var vac_return = confirm("휴가 반려 하시겠습니까?");
-	    				
-	    				if(vac_return) {
-	    					const select_result = $("select#approvalStatus").val(); // 결재상태 선택 결과값
-		    	    		const reason = $("input#vacation_return_reason").val(); // 입력한 반려사유 값
-		    	    		
-		    	    		// alert(reason);
-		    	    		
-		    	    		$("input#return_reason").val(reason);
-		        	    	
-		    				const frm = document.modal_frm; 
+		if(myGrade != 10) {
+			$(document).on("click", "table#emptbl tr#empinfo", function (e) {
+	   			
+	   			// 행 클릭이 아닌 체크박스를 클릭했을땐 체크박스만 체크되고 모달창이 뜨지 않게 함
+	   			if ($(e.target).is(":checkbox")) { 
+	   		        return;
+	   		    }
+	   			
+				const gradelevel = parseInt('${sessionScope.loginuser.gradelevel}');
+				
+				if(gradelevel < 5) {
+					alert("결재 권한이 없습니다.");
+					return;
+				}
+				else {
+					const vacation_seq = $(this).find("td:eq(0) > div > input").val();
+		       		const name = $(this).find("td#name").text();
+		       		const employee_id = $(this).find("td#employee_id").text();
+		       		const vacation_start_date = $(this).find("td#vacation_start_date").text();
+		       		const vacation_end_date = $(this).find("td#vacation_end_date").text();
+		       		const vacation_confirm = $(this).find("td#vacation_confirm").text();
+		       		const vacation_type = $(this).find("td#vacation_type").text();
+		       		
+		       		// alert(vacation_seq);
+		       		
+		       		$('#openModal').modal('show', vacation_seq);
+		       		
+					// 값 꽂아주기
+		    	    $("input#vacation_seq").val(vacation_seq);
+		    	    $("td#frm_name").text(name);
+		    	    $("td#frm_employee_id").text(employee_id);
+		    	    $("td#frm_vacation_start_date").text(vacation_start_date);
+		    	    $("td#frm_vacation_end_date").text(vacation_end_date);
+		    	    $("td#frm_vacation_confirm").text(vacation_confirm);
+		    	    $("td#frm_vacation_type").text(vacation_type);
+		    	    
+		    	    $("input#employee_id").val(employee_id);
+		    	    
+		    	    // alert(vacation_seq);
+		    	    
+		    	    // 확인 클릭시
+		    	    $("input#vacation_return_button").click(function(){
+		    	    	
+		    	    	if($("input#vacation_return_reason").val().trim() == "") {
+		    	    		alert("사유를 입력하세요");
+		    	    		return false;
+		    	    	}
+		    	    	else {
+		    	    		var vac_return = confirm("휴가 반려 하시겠습니까?");
 		    				
-		    				frm.method = "post";
-		    				frm.action = "<%= ctxPath %>/vacInsert_return.gw";
-		    				frm.submit();	
-	    				}
-	    	    	}
-	    	    	
-	    	    });
-			}
-   			
-       		
-			
-    	}); // end of $(document).on("click", "table#emptbl tr#empinfo", function (e) ----------------
-   		
+		    				if(vac_return) {
+		    					const select_result = $("select#approvalStatus").val(); // 결재상태 선택 결과값
+			    	    		const reason = $("input#vacation_return_reason").val(); // 입력한 반려사유 값
+			    	    		
+			    	    		// alert(reason);
+			    	    		
+			    	    		$("input#return_reason").val(reason);
+			        	    	
+			    				const frm = document.modal_frm; 
+			    				
+			    				frm.method = "post";
+			    				frm.action = "<%= ctxPath %>/vacInsert_return.gw";
+			    				frm.submit();	
+		    				}
+		    	    	}
+		    	    });
+				}
+	    	}); // end of $(document).on("click", "table#emptbl tr#empinfo", function (e) ----------------
+		}
+		
    		// return_reset 버튼 클릭 시 모달 닫기
    		$("input#return_reset").click(function(){
    		    closeModal();
@@ -321,13 +320,17 @@
 					</li>
 				</c:if>
 				
+				<li>
+					<a class="nav-link ml-5" href="<%= ctxPath %>/vacation_chart.gw">휴가 통계</a>
+				</li>
+				
 			</ul>
 		</div>
 	</nav>
    <%-- 상단 메뉴바 끝 --%>
    
    <%-- 본문 시작 --%>
-   <%-- 휴가 대기중인 회원 [시작] --%>
+   <%-- 대기중인 회원 [시작] --%>
    <div class='listContainer border' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
       <h5 class='mb-3 ml-5' style="font-weight: bold;">대기중인 휴가</h5>
       
@@ -344,7 +347,7 @@
       <div class="max-form">
       <table class="table ml-4" id="emptbl">
          <thead>
-            <tr class='row table_tr' style="background-color: #e3f2fd;">
+            <tr class='row table_tr' style="background-color: #ccff99;">
               <c:if test="${not empty requestScope.vacList && sessionScope.loginuser.gradelevel != 10}">
                	<th class='col col-1'><input type="checkbox" id="selectAll" class="mr-2"/>전체선택</th>
               </c:if>
@@ -364,9 +367,9 @@
          
          <tbody>
             <c:if test="${not empty requestScope.vacList}">
+            <input type='hidden' id='myGradeLevel' value='${sessionScope.loginuser.gradelevel}'/> <%-- 로그인한 유저의 gradelevel 확인용 --%>
              <c:if test="${sessionScope.loginuser.gradelevel > 4}">
        		  <c:forEach var="vacList" items="${requestScope.vacList}" varStatus="status">
-       			
 		        <tr class='row' id="empinfo">
 		        	<td class='col col-1'>
 		        		<div style="display: flex; margin-top: 5%;">     		
@@ -455,7 +458,7 @@
       <div class="max-form">
       <table class="table ml-5">
          <thead>
-            <tr class='row' class="table_tr" style="background-color: #e3f2fd;">
+            <tr class='row' class="table_tr" style="background-color: #ccff99;">
                	<th class='col col-1'>no</th>
 	        	<th class='col col-1'>이름</th>
 	            <th class='col col-1'>사원번호</th>
@@ -542,7 +545,7 @@
       <div class="max-form">
       <table class="table ml-5">
          <thead>
-            <tr class='row' class="table_tr" style="background-color: #e3f2fd;">
+            <tr class='row' class="table_tr" style="background-color: #ccff99;">
                	<th class='col col-1'>no</th>
 	        	<th class='col col-1'>이름</th>
 	            <th class='col col-1'>사원번호</th>
