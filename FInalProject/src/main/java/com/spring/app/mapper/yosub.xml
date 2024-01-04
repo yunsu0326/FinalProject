@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="yosub">
+
+	
+	<!-- ================================================ -->
+	<!-- === #39. 시작페이지에서 메인 이미지를 보여주는 것 === -->
+	<select id="getImgfilenameList" resultType="String">
+	   select imgbgfilename
+       from TBL_MAIN_IMAGE
+	</select>
+
+	<select id="getLoginMember" resultType="com.spring.app.domain.EmployeesVO" parameterType="HashMap"> 
+      select employee_id, name, pwd, email, phone, postcode, address, detailaddress, extraaddress, jubun  
+            , salary, commission_pct, to_char(hire_date, 'yyyy-mm-dd') AS hire_date  
+            , fk_department_id, fk_team_id, manager_id, fk_job_id, status, register_status, photo, BANK_NAME, BANK_CODE
+            , idle , userid
+            , gradelevel , signimg  
+       from tbl_employees
+       where status = 1 and email = #{email} and pwd = #{pwd}  
+   </select>
+	
+	<update id="updateIdle" parameterType="String">
+		update tbl_employees set idle = 1 
+		where email = #{email}
+	</update>
+	
+	<resultMap type="HashMap" id="deptNameList_Map">
+       <result property="department_id"     column="department_id"      javaType="String" />
+       <result property="department_name"   column="department_name"    javaType="String" />
+   </resultMap>
+   
+	<select id="deptNameList" resultMap="deptNameList_Map">
+	    select distinct nvl(D.department_name, '부서 없음') AS department_name
+	    	 , department_id
+		from tbl_employees E
+        join tbl_department D
+        ON E.fk_department_id = D.department_id
+        order by 1
+	</select>
+	
+	<resultMap type="HashMap" id="empDeptMap">
+       <result property="fk_department_id"  column="fk_department_id"   javaType="String" />
+       <result property="department_name"   column="department_name"    javaType="String" />
+       <result property="employee_id"       column="employee_id"       	javaType="String" />
+       <result property="name"				column="name"          		javaType="String" />
+       <result property="email"             column="email"             	javaType="String" />
+       <result property="hire_date"       	column="hire_date"          javaType="String" />
+       <result property="Yearsal"       	column="Yearsal"          	javaType="String" />
+       <result property="gender"          	column="gender"          	javaType="String" />
+       <result property="age"             	column="age"             	javaType="String" />
+       <result property="gradeLV"        	column="gradeLV"        	javaType="String" />
+  	   <result property="gradelevel"        column="gradelevel"         javaType="String" />
+   	   <result property="photo"        		column="photo"         		javaType="String" />
+   </resultMap>
+   
+   <select id="empList" parameterType="HashMap" resultMap="empDeptMap">
+	  
+	 	  SELECT E.fk_department_id, D.department_name, E.employee_id, name, email,
+	             to_char(E.hire_date, 'yyyy-mm-dd') AS hire_date,
+	             nvl(E.salary + E.salary*E.commission_pct, E.salary)/12 AS Yearsal,
+	             func_gender(E.jubun) AS gender,
+	             func_age(E.jubun) AS age, 
+	             func_grade(gradelevel) AS gradeLV,
+	             gradelevel, photo
+	      FROM tbl_employees E LEFT JOIN tbl_department D
+	      ON E.fk_department_id = D.department_id
+	      WHERE 1=1
+	      		<if test="deptName != ''">
+	      	  AND nvl(E.fk_department_id, -9999) IN #{deptName}
+	      	  </if>
+	      	  <if test="gradeLV != ''">
+	      	 	 AND func_grade(gradelevel) = #{gradeLV}
+	      	  </if>
+	      	  <if test="gender != ''">
+	      	 	 AND func_gender(E.jubun) = #{gender}
+	      	  </if>
+	     ORDER BY E.fk_department_id asc
+   		
+		
+      
+   </select>
+	
+	
+   	<select id="getTotalCount" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_employees
+		where status = 1 
+			<if test="deptName != ''">
+	      	  AND nvl(fk_department_id, -9999) IN #{deptName}
+	      	  </if>
+	      	  <if test="gradeLV != ''">
+	      	 	 AND func_grade(gradelevel) = #{gradeLV}
+	      	  </if>
+	      	  <if test="gender != ''">
+	      	 	 AND func_gender(jubun) = #{gender}
+	      	  </if>
+	</select>
+		
+	<resultMap type="HashMap" id="oneMemberMap">
+	    <result property="employee_id" 			column="employee_id" 		javaType="String"/>
+	    <result property="name" 				column="name" 				javaType="String"/>
+	    <result property="email" 				column="email" 				javaType="String"/>
+	    <result property="phone" 				column="phone" 				javaType="String"/>
+	    <result property="postcode" 			column="postcode" 			javaType="String"/>
+	    <result property="address" 				column="address" 			javaType="String"/>
+	    <result property="jubun" 				column="jubun" 				javaType="String"/>
+	    <result property="hire_date" 			column="hire_date" 			javaType="String"/>
+	    <result property="salary" 				column="salary" 			javaType="String"/>
+	    <result property="commission_pct" 		column="commission_pct" 	javaType="String"/>
+	    <result property="fk_department_id" 	column="fk_department_id" 	javaType="String"/>
+	    <result property="fk_team_id" 			column="fk_team_id" 		javaType="String"/>
+	    <result property="manager_id" 			column="manager_id" 		javaType="String"/>
+	    <result property="t_manager_id" 		column="t_manager_id" 		javaType="String"/>
+	    <result property="status" 				column="status" 			javaType="String"/>
+	    <result property="idle" 				column="idle" 				javaType="String"/>
+	    <result property="gradelevel" 			column="gradelevel" 		javaType="String"/>
+	    <result property="photo" 				column="photo" 				javaType="String"/>
+	    <result property="bank_name" 			column="bank_name" 			javaType="String"/>
+	    <result property="bank_code" 			column="bank_code" 			javaType="String"/>
+	    <result property="department_name"  	column="department_name" 	javaType="String"/>
+	    <result property="job_name" 			column="job_name" 			javaType="String"/>
+	    <result property="basic_salary" 		column="basic_salary" 		javaType="String"/>
+	    <result property="t_manager_name" 		column="t_manager_name" 	javaType="String"/>
+	    <result property="t_manager_email" 		column="t_manager_email" 	javaType="String"/>
+	    <result property="t_manager_phone" 		column="t_manager_phone" 	javaType="String"/>
+	    <result property="t_manager_job_name" 	column="t_manager_job_name" javaType="String"/>
+	    <result property="manager_name" 		column="manager_name" 		javaType="String"/>
+	    <result property="manager_email" 		column="manager_email" 		javaType="String"/>
+	    <result property="manager_phone" 		column="manager_phone" 		javaType="String"/>
+	    <result property="manager_job_name" 	column="manager_job_name" 	javaType="String"/>
+	</resultMap>
+   
+	 <select id="oneMember" parameterType="String" resultMap="oneMemberMap">
+		SELECT E.employee_id, E.name, E.email, E.phone, E.postcode, E.address || ' ' ||E.detailaddress ||' ' || E.extraaddress AS address, E.jubun, E.hire_date, E.salary, E.commission_pct, E.fk_department_id, E.fk_team_id, D.manager_id, T.t_manager_id, 
+		            E.status, E.idle, E.gradelevel, E.photo, E.bank_name, E.bank_code, D.department_name, J.Job_name, J.basic_salary, E1.name, E1.email, E1.phone, J1.job_name, E2.name, E2.email, E2.phone, J2.job_name 
+		FROM tbl_employees E
+		LEFT JOIN tbl_department D ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
+		LEFT JOIN tbl_jobs J ON E.FK_JOB_ID = J.JOB_ID
+		LEFT JOIN tbl_team T ON J.FK_TEAM_ID = T.TEAM_ID
+		JOIN tbl_employees E1 ON E.T_MANAGER_ID = E1.EMPLOYEE_ID
+		LEFT JOIN tbl_jobs J1 ON E1.FK_JOB_ID = J1.JOB_ID
+		JOIN tbl_employees E2 ON E.MANAGER_ID = E2.EMPLOYEE_ID
+		LEFT JOIN tbl_jobs J2 ON E2.FK_JOB_ID = J2.JOB_ID
+		where E.employee_id = #{employee_id}
+   </select>
+   
+   
+   <!-- 부서번호 최대값 조회하기  -->
+	<select id="department_id_max" resultType="int">
+		select nvl(max(department_id), 0)
+		from tbl_department
+	</select>  
+	
+   	<!--  부서장으로 등록되지 않은 사원번호 조회하기     -->
+	<resultMap type="HashMap" id="manager_id_Map">
+		<result property="employee_id" 	column="employee_id"  	javaType="String"/>
+		<result property="name" 		column="name"  			javaType="String"/>
+	</resultMap>
+   	<select id="manager_id" resultMap="manager_id_Map">
+		select employee_id, name
+		from tbl_employees
+		where employee_id not in(select t_manager_id from tbl_team where t_manager_id is not null)
+        and employee_id not in(select manager_id from tbl_department where manager_id is not null)
+        or employee_id = 7777
+	</select>
+   
+   
+   
+	<!-- 부서정보 조회하기  -->     
+	<resultMap type="HashMap" id="select_department_Map">
+		<result property="department_id" 	column="department_id"  	javaType="String"/>
+		<result property="department_name" 	column="department_name"  	javaType="String"/>
+		<result property="employee_id" 		column="employee_id"  		javaType="String"/>
+		<result property="name" 			column="name"  				javaType="String"/>
+		<result property="phone" 			column="phone"  			javaType="String"/>
+	</resultMap>
+	<select id="select_department" resultMap="select_department_Map">
+        SELECT distinct D.department_id, department_name
+     		 , E.employee_id, E.name, E.phone
+		FROM tbl_department D LEFT JOIN tbl_employees E 
+		ON D.manager_id = E.employee_id
+        LEFT JOIN tbl_team T
+        ON D.department_id = T.fk_department_id
+        LEFT JOIN tbl_employees E1
+		ON T.t_manager_id = E1.employee_id
+        ORDER BY 1
+	</select>
+	
+		<!-- 부서 및 팀 정보 조회하기  -->     
+	<resultMap type="HashMap" id="select_departments_Map">
+		<result property="department_id" 	column="department_id"  	javaType="String"/>
+		<result property="department_name" 	column="department_name"  	javaType="String"/>
+		<result property="employee_id" 		column="employee_id"  		javaType="String"/>
+		<result property="name" 			column="name"  				javaType="String"/>
+		<result property="phone" 			column="phone"  			javaType="String"/>
+		<result property="team_id" 			column="team_id"  			javaType="String"/>
+		<result property="team_name" 		column="team_name"  		javaType="String"/>
+		<result property="t_manager_id" 	column="t_manager_id"  		javaType="String"/>
+		<result property="t_manager_name" 	column="t_manager_name"  	javaType="String"/>
+		<result property="t_manager_phone" 	column="t_manager_phone"  	javaType="String"/>
+	</resultMap>
+	<select id="select_departments" resultMap="select_departments_Map">
+    	SELECT D.department_id, department_name
+     		 , E.employee_id, E.name, E.phone
+             , T.team_id, team_name, T.t_manager_id
+             , E1.name AS t_manager_name, E1.phone AS t_manager_phone
+		FROM tbl_department D LEFT JOIN tbl_employees E 
+		ON D.manager_id = E.employee_id
+        LEFT JOIN tbl_team T
+        ON D.department_id = T.fk_department_id
+        LEFT JOIN tbl_employees E1
+		ON T.t_manager_id = E1.employee_id
+        where D.department_id not in (700)
+        ORDER BY 1
+	</select>
+
+
+	<!--  신규부서 등록하기  -->
+	<insert id="department_add" parameterType="HashMap">
+	    insert into tbl_department (department_id, department_name, manager_id)  
+	    values(#{department_id}, #{department_name}, #{manager_id})
+	</insert>
+	
+	<!--  신규부서 생성시 팀 등록하기  -->
+	<insert id="team_add" parameterType="HashMap">
+	    insert into tbl_team(team_id, team_name, T_manager_id,fk_department_id)  
+	    values(#{department_id}+1, #{department_name} || '1팀', 7777, #{department_id})
+	</insert>
+	
+	<!--  신규부서 생성시 부서장, 팀장, 사원 직책 등록하기  -->
+    <insert id="insertJob1" parameterType="HashMap">
+	    insert into tbl_jobs(JOB_ID, FK_DEPARTMENT_ID, JOB_NAME, BASIC_SALARY, GRADELEVEL, FK_TEAM_ID)
+	    values(JOB_ID_seq.nextval, #{department_id}, #{department_name}||'장', 100000000, 5, 1)
+	</insert>
+	
+	<insert id="insertJob2" parameterType="HashMap">
+	    insert into tbl_jobs(JOB_ID, FK_DEPARTMENT_ID, JOB_NAME, BASIC_SALARY, GRADELEVEL, FK_TEAM_ID)
+	    values(JOB_ID_seq.nextval, #{department_id}, #{department_name}||'1팀장', 15600000, 3, #{department_id}+1)
+	</insert>
+	
+	<insert id="insertJob3" parameterType="HashMap">
+	    insert into tbl_jobs(JOB_ID, FK_DEPARTMENT_ID, JOB_NAME, BASIC_SALARY, GRADELEVEL, FK_TEAM_ID)
+	    values(JOB_ID_seq.nextval, #{department_id}, #{department_name}||'1팀 사원', 12600000, 1, #{department_id}+1)
+	</insert>
+
+	<!--  해당사원의 부서번호를 신규부서번호로 변경하기     -->
+	<update id="update_employees_department_id" parameterType="HashMap">
+	     update tbl_employees set fk_department_id = #{department_id}
+	     where employee_id = #{manager_id}
+	</update>
+	
+		
+	<!-- 결재대기문서 게시글 수 조회 -->
+	<select id="getRequestedDraftCnt" resultType="int" parameterType="HashMap" >
+		SELECT COUNT(*)
+		FROM TBL_APPROVAL A
+		WHERE FK_APPROVAL_EMPNO = ${empno} AND APPROVAL_STATUS = 0
+		AND FK_DRAFT_NO IN (SELECT FK_DRAFT_NO
+                    FROM TBL_APPROVAL
+                    WHERE (LEVELNO = (A.LEVELNO - 1) AND APPROVAL_STATUS = 1)
+                    OR A.LEVELNO = 1)
+	</select>
+
+
+    <!-- 등록된 일정에 대한 정보(달력에 표시됨)-->
+	<select id="scheduleselect" resultType="com.spring.app.domain.Calendar_schedule_VO" parameterType="HashMap">
+		select scheduleno, startdate, enddate, subject, color, place, joinuser, content, fk_smcatgono, fk_lgcatgono, fk_department_id, fk_employee_id 
+		from tbl_calendar_schedule
+		where fk_employee_id = #{fk_employee_id} OR
+		fk_department_id = #{fk_department_id} OR
+		fk_lgcatgono = 2 AND
+		(sysdate between startdate and enddate) OR
+		(fk_lgcatgono != 2 AND lower(joinuser) like '%'|| lower(#{fk_email}) ||'%')
+		order by scheduleno asc
+	</select>
+
+	<!-- 번호 최대값 조회하기  -->
+	<select id="team_id_max" resultType="int">
+		select nvl(max(team_id), 0)
+		from tbl_team
+	</select>  
+
+
+   	<!--  장으로 등록되지 않은 사원번호 조회하기     -->
+	<resultMap type="HashMap" id="t_manager_id_Map">
+		<result property="employee_id" 	column="employee_id"  	javaType="String"/>
+		<result property="name" 		column="name"  			javaType="String"/>
+	</resultMap>
+   	<select id="t_manager_id" resultMap="t_manager_id_Map">
+		select employee_id, name
+		from tbl_employees
+		where employee_id not in(select t_manager_id from tbl_team where t_manager_id is not null)
+        and employee_id not in(select manager_id from tbl_department where manager_id is not null)
+        or employee_id = 7777
+	</select>
+	
+	<!-- 부서번호에 따른 팀 최대값 조회하기 -->
+	<select id="team_id_max_by_department" resultType="int" parameterType="String">
+	    select nvl(max(team_id), 0)
+		from tbl_team
+		where FK_DEPARTMENT_ID = #{department_id}
+	</select>
+	
+		
+	<!--  팀 추가 등록하기  -->
+	<insert id="add_team" parameterType="HashMap">
+	    insert into tbl_team(team_id, team_name, T_manager_id, fk_department_id)  
+	    values(#{team_id}, #{team_name}, #{t_manager_id}, #{department_id})
+	</insert>
+	
+	<!--  해당사원의 팀번호를 신규부서번호로 변경하기     -->
+	<update id="update_employees_team_id" parameterType="HashMap">
+	     update tbl_employees set fk_team_id = #{team_id}
+	     where employee_id = #{t_manager_id}
+	</update>
+   
+   <!--  신규팀 생성시 팀장, 사원 직책 등록하기  -->
+	<insert id="insertteamJob2" parameterType="HashMap">
+	    insert into tbl_jobs(JOB_ID, FK_DEPARTMENT_ID, JOB_NAME, BASIC_SALARY, GRADELEVEL, FK_TEAM_ID)
+	    values(JOB_ID_seq.nextval, #{department_id}, #{team_name}||'장', 15600000, 3, #{team_id})
+	</insert>
+	
+	<insert id="insertteamJob3" parameterType="HashMap">
+	    insert into tbl_jobs(JOB_ID, FK_DEPARTMENT_ID, JOB_NAME, BASIC_SALARY, GRADELEVEL, FK_TEAM_ID)
+	    values(JOB_ID_seq.nextval, #{department_id}, #{team_name}||'사원', 12600000, 1, #{team_id})
+	</insert>
+
+	<!--  부서정보 가져오기 등록하기  -->
+	<select id="get_department_info" parameterType="String" resultType="com.spring.app.domain.DepartmentVO">
+	    select department_id, department_name, manager_id
+		from tbl_department
+		where FK_DEPARTMENT_ID = #{department_id}
+	</select>
+
+</mapper>

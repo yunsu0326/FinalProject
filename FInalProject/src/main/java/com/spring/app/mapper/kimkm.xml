@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="kimkm">
+
+	
+	<!-- ================================================ -->
+	<!-- 회원가입시 기본 정보 읽어오기 -->
+	<select id="selectRegister" parameterType="String" resultType="HashMap">
+		SELECT employee_id, name, email, phone, hire_date, salary, E.fk_department_id, E.fk_team_id, E.fk_job_id, department_name, team_name, job_name
+		FROM
+		(
+		    select employee_id, name, email, phone, hire_date, salary, fk_department_id, fk_team_id, fk_job_id
+		    from tbl_employees
+		    where email = #{email}
+		) E JOIN tbl_department D
+		ON E.fk_department_id = D.department_id
+		JOIN tbl_team T
+		ON E.fk_team_id = T.team_id
+		JOIN tbl_jobs J
+		ON fk_job_id = J.job_id
+	</select>
+	
+	
+	
+	<!-- 회원가입 -->
+	<update id="add_register" parameterType="com.spring.app.domain.EmployeesVO">
+		update tbl_employees set pwd = #{pwd}
+							   , postcode = #{postcode}
+							   , address = #{address}
+							   , detailaddress = #{detailaddress}
+							   , extraaddress = #{extraaddress}
+							   , jubun = #{jubun}
+							   , bank_name = #{bank_name}
+							   , bank_code = #{bank_code}
+							   , userid = #{userid}
+							   , register_status = 1
+							   , photo = #{photo}
+	    where email = #{email}
+	</update>
+	
+	
+	<!-- 회원가입시 휴가 테이블 insert 하기 -->
+	<insert id="insert_vacation" parameterType="String">
+		insert into tbl_vacation(fk_employee_id, annual, family_care, reserve_forces, infertility_treatment, childbirth, marriage, reward)
+		values(${employee_id}, 0, 0, 0, 0, 0, 0, 0)
+	</insert>
+	
+	
+	
+	<!-- 내정보 수정하기  -->
+	<update id="myinfoEditEnd" parameterType="com.spring.app.domain.EmployeesVO">
+		update tbl_employees set photo = #{photo}
+							   , postcode = #{postcode}
+							   , address = #{address}
+							   , detailaddress = #{detailaddress}
+							   , phone = #{phone}
+							   , extraaddress = #{extraaddress}
+	    where employee_id = #{employee_id}
+	</update>
+	
+	
+	<!-- 비밀번호 변경하기 -->
+	<update id="pwdUpdateEnd" parameterType="HashMap">
+		update tbl_employees set pwd = #{pwd}
+	    where email = #{email}
+	</update>
+	
+	
+	<!-- 성별 알아오기 -->
+	<select id="selectGenderBirthday" parameterType="String" resultType="HashMap">
+		select case when substr(jubun, 7, 1) in('1', '3') 
+		            then '남자' else '여자' end AS gender,
+			   case when substr(jubun, 7, 1) in('1', '2') 
+		            then '19' || jubun else '20' || jubun end AS birthday
+		from tbl_employees
+		where employee_id = #{employee_id}
+	</select>
+	
+	
+	<!-- 부서이름 팀명 알아오기 -->
+	<select id="selectDeptTeam" parameterType="String" resultType="HashMap">
+		SELECT department_name, team_name, job_name
+		FROM
+		(
+		    select *
+		    from tbl_employees
+		    where employee_id = #{employee_id}
+		) E JOIN tbl_department D
+		ON E.fk_department_id = D.department_id
+		JOIN tbl_team T
+		ON E.fk_team_id = T.team_id
+		JOIN tbl_jobs J
+		ON fk_job_id = J.job_id
+	</select>
+	
+	
+	<!-- 급여 계산하기 -->
+	<select id="selectSalary" parameterType="String" resultType="HashMap">
+		SELECT BASICSAL, KSAL, YSAL, HSAL, BSAL
+		     , (KSAL+YSAL+HSAL+BSAL) AS SUM
+		     , BASICSAL-(KSAL+YSAL+HSAL+BSAL) AS TOTAL
+		FROM
+		(
+		    SELECT BASICSAL
+		         , trunc((BASICSAL*0.045)) AS KSAL
+		         , trunc(((BASICSAL*0.03459)*0.1227)) AS YSAL
+		         , trunc((BASICSAL*0.03459)) AS HSAL
+		         , trunc((BASICSAL*0.009)) AS BSAL
+		    FROM
+		    (    
+		        select trunc((salary/12)) AS BASICSAL
+		        from tbl_employees
+		        where employee_id = 27
+		    )
+		)   
+	</select>
+	
+	
+	<!-- 급여테이블 조회하기 -->
+	<resultMap type="HashMap" id="monthSal_Map">
+    	<result property="year_month" 		 column="year_month"    	javaType="String" />
+    	<result property="fk_employee_id" 		 column="fk_employee_id"    	javaType="String" />
+    	<result property="last_day_of_month" column="last_day_of_month" javaType="String" />
+	    <result property="salary"     		 column="salary"     		javaType="String" />
+	    <result property="m_sum"  	 		 column="m_sum"  	  		javaType="String" />
+	    <result property="total"  		     column="total"  	  		javaType="String" />
+	</resultMap> 
+	<select id="monthSal" parameterType="String" resultMap="monthSal_Map">
+		SELECT year_month, fk_employee_id, last_day_of_month, salary
+		     , (KSAL+YSAL+HSAL+BSAL) AS M_SUM
+		     , salary-(KSAL+YSAL+HSAL+BSAL) AS TOTAL
+		FROM
+		(
+		select year_month, fk_employee_id
+		     , to_char(last_day(To_Date(year_month, 'yyyy-mm')), 'yyyy-mm-dd') AS LAST_DAY_OF_MONTH 
+		     , salary
+		     , trunc((salary*0.045)) AS KSAL
+		     , trunc(((salary*0.03459)*0.1227)) AS YSAL
+		     , trunc((salary*0.03459)) AS HSAL
+		     , trunc((salary*0.009)) AS BSAL
+		from tbl_salary
+		where fk_employee_id = #{employee_id}
+		)
+	</select>
+	
+	
+	<!-- 급여 명세서 요청하기 -->
+	<select id="salaryStatement" parameterType="String" resultType="HashMap">
+		SELECT year_month, S.salary, name, job_name, KSAL, YSAL, HSAL, BSAL
+		     , (KSAL+YSAL+HSAL+BSAL) AS SUM
+		     , S.salary+b-(KSAL+YSAL+HSAL+BSAL) AS TOTAL, b, S.salary+b AS a
+		FROM
+		(
+		select year_month, salary, fk_employee_id
+		     , trunc((salary*0.045)) AS KSAL
+		     , trunc(((salary*0.03459)*0.1227)) AS YSAL
+		     , trunc((salary*0.03459)) AS HSAL
+		     , trunc((salary*0.009)) AS BSAL
+		     , case when substr(year_month, 6, 2) in('03', '06', '09', '12') 
+		            then '500000' else '0' end AS b 
+		from tbl_salary
+		where year_month = #{year_month} and fk_employee_id = #{fk_employee_id}
+		) S JOIN tbl_employees E
+		ON S.fk_employee_id = E.employee_id
+		JOIN tbl_jobs J
+		ON E.fk_job_id = J.job_id
+	</select>
+	
+	
+	<!-- 급여명세서 테이블 가져오기 -->
+	<resultMap type="HashMap" id="salaryList_Map">
+    	<result property="year_month" column="year_month" javaType="String" />
+	    <result property="salary"     column="salary"     javaType="String" />
+	    <result property="name"     column="name"     javaType="String" />
+	    <result property="job_name"     column="job_name"     javaType="String" />
+	    <result property="ksal"     column="KSAL"     javaType="String" />
+	    <result property="ysal"     column="YSAL"     javaType="String" />
+	    <result property="hsal"     column="HSAL"     javaType="String" />
+	    <result property="bsal"     column="BSAL"     javaType="String" />
+	    <result property="m_sum"  	  column="m_sum"  	  javaType="String" />
+	    <result property="total"  	  column="total"  	  javaType="String" />
+	</resultMap> 
+	<select id="salaryList" parameterType="HashMap" resultMap="salaryList_Map">
+		SELECT year_month, S.salary, name, job_name, KSAL, YSAL, HSAL, BSAL
+		     , (KSAL+YSAL+HSAL+BSAL) AS m_sum
+		     , S.salary-(KSAL+YSAL+HSAL+BSAL) AS TOTAL
+		FROM
+		(
+		select year_month, salary, fk_employee_id
+		     , trunc((salary*0.045)) AS KSAL
+		     , trunc(((salary*0.03459)*0.1227)) AS YSAL
+		     , trunc((salary*0.03459)) AS HSAL
+		     , trunc((salary*0.009)) AS BSAL
+		from tbl_salary
+		where 1=1
+		<if test="arr_year_month != null">
+	     AND year_month IN
+	        <foreach collection="arr_year_month" index="i" open="(" separator="," close=")">
+	            '${arr_year_month[i]}'
+	        </foreach>
+	    </if>
+	    order by year_month desc
+		) S JOIN tbl_employees E
+		ON S.fk_employee_id = E.employee_id
+		JOIN tbl_jobs J
+		ON E.fk_job_id = J.job_id
+	</select>
+	
+	
+	<!-- 조직도를 위한 사원정보리스트 -->
+	<resultMap type="HashMap" id="employeeList_Map">
+    	<result property="name" 		 column="name" 			javaType="String" />
+		<result property="job_name"      column="job_name"     	javaType="String" />
+	    <result property="photo"         column="photo"     	javaType="String" />
+	    <result property="employee_id"   column="employee_id"   javaType="String" />
+	    <result property="manager_id"    column="manager_id"    javaType="String" />
+	    <result property="t_manager_id"  column="t_manager_id"  javaType="String" />
+	</resultMap> 
+	<select id="employeeList" resultMap="employeeList_Map">
+		select name, job_name, photo
+			 , employee_id, D.manager_id, T.t_manager_id
+		from tbl_employees E
+		JOIN tbl_team T
+		ON E.fk_team_id = T.team_id
+		JOIN tbl_department D
+		ON E.fk_department_id = D.department_id
+		JOIN tbl_jobs J
+		ON E.fk_job_id = J.job_id
+	</select>
+	
+
+</mapper>

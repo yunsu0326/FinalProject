@@ -28,11 +28,11 @@
 	     BeanNameViewResolver 뷰 리졸버를 추가한 후 파일 다운로드를 처리해줄 빈을 등록한다.
 	         쉽게 생각해서 파일 다운로드 처리를 해주는 view 페이지 라고 생각하면 된다. -->
 
-<!-- 		<beans:bean id="excelDownloadView" class="com.spring.app.excel.ExcelDownloadView"/>
+		<beans:bean id="excelDownloadView" class="com.spring.app.excel.ExcelDownloadView"/>
 		<beans:bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
     	<beans:property name="order" value="0"/>
     </beans:bean> 
-      -->     
+          
     <!-- BeanNameViewResolver 는 컨트롤러에서 리턴 받은 뷰의 이름과 빈에 등록되어 있는 id의 값이 같은것을 찾아서 빈을 실행시킬 때 쓰인다.
 		 주로 커스텀하게 만들어진 View 클래스를 뷰로 사용해야 하는 경우에 사용한다. 
 	
@@ -136,13 +136,13 @@
    "multipartResolver" 가 아닌 다른 이름(아이디)으로 지정할경우 MultipartResolver로 사용되지 않는다.
    --> 
 	
-	<!-- === #44. 양방향 암호화 알고리즘인 AES256 를 사용하여 복호화 하기 위한 클래스(파라미터가 있는 생성자) 의존객체 bean 생성하기 ===  
+	<!-- === #44. 양방향 암호화 알고리즘인 AES256 를 사용하여 복호화 하기 위한 클래스(파라미터가 있는 생성자) 의존객체 bean 생성하기 === --> 
 	<beans:bean id="aES256" class="com.spring.app.common.AES256">
       <beans:constructor-arg>
-         <beans:value>abcd0070#gclass$</beans:value> abcd0070#gclass$ 은 각자 com.spring.app.common.SecretMyKey 에 사용되던 암호화/복호화 키 이다.   
+         <beans:value>abcd0070#gclass$</beans:value> <!-- abcd0070#gclass$ 은 각자 com.spring.app.common.SecretMyKey 에 사용되던 암호화/복호화 키 이다. -->   
       </beans:constructor-arg>
    </beans:bean>
-	 -->
+	
 	
 	<!-- ==== #18. bean으로 등록될 @Component 클래스가 위치하는 패키지명 지정하기 ====  --> 
 	<context:component-scan base-package="com.spring.app" />

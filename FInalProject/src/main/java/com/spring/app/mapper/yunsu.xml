@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="yunsu">
+
+	<!-- 사내 캘린더에 캘린더 소분류 명 조회 -->
+	<select id="existComCalendar" parameterType="String" resultType="int">
+		select count(*)
+		from tbl_calendar_small_category
+		where fk_lgcatgono = 2 and smcatgoname = #{com_smcatgoname}  
+	</select>
+	
+	
+    <!-- 사내 캘린더에 캘린더 소분류 추가하기 --> 
+	<insert id="addComCalendar" parameterType="HashMap">
+		insert into tbl_calendar_small_category(smcatgono, fk_lgcatgono, smcatgoname, fk_employee_id, fk_department_id)
+		values(seq_smcatgono.nextval, 2, #{com_smcatgoname}, #{fk_employee_id}, #{fk_department_id})
+	</insert>
+	
+	
+	<!-- 내 캘린더에 캘린더 소분류 명 조회 -->
+	<select id="existMyCalendar" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_calendar_small_category
+		where fk_lgcatgono = 1 and fk_employee_id = #{fk_employee_id} and smcatgoname = #{my_smcatgoname}  
+	</select>
+
+
+    <!-- 내 캘린더에 캘린더 소분류 추가하기 --> 
+	<insert id="addMyCalendar" parameterType="HashMap">
+		insert into tbl_calendar_small_category(smcatgono, fk_lgcatgono, smcatgoname, fk_employee_id , fk_department_id)
+		values(seq_smcatgono.nextval, 1, #{my_smcatgoname}, #{fk_employee_id}, #{fk_department_id})
+	</insert>	
+	
+	
+	<!-- 사내 캘린더에서 사내캘린더 소분류  보여주기  -->
+	<select id="showCompanyCalendar" resultType="com.spring.app.domain.Calendar_small_category_VO">
+		select smcatgono, fk_lgcatgono, smcatgoname
+		from tbl_calendar_small_category
+		where fk_lgcatgono = 2
+		order by smcatgono asc
+	</select>
+	
+	
+	<!-- 내 캘린더에서 내캘린더 소분류  보여주기  -->
+	<select id="showMyCalendar" resultType="com.spring.app.domain.Calendar_small_category_VO">
+		select smcatgono, fk_lgcatgono, smcatgoname 
+		from tbl_calendar_small_category
+		where fk_lgcatgono = 1
+		and fk_employee_id = #{fk_employee_id} 
+		order by smcatgono asc
+	</select>
+	
+
+    <!-- 일정 등록시 내캘린더,사내캘린더 선택에 따른 서브캘린더 종류를 알아오기 -->
+    <select id="selectSmallCategory" parameterType="HashMap" resultType="com.spring.app.domain.Calendar_small_category_VO">
+    	select smcatgono, fk_lgcatgono, smcatgoname
+		from tbl_calendar_small_category
+		where fk_lgcatgono = #{fk_lgcatgono} 
+		<if test="fk_lgcatgono != 3">
+			and fk_employee_id= #{fk_employee_id}
+		</if>
+		
+		<if test="fk_lgcatgono == 3">
+			and fk_department_id= #{fk_department_id}
+		</if>
+		order by smcatgono asc
+    </select>
+    
+    
+    <!-- 공유자를 찾기 위한 특정글자가 들어간 회원명단 불러오기 -->
+    <select id="searchJoinUserList" parameterType="String" resultType="com.spring.app.domain.EmployeesVO">
+    	select employee_id, name, email
+		from TBL_EMPLOYEES
+		where lower(name) like '%'|| lower(#{joinUserName}) ||'%'
+    </select>
+    
+    
+    <!-- 일정 등록하기 -->
+    <insert id="registerSchedule_end" parameterType="HashMap">
+    	insert into tbl_calendar_schedule(scheduleno, startdate, enddate, subject, color, place, joinuser, content, fk_smcatgono, fk_lgcatgono, fk_employee_id, fk_department_id, fk_email) 
+    	values(seq_scheduleno.nextval, to_date(#{startdate}, 'yyyymmddhh24miss'), to_date(#{enddate}, 'yyyymmddhh24miss'), #{subject}, #{color}, #{place}, #{joinuser}, #{content}, #{fk_smcatgono}, #{fk_lgcatgono}, #{fk_employee_id}, #{fk_department_id}, #{fk_email})  
+    </insert>
+
+	<!-- 수정 표시 확인 해야함 아이디 대신에 이메일 씀  -->
+    <!-- 등록된 일정에 대한 정보(달력에 표시됨)-->
+	<select id="selectSchedule" resultType="com.spring.app.domain.Calendar_schedule_VO" parameterType="HashMap">
+		select scheduleno, startdate, enddate, subject, color, place, joinuser, content, fk_smcatgono, fk_lgcatgono, fk_department_id, fk_employee_id 
+		from tbl_calendar_schedule
+		where fk_employee_id = #{fk_employee_id} OR
+		fk_department_id = #{fk_department_id} OR
+		fk_lgcatgono = 2 OR
+		(fk_lgcatgono != 2 AND lower(joinuser) like '%'|| lower(#{fk_email}) ||'%')
+		order by scheduleno asc
+	</select>
+	
+	
+	<!-- 일정 상세 보기 -->
+	<resultMap type="HashMap" id="detailSchedule_Map">
+		<result property="SCHEDULENO" 	column="scheduleno" 	javaType="String" />
+		<result property="STARTDATE" 	column="startdate" 		javaType="String" />
+		<result property="ENDDATE" 		column="enddate" 		javaType="String" />
+		<result property="SUBJECT" 		column="subject" 		javaType="String" />
+		<result property="COLOR" 		column="color" 			javaType="String" />
+		<result property="PLACE" 		column="place" 			javaType="String" />
+		<result property="JOINUSER" 	column="joinuser" 		javaType="String" />
+		<result property="CONTENT" 		column="content" 		javaType="String" />
+		<result property="FK_SMCATGONO" column="fk_smcatgono" 	javaType="String" />
+		<result property="FK_LGCATGONO" column="fk_lgcatgono" 	javaType="String" />
+		<result property="FK_EMPLOYEE_ID" 	column="fk_employee_id" 		javaType="String" />
+		<result property="NAME" 		column="name" 			javaType="String" />
+		<result property="SMCATGONAME" 	column="smcatgoname" 	javaType="String" />
+		<result property="FK_DEPARTMENT_ID" 	column="fk_department_id" 	javaType="String" />
+		<result property="DEPARTMENT_NAME" 	column="department_NAME" 	javaType="String" />
+	</resultMap>
+	<select id="detailSchedule" parameterType="String" resultMap="detailSchedule_Map">
+		select SD.scheduleno
+		     , to_char(SD.startdate,'yyyy-mm-dd hh24:mi') as startdate
+		     , to_char(SD.enddate,'yyyy-mm-dd hh24:mi') as enddate  
+		     , SD.subject
+		     , SD.color
+		     , nvl(SD.place,'-') as place
+		     , nvl(SD.joinuser,'공유자가 없습니다.') as joinuser
+		     , nvl(SD.content,'') as content
+		     , SD.fk_smcatgono
+		     , SD.fk_lgcatgono
+		     , SD.fk_employee_id
+		     , M.name
+		     , SC.smcatgoname
+		     , D.DEPARTMENT_NAME
+             , SD.fk_department_id
+		from tbl_calendar_schedule SD 
+		JOIN TBL_EMPLOYEES M
+		ON SD.fk_employee_id = M.employee_id
+		JOIN tbl_calendar_small_category SC
+		ON SD.fk_smcatgono = SC.smcatgono
+		JOIN tbl_department D
+        ON SD.fk_department_id = D.department_id
+        where SD.scheduleno = #{scheduleno}
+	</select>
+	
+	
+	<!-- 일정삭제하기 -->
+	<delete id="deleteSchedule" parameterType="String">
+		delete from tbl_calendar_schedule 
+		where scheduleno = #{scheduleno} 
+	</delete>
+	
+	
+	<!-- 일정수정하가 -->
+	<update id="editSchedule_end" parameterType="com.spring.app.domain.Calendar_schedule_VO">
+		update tbl_calendar_schedule set startdate = to_date(#{startdate}, 'yyyymmddhh24miss')
+		                               , enddate = to_date(#{enddate}, 'yyyymmddhh24miss')
+		                               , subject = #{subject}
+		                               , fk_lgcatgono = #{fk_lgcatgono}
+		                               , fk_smcatgono = #{fk_smcatgono}
+		                               , color = #{color}
+		                               , place = #{place}
+		                               , joinuser = #{joinuser}
+		                               , content = #{content}
+		where scheduleno = #{scheduleno} 
+	</update>
+	
+	
+	<!-- (사내캘린더 또는 내캘린더)속의  소분류 카테고리인 서브캘린더 삭제하기   -->
+	<delete id="deleteSubCalendar" parameterType="String">
+		delete from tbl_calendar_small_category
+		where smcatgono = #{smcatgono}
+	</delete>
+	
+	
+	<!-- 수정된 (사내캘린더 또는 내캘린더)속의 소분류 카테고리명이 이미 해당 사용자가 만든 소분류 카테고리명으로 존재하는지 유무 알아오기 -->
+	<select id="existsCalendar" parameterType="HashMap" resultType="int">
+	    select count(*)
+		from tbl_calendar_small_category
+		where fk_lgcatgono = #{caltype} 
+		and fk_employee_id = #{employee_id} 
+		and smcatgoname = #{smcatgoname}
+	</select>
+	
+	
+	<!-- (사내캘린더 또는 내캘린더)속의 소분류 카테고리인 서브캘린더 수정하기    -->
+	<update id="editCalendar" parameterType="HashMap">
+		update tbl_calendar_small_category set smcatgoname = #{smcatgoname}
+		where smcatgono = #{smcatgono}
+	</update>
+	
+	
+	<!-- 총 일정 검색 건수(totalCount) -->
+	<select id="getTotalCount" parameterType="HashMap" resultType="int">
+		select count(*) 
+		from tbl_calendar_schedule
+		where ( to_char(startdate,'YYYY-MM-DD') between #{startdate} and #{enddate} )
+		and   ( to_char(enddate,'YYYY-MM-DD') between #{startdate} and #{enddate} ) 
+		
+		<if test='fk_lgcatgono == "" and searchWord == "" and searchType == "" '>  <!-- 모든캘린더이고 검색대상이 없을 경우 -->
+		    and ( fk_lgcatgono = 2 OR fk_employee_id = #{fk_employee_id} OR 
+		    	( fk_lgcatgono = 3 and fk_department_id = #{fk_department_id}) OR
+		        ( fk_employee_id != #{fk_employee_id} and lower(joinuser) like '%'||lower(#{fk_email})||'%') ) <!-- 사내캘린더 와 자신이 작성한 내캘린더 와 공유받은 캘린더만 조회되도록 한다. -->
+		</if>
+		
+		<if test='fk_lgcatgono == "2" and searchWord == "" and searchType == "" '>  <!-- 사내캘린더이고 검색대상이 없을 경우 -->
+		    and ( fk_lgcatgono = 2 )                                                <!-- 사내캘린더만 조회되도록 한다. -->
+		</if>
+		
+		<if test='fk_lgcatgono == "1" and searchWord == "" and searchType eq "" '>  <!-- 내캘린더이고 검색대상이 없을 경우 -->
+		    and ( fk_lgcatgono = 1 AND fk_employee_id = #{fk_employee_id} )                                        <!-- 내캘린더만 조회되도록 한다. -->
+		</if>
+		
+		<if test='fk_lgcatgono == "3" and searchWord == "" and searchType eq "" '>  <!-- 부서캘린더이고 검색대상이 없을 경우 -->
+			and ( fk_lgcatgono = 3 AND fk_department_id = #{fk_department_id} )                                     <!-- 부서캘린더만 조회되도록 한다. -->
+		</if>
+			
+		<if test='searchWord != "" and searchType eq "joinuser" '>  <!-- 검색대상을 공유자로 검색할 경우 -->
+			and fk_lgcatgono = 1                                    <!-- 내캘린더 -->
+			and fk_employee_id = #{fk_employee_id}                            <!-- 로그인한 사용자가 작성한 것을 다른 사용자에게 공유 한것 -->
+			and lower(joinuser) like '%'||lower(#{searchWord})||'%' <!-- 검색대상 및 검색어 -->
+		</if>
+		
+		<if test='searchWord != "" and searchType neq "" and searchType neq "joinuser" '>  <!-- 검색대상을 공유자가 아닌 다른 것으로 검색할 경우 -->
+			and lower(${searchType}) like '%'||lower(#{searchWord})||'%' <!-- 검색대상 및 검색어 -->
+			<choose>
+				
+				<when test='fk_lgcatgono == "" '>             <!-- 달력 페이지에서 검사했을경우 -->         
+					and ( fk_lgcatgono = 2 OR fk_employee_id = #{fk_employee_id} OR 
+		    		( fk_lgcatgono = 3 and fk_department_id = #{fk_department_id}) OR
+		    		( fk_employee_id != #{fk_employee_id} and lower(joinuser) like '%'||lower(#{fk_email})||'%' ))
+		        </when>
+				
+				<when test='fk_lgcatgono == "1" '>                       <!-- 내캘린더내에서만 검색할 경우  -->
+					and fk_lgcatgono = 1 
+					and fk_employee_id = #{fk_employee_id}               <!-- 로그인한 사용자가 작성한 것 -->
+				</when>
+				
+				<when test='fk_lgcatgono == "2" '>                       <!-- 사내캘린더내에서만 검색할 경우  -->
+					and fk_lgcatgono = 2 
+				</when>
+				
+				<when test='fk_lgcatgono == "3" '>                       <!-- 부서캘린더내에서만 검색할 경우  -->
+						and fk_lgcatgono = 3 
+						and fk_department_id = #{fk_department_id}       <!-- 같은부서 사용자가 작성한 것 -->
+					</when>
+			</choose>			
+		</if>
+	</select>
+	
+	
+	<!-- 페이징 처리한 캘린더 가져오기(검색어가 없다라도 날짜범위 검색은 항시 포함된 것임) -->
+	<resultMap type="HashMap" id="scheduleListSearchWithPaging_Map">
+		<result property="SCHEDULENO" 	column="scheduleno" 	javaType="String" />
+		<result property="STARTDATE" 	column="startdate" 		javaType="String" />
+		<result property="ENDDATE" 		column="enddate" 		javaType="String" />
+		<result property="SMCATGONAME" 	column="smcatgoname" 	javaType="String" />
+		<result property="LGCATGONAME" 	column="lgcatgoname" 	javaType="String" />
+		<result property="NAME" 		column="name" 			javaType="String" />
+		<result property="SUBJECT" 		column="subject" 		javaType="String" />
+		<result property="CONTENT" 		column="content" 		javaType="String" />
+	</resultMap>
+	<select id="scheduleListSearchWithPaging" parameterType="HashMap" resultMap="scheduleListSearchWithPaging_Map">  
+		select scheduleno 
+		     , startdate, enddate
+		     , smcatgoname, lgcatgoname, name
+		     , subject, content 
+		from 
+		(
+			select  row_number() over(order by SD.scheduleno desc) as rno 
+			      , SD.scheduleno
+			      , to_char(SD.startdate, 'yyyy-mm-dd hh24:mi') as startdate
+			      , to_char(SD.enddate, 'yyyy-mm-dd hh24:mi') as enddate
+			      , SC.smcatgoname, LC.lgcatgoname, M.name 
+			      , SD.subject, SD.content 
+			from tbl_calendar_schedule SD 
+			JOIN TBL_EMPLOYEES M 
+			ON SD.fk_employee_id = M.employee_id
+			JOIN tbl_calendar_small_category SC 
+			ON SD.fk_smcatgono = SC.smcatgono
+			JOIN tbl_calendar_large_category LC 
+			ON SD.fk_lgcatgono = LC.lgcatgono 
+			
+			where ( to_char(SD.startdate,'YYYY-MM-DD') between #{startdate} and #{enddate} )
+			AND   ( to_char(SD.enddate,'YYYY-MM-DD') between #{startdate} and #{enddate} ) 
+			
+			<if test='fk_lgcatgono == "" and searchWord == "" and searchType == "" '>  <!-- 모든캘린더이고 검색대상이 없을 경우 -->
+			    and ( SD.fk_lgcatgono = 2 or SD.fk_employee_id = #{fk_employee_id} OR
+			    	  ( SD.fk_lgcatgono = 3 and SD.fk_department_id = #{fk_department_id}) OR <!-- 부서캘린더이고 검색대상이 없을 경우 -->
+			          ( SD.fk_employee_id != #{fk_employee_id} and lower(SD.joinuser) like '%'||lower(#{fk_email})||'%' ) )  <!-- 사내캘린더 와 자신이 작성한 내캘린더 와 공유받은 캘린더만 조회되도록 한다. -->
+			</if>
+			
+			<if test='fk_lgcatgono == "2" and searchWord == "" and searchType == "" '>  <!-- 사내캘린더이고 검색대상이 없을 경우 -->
+			    and ( SD.fk_lgcatgono = 2 )                                             <!-- 사내캘린더만 조회되도록 한다. -->
+			</if>
+			
+			<if test='fk_lgcatgono == "1" and searchWord == "" and searchType eq "" '>  <!-- 내캘린더이고 검색대상이 없을 경우 -->
+			    and ( SD.fk_lgcatgono = 1 AND SD.fk_employee_id = #{fk_employee_id} )                                     <!-- 내캘린더만 조회되도록 한다. -->
+			</if>
+			
+			<if test='fk_lgcatgono == "3" and searchWord == "" and searchType eq "" '>  <!-- 부서캘린더이고 검색대상이 없을 경우 -->
+			    and ( SD.fk_lgcatgono = 3 AND SD.fk_department_id = #{fk_department_id} )                                     <!-- 부서캘린더만 조회되도록 한다. -->
+			</if>
+			
+			<if test='searchWord != "" and searchType eq "joinuser" '>     <!-- 검색대상을 공유자로 검색할 경우 -->
+				and SD.fk_lgcatgono = 1                                    <!-- 내캘린더 -->
+				and SD.fk_employee_id = #{fk_employee_id}                            <!-- 로그인한 사용자가 작성한 것을 다른 사용자에게 공유 한것 -->
+				and lower(SD.joinuser) like '%'||lower(#{searchWord})||'%' <!-- 검색대상 및 검색어 -->
+			</if>
+			
+			<if test='searchWord != "" and searchType neq "" and searchType neq "joinuser" '>   <!-- 검색대상을 공유자가 아닌 다른 것으로 검색할 경우 -->
+				and lower(${searchType}) like '%'||lower(#{searchWord})||'%' <!-- 검색대상 및 검색어 -->
+				<choose>
+					
+					<when test='fk_lgcatgono == "" '>                       <!-- 달력 페이지에서 검색할 경우  -->
+					and ( SD.fk_lgcatgono = 2 or SD.fk_employee_id = #{fk_employee_id} OR
+			    	( SD.fk_lgcatgono = 3 and SD.fk_department_id = #{fk_department_id}) OR <!-- 부서캘린더이고 검색대상이 없을 경우 -->
+			        ( SD.fk_employee_id != #{fk_employee_id} and lower(SD.joinuser) like '%'||lower(#{fk_email})||'%' ) )                      <!-- 로그인한 사용자가 작성한 것 -->
+					</when>
+					
+					<when test='fk_lgcatgono == "1" '>                       <!-- 내캘린더내에서만 검색할 경우  -->
+						and SD.fk_lgcatgono = 1 
+						and SD.fk_employee_id = #{fk_employee_id}                      <!-- 로그인한 사용자가 작성한 것 -->
+					</when>
+					
+					<when test='fk_lgcatgono == "3" '>                       <!-- 부서캘린더내에서만 검색할 경우  -->
+						and SD.fk_lgcatgono = 3 
+						and SD.fk_department_id = #{fk_department_id}                      <!-- 로그인한 사용자가 작성한 것 -->
+					</when>
+					
+					<when test='fk_lgcatgono == "2" '>                       <!-- 사내캘린더내에서만 검색할 경우  -->
+						and SD.fk_lgcatgono = 2 
+					</when>
+				</choose>			
+			</if>
+		) V 
+		where V.rno between #{startRno} and #{endRno}
+	</select>
+	
+	<!-- 부서 캘린더에 캘린더 소분류 명 존재 여부 알아오기 -->
+	<select id="existDepCalendar" parameterType="String" resultType="int">
+		select count(*)
+		from tbl_calendar_small_category
+		where fk_lgcatgono = 3 and smcatgoname = #{dep_smcatgoname}
+	</select>
+	
+	<!-- 부서 캘린더에 캘린더 소분류 추가하기 --> 
+	<insert id="addDepCalendar" parameterType="HashMap">
+		insert into tbl_calendar_small_category(smcatgono, fk_lgcatgono, smcatgoname, fk_employee_id, fk_department_id)
+		values(seq_smcatgono.nextval, 3, #{dep_smcatgoname}, #{fk_employee_id}, #{fk_department_id})
+	</insert>
+	
+	<!-- === 부서 캘린더에서 부서 캘린더 소분류  보여주기 === -->
+	<select id="showDepCalendar" resultType="com.spring.app.domain.Calendar_small_category_VO">
+		select smcatgono, fk_lgcatgono, smcatgoname
+		from tbl_calendar_small_category
+		where fk_lgcatgono = 3
+		and fk_department_id = #{fk_department_id} 
+		order by smcatgono asc
+	</select>
+	
+	<!-- 엑셀 다운로드를 위한 검색 목록 -->
+	<resultMap type="HashMap" id="scheduleListSearchExcelDownload_Map">
+		<result property="SCHEDULENO" 	column="scheduleno" 	javaType="String" />
+		<result property="STARTDATE" 	column="startdate" 		javaType="String" />
+		<result property="ENDDATE" 		column="enddate" 		javaType="String" />
+		<result property="SMCATGONAME" 	column="smcatgoname" 	javaType="String" />
+		<result property="LGCATGONAME" 	column="lgcatgoname" 	javaType="String" />
+		<result property="NAME" 		column="name" 			javaType="String" />
+		<result property="SUBJECT" 		column="subject" 		javaType="String" />
+		<result property="CONTENT" 		column="content" 		javaType="String" />
+	</resultMap>
+	<select id="scheduleListSearchExcelDownload" parameterType="HashMap" resultMap="scheduleListSearchExcelDownload_Map">  
+		select scheduleno 
+		     , startdate, enddate
+		     , smcatgoname, lgcatgoname, name
+		     , subject, content 
+		from 
+		(
+			select  row_number() over(order by SD.scheduleno desc) as rno 
+			      , SD.scheduleno
+			      , to_char(SD.startdate, 'yyyy-mm-dd hh24:mi') as startdate
+			      , to_char(SD.enddate, 'yyyy-mm-dd hh24:mi') as enddate
+			      , SC.smcatgoname, LC.lgcatgoname, M.name 
+			      , SD.subject, SD.content 
+			from tbl_calendar_schedule SD 
+			JOIN TBL_EMPLOYEES M 
+			ON SD.fk_employee_id = M.employee_id
+			JOIN tbl_calendar_small_category SC 
+			ON SD.fk_smcatgono = SC.smcatgono
+			JOIN tbl_calendar_large_category LC 
+			ON SD.fk_lgcatgono = LC.lgcatgono 
+			
+			where ( to_char(SD.startdate,'YYYY-MM-DD') between #{startdate} and #{enddate} )
+			AND   ( to_char(SD.enddate,'YYYY-MM-DD') between #{startdate} and #{enddate} ) 
+			
+			<if test='fk_lgcatgono == "" and searchWord == "" and searchType == "" '>  <!-- 모든캘린더이고 검색대상이 없을 경우 -->
+			    and ( SD.fk_lgcatgono = 2 or SD.fk_employee_id = #{fk_employee_id} OR
+			    	  ( SD.fk_lgcatgono = 3 and SD.fk_department_id = #{fk_department_id}) OR <!-- 부서캘린더이고 검색대상이 없을 경우 -->
+			          ( SD.fk_employee_id != #{fk_employee_id} and lower(SD.joinuser) like '%'||lower(#{fk_email})||'%' ) )  <!-- 사내캘린더 와 자신이 작성한 내캘린더 와 공유받은 캘린더만 조회되도록 한다. -->
+			</if>
+			
+			<if test='fk_lgcatgono == "2" and searchWord == "" and searchType == "" '>  <!-- 사내캘린더이고 검색대상이 없을 경우 -->
+			    and ( SD.fk_lgcatgono = 2 )                                             <!-- 사내캘린더만 조회되도록 한다. -->
+			</if>
+			
+			<if test='fk_lgcatgono == "1" and searchWord == "" and searchType eq "" '>  <!-- 내캘린더이고 검색대상이 없을 경우 -->
+			    and ( SD.fk_lgcatgono = 1 AND SD.fk_employee_id = #{fk_employee_id} )                                     <!-- 내캘린더만 조회되도록 한다. -->
+			</if>
+			
+			<if test='fk_lgcatgono == "3" and searchWord == "" and searchType eq "" '>  <!-- 부서캘린더이고 검색대상이 없을 경우 -->
+			    and ( SD.fk_lgcatgono = 3 AND SD.fk_department_id = #{fk_department_id} )                                     <!-- 부서캘린더만 조회되도록 한다. -->
+			</if>
+			
+			<if test='searchWord != "" and searchType eq "joinuser" '>     <!-- 검색대상을 공유자로 검색할 경우 -->
+				and SD.fk_lgcatgono = 1                                    <!-- 내캘린더 -->
+				and SD.fk_employee_id = #{fk_employee_id}                            <!-- 로그인한 사용자가 작성한 것을 다른 사용자에게 공유 한것 -->
+				and lower(SD.joinuser) like '%'||lower(#{searchWord})||'%' <!-- 검색대상 및 검색어 -->
+			</if>
+			
+			<if test='searchWord != "" and searchType neq "" and searchType neq "joinuser" '>   <!-- 검색대상을 공유자가 아닌 다른 것으로 검색할 경우 -->
+				and lower(${searchType}) like '%'||lower(#{searchWord})||'%' <!-- 검색대상 및 검색어 -->
+				<choose>
+					
+					<when test='fk_lgcatgono == "" '>                       <!-- 달력 페이지에서 검색할 경우  -->
+					and ( SD.fk_lgcatgono = 2 or SD.fk_employee_id = #{fk_employee_id} OR
+			    	( SD.fk_lgcatgono = 3 and SD.fk_department_id = #{fk_department_id}) OR <!-- 부서캘린더이고 검색대상이 없을 경우 -->
+			        ( SD.fk_employee_id != #{fk_employee_id} and lower(SD.joinuser) like '%'||lower(#{fk_email})||'%' ) )                      <!-- 로그인한 사용자가 작성한 것 -->
+					</when>
+					
+					<when test='fk_lgcatgono == "1" '>                       <!-- 내캘린더내에서만 검색할 경우  -->
+						and SD.fk_lgcatgono = 1 
+						and SD.fk_employee_id = #{fk_employee_id}                      <!-- 로그인한 사용자가 작성한 것 -->
+					</when>
+					
+					<when test='fk_lgcatgono == "3" '>                       <!-- 부서캘린더내에서만 검색할 경우  -->
+						and SD.fk_lgcatgono = 3 
+						and SD.fk_department_id = #{fk_department_id}                      <!-- 로그인한 사용자가 작성한 것 -->
+					</when>
+					
+					<when test='fk_lgcatgono == "2" '>                       <!-- 사내캘린더내에서만 검색할 경우  -->
+						and SD.fk_lgcatgono = 2 
+					</when>
+				</choose>			
+			</if>
+		) V 
+		
+	</select>
+	
+	<!-- 자원예약 맵퍼 시작 ========================================================= -->
+	
+	
+	<!-- 자원 항목 불러오기 -->	
+	<select id="selectSmallCategory2" parameterType="HashMap" resultType="com.spring.app.domain.ReservSmallCategoryVO">
+		select smcatgono, fk_lgcatgono, smcatgoname, sc_status
+		from tbl_reservation_small_category
+		where fk_lgcatgono = #{fk_lgcatgono} 
+		order by  smcatgono
+	</select>		
+		
+		
+	<!-- === 자원 예약하기 ===  -->	
+	<insert id="addReservation" parameterType="HashMap">
+		insert into tbl_reservation(reservationno, startdate, enddate, realuser, fk_smcatgono, fk_lgcatgono, fk_employee_id, reservdate, confirm,  status, return_time)
+		values(seq_reservationno.nextval,  to_date(#{startdate}, 'yyyymmddhh24miss'),  to_date(#{enddate}, 'yyyymmddhh24miss'), #{realuser}, #{fk_smcatgono}, #{fk_lgcatgono}, #{employee_id}, sysdate, 0, 0, #{returnTime})
+	</insert>	
+		
+	
+	<!-- 선택한 날짜에 따른 예약된 시간 가져오기 -->	
+	<select id="reservTime" parameterType="HashMap" resultType="com.spring.app.domain.ReservationVO">
+		select reservationno, to_char(startdate, 'yyyymmddhh24') as startdate, to_char(enddate, 'yyyymmddhh24') as enddate, fk_smcatgono, fk_lgcatgono, confirm,  status
+		from tbl_reservation
+		where (( to_char(startdate,'YYYY-MM-DD') between #{selectDate} and #{selectDate} )
+		or  ( to_char(enddate,'YYYY-MM-DD') between #{selectDate} and #{selectDate} ) )
+		and fk_lgcatgono = #{fk_lgcatgono}
+		and (status = 0 or status = 2)
+	</select>
+		
+		
+	<!-- 예약일자에 예약이 존재하는지 여부 확인 -->
+	<select id="existReservation" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_reservation
+		where (( to_char(startdate,'yyyymmddhh24miss') between #{startdate} and #{enddate} )
+		or  ( to_char(enddate,'yyyymmddhh24miss') between #{startdate} and #{enddate} ) )
+		and fk_lgcatgono = #{fk_lgcatgono} and fk_smcatgono = #{fk_smcatgono}
+	</select>
+		
+		
+	<!-- 예약 내역 전체 개수 구하기 -->	
+	<select id="getResrvAdminSearchCnt" parameterType="HashMap" resultType="int">
+	
+		select count(*)
+		from 
+		(
+		    select row_number() over(order by reservationno desc) as rno,
+		           reservationno, to_char(startdate, 'yyyymmddhh24') as startdate, to_char(enddate, 'yyyymmddhh24') as enddate, 
+		           realuser, fk_smcatgono, fk_lgcatgono, 
+		           to_char(reservdate, 'yyyymmddhh24') as reservdate, 
+		           confirm,  R.status, return_time,
+		           name, fk_employee_id, fk_department_id
+		    from tbl_reservation R
+		    join tbl_employees E
+		    ON  R.fk_employee_id = E.employee_id
+		
+			<choose>
+				<when test='startdate == "" and enddate == ""'></when>
+				
+				<otherwise>
+					where (( to_char(startdate,'YYYY-MM-DD') between #{startdate} and #{enddate} )
+					or  ( to_char(enddate,'YYYY-MM-DD') between #{startdate} and #{enddate} ) )					
+				
+					<!-- 검색타입과 검색어가 없는 경우 -->
+					<if test='pagination.searchType == "" and pagination.searchWord == ""'></if>
+					
+					<!-- 검색 타입은 있고 검색어가 없는 경우 -->
+					<if test='pagination.searchType != "" and pagination.searchWord == ""'>
+						and R.fk_lgcatgono = #{pagination.searchType}
+					</if>
+					
+					<!--  검색 타입은 없고 검색어가 있는 경우 -->
+					<if test='pagination.searchType == "" and pagination.searchWord != ""'>
+						and (lower(realuser) like '%'||lower(#{pagination.searchWord})||'%' or  lower(name) like '%'||lower(#{pagination.searchWord})||'%')
+					</if>
+					
+					<!-- 검색 타입과 검색어가 모두 있는 경우 -->
+					<if test='pagination.searchType != "" and pagination.searchWord != ""'>
+						and R.fk_lgcatgono = #{pagination.searchType}
+						and (lower(realuser) like '%'||lower(#{pagination.searchWord})||'%' or lower(name) like '%'||lower(#{pagination.searchWord})||'%')
+					</if>
+				
+				</otherwise>	
+			</choose>
+		)
+	</select>
+	
+	
+	<!-- 한 페이지에 표시할 관리자 예약 내역 글 목록 -->
+	<resultMap type="HashMap" id="getResrvAdminMap">
+		<result property="reservationno" 	column="reservationno" 	javaType="String" />
+		<result property="startdate" 		column="startdate" 		javaType="String" />
+		<result property="enddate" 			column="enddate" 		javaType="String" />
+		<result property="realuser" 		column="realuser" 		javaType="String" />
+		<result property="fk_smcatgono" 	column="fk_smcatgono" 	javaType="String" />
+		<result property="fk_lgcatgono" 	column="fk_lgcatgono" 	javaType="String" />
+		<result property="reservdate" 		column="reservdate" 	javaType="String" />
+		<result property="confirm" 			column="confirm" 		javaType="String" />
+		<result property="status" 			column="status" 		javaType="String" />
+		<result property="return_time" 		column="return_time" 	javaType="String" />
+		<result property="name" 			column="name" 			javaType="String" />
+		<result property="fk_employee_id" 		column="fk_employee_id" 		javaType="String" />
+		<result property="fk_department_id" 		column="fk_department_id" 	javaType="String" />
+		<result property="smcatgoname" 		column="smcatgoname" 	javaType="String" />
+		<result property="startdate_view" 	column="startdate_view" javaType="String" />
+		<result property="enddate_view" 	column="enddate_view" 	javaType="String" />
+	</resultMap>
+	<select id="getResrvAdminList" parameterType="HashMap" resultMap="getResrvAdminMap">
+		select reservationno, startdate, enddate, realuser, fk_smcatgono, fk_lgcatgono, reservdate, confirm, status, return_time,
+		       name, fk_employee_id, fk_department_id, smcatgoname, startdate_view, enddate_view
+		from 
+		(
+		    select row_number() over(order by reservationno desc) as rno,
+			reservationno, 
+			to_char(startdate, 'yyyymmddhh24') as startdate, to_char(enddate, 'yyyymmddhh24') as enddate, 
+			to_char(startdate, 'yyyy-mm-dd hh24:mi') as startdate_view, to_char(enddate, 'yyyy-mm-dd hh24:mi') as enddate_view,
+			realuser, R.fk_smcatgono, R.fk_lgcatgono, smcatgoname,
+			to_char(reservdate, 'yyyymmddhh24') as reservdate, 
+			confirm,  R.status, return_time,
+			name, R.fk_employee_id, fk_department_id
+		    from tbl_reservation R
+		    join tbl_employees E
+		    ON  R.fk_employee_id = E.employee_id
+		    join tbl_reservation_small_category C
+		    ON R.fk_smcatgono = C.smcatgono
+		
+			<choose>
+				<when test='startdate == "" and enddate == ""'></when>
+				
+				<otherwise>
+					where (( to_char(startdate,'YYYY-MM-DD') between #{startdate} and #{enddate} )
+					or  ( to_char(enddate,'YYYY-MM-DD') between #{startdate} and #{enddate} ) )					
+				
+					<!-- 검색타입과 검색어가 없는 경우 -->
+					<if test='pagination.searchType == "" and pagination.searchWord == ""'></if>
+					
+					<!-- 검색 타입은 있고 검색어가 없는 경우 -->
+					<if test='pagination.searchType != "" and pagination.searchWord == ""'>
+						and R.fk_lgcatgono = #{pagination.searchType}
+					</if>
+					
+					<!--  검색 타입은 없고 검색어가 있는 경우 -->
+					<if test='pagination.searchType == "" and pagination.searchWord != ""'>
+						and (lower(realuser) like '%'||lower(#{pagination.searchWord})||'%'  or lower(name) like '%'||lower(#{pagination.searchWord})||'%')
+					</if>
+					
+					<!-- 검색 타입과 검색어가 모두 있는 경우 -->
+					<if test='pagination.searchType != "" and pagination.searchWord != ""'>
+						and R.fk_lgcatgono = #{pagination.searchType}
+						and (lower(realuser) like '%'||lower(#{pagination.searchWord})||'%' or lower(name) like '%'||lower(#{pagination.searchWord})||'%')
+					</if>
+				
+				</otherwise>	
+			</choose>
+		)
+		where rno between #{pagination.startRno} and #{pagination.endRno}
+	</select>
+		
+		
+	<!-- 관리자 예약 내역 확인에서 예약 상태 가져오기 -->
+	<select id="statusButton" resultType="com.spring.app.domain.ReservationVO">
+		select reservationno, status, confirm, to_char(startdate, 'yyyymmddhh24mi') as startdate, to_char(enddate, 'yyyymmddhh24mi') as enddate
+		from tbl_reservation
+	</select>
+		
+		
+	<!-- 자원 예약 승인 메소드 -->	
+	<update id="reservConfirm" parameterType="HashMap">
+	 	UPDATE tbl_reservation SET confirm=1 WHERE reservationno = #{reservationno}
+	</update>		
+		
+	
+	<!-- 자원 예약 취소 메소드 -->
+	<update id="reservCancle" parameterType="HashMap">
+		UPDATE tbl_reservation SET status = 1 WHERE reservationno = #{reservationno}
+	</update>	
+		
+	
+	<!-- 자원 반납 메소드 -->	
+	<update id="reservReturn" parameterType="HashMap">
+		UPDATE tbl_reservation SET status = 2, return_time = sysdate, enddate = to_date(#{enddate}, 'yyyymmddhh24miss') WHERE reservationno = #{reservationno}
+	</update>
+		
+		
+	<!-- 예약 내역 상세보기 -->
+	<resultMap type="HashMap" id="viewReservationMap">
+		<result property="reservationno" 	column="reservationno" 	javaType="String" />
+		<result property="startdate" 		column="startdate" 		javaType="String" />
+		<result property="enddate" 			column="enddate" 		javaType="String" />
+		<result property="smcatgoname" 		column="smcatgoname" 	javaType="String" />
+		<result property="lgcatgoname" 		column="lgcatgoname" 	javaType="String" />
+		<result property="realuser" 		column="realuser" 		javaType="String" />
+		<result property="employee_id" 			column="employee_id" 			javaType="String" />
+		<result property="email" 			column="email" 	javaType="String" />
+		<result property="name" 			column="name" 			javaType="String" />
+		<result property="status" 			column="status" 		javaType="String" />
+		<result property="confirm" 			column="confirm" 		javaType="String" />
+	</resultMap>
+	<select id="viewReservation" parameterType="HashMap" resultMap="viewReservationMap">
+		select reservationno, to_char(startdate,'YYYY-MM-DD hh24:mi') as startdate, to_char(enddate,'YYYY-MM-DD hh24:mi') as enddate,
+		       C.smcatgoname, L.lgcatgoname, 
+		       nvl(R.realuser, '없음') as realuser, 
+		       E.employee_id, E.email, E.name, R.status, R.confirm
+		from tbl_reservation R
+		join tbl_employees E
+		ON  R.fk_employee_id = E.employee_id
+		join tbl_reservation_small_category C
+		ON R.fk_smcatgono = C.smcatgono
+		join tbl_reservation_large_category L
+		ON C.fk_lgcatgono = L.lgcatgono
+		where R.reservationno = #{reservationno}
+	</select>	
+	
+	
+	
+	<!-- 이용자 예약 내역 전체 개수 구하기 -->	
+	<select id="getResrvSearchCnt" parameterType="HashMap" resultType="int">
+	
+		select count(*)
+		from 
+		(
+		    select row_number() over(order by reservationno desc) as rno,
+		           R.reservationno, to_char(startdate, 'yyyymmddhh24') as startdate, to_char(enddate, 'yyyymmddhh24') as enddate, 
+		           R.realuser, R.fk_smcatgono, R.fk_lgcatgono, 
+		           to_char(reservdate, 'yyyymmddhh24') as reservdate, 
+		           R.confirm,  R.status, R.return_time,
+		           E.name, R.fk_employee_id, E.fk_department_id
+		    from tbl_reservation R
+		    join tbl_employees E
+		    ON  R.fk_employee_id = E.employee_id
+			where (R.fk_employee_id = #{employee_id} or lower(R.realuser) like '%'||lower(#{email})||'%')
+					
+				<if test='startdate != "" and enddate != ""'>
+					and  ((to_char(startdate,'YYYY-MM-DD') between #{startdate} and #{enddate} )
+							or  ( to_char(enddate,'YYYY-MM-DD') between #{startdate} and #{enddate} ))
+							
+					<!-- 검색타입과 검색어가 없는 경우 -->
+					<if test='pagination.searchType == "" and pagination.searchWord == ""'>
+					</if>
+					
+					<!-- 검색 타입은 있고 검색어가 없는 경우 -->
+					<if test='pagination.searchType != "" and pagination.searchWord == ""'>
+						   and R.fk_lgcatgono = #{pagination.searchType}
+					</if>
+					
+					<!--  검색 타입은 없고 검색어가 있는 경우 -->
+					<if test='pagination.searchType == "" and pagination.searchWord != ""'>
+						  and lower(realuser) like '%'||lower(#{pagination.searchWord})||'%'  or lower(name) like '%'||lower(#{pagination.searchWord})||'%'
+					</if>
+					
+					<!-- 검색 타입과 검색어가 모두 있는 경우 -->
+					<if test='pagination.searchType != "" and pagination.searchWord != ""'>
+						  and R.fk_lgcatgono = #{pagination.searchType}
+						  and (lower(realuser) like '%'||lower(#{pagination.searchWord})||'%' or lower(name) like '%'||lower(#{pagination.searchWord})||'%')
+					</if>
+				
+				</if>	
+		)
+	</select>
+	
+	
+	
+	<!-- 한 페이지에 표시할 이용자 예약 내역 글 목록 -->
+	<resultMap type="HashMap" id="getResrvMap">
+		<result property="reservationno" 	column="reservationno" 	javaType="String" />
+		<result property="startdate" 		column="startdate" 		javaType="String" />
+		<result property="enddate" 			column="enddate" 		javaType="String" />
+		<result property="realuser" 		column="realuser" 		javaType="String" />
+		<result property="fk_smcatgono" 	column="fk_smcatgono" 	javaType="String" />
+		<result property="fk_lgcatgono" 	column="fk_lgcatgono" 	javaType="String" />
+		<result property="reservdate" 		column="reservdate" 	javaType="String" />
+		<result property="confirm" 			column="confirm" 		javaType="String" />
+		<result property="status" 			column="status" 		javaType="String" />
+		<result property="return_time" 		column="return_time" 	javaType="String" />
+		<result property="name" 			column="name" 			javaType="String" />
+		<result property="fk_employee_id" 		column="fk_employee_id" 		javaType="String" />
+		<result property="fk_department_id" 		column="fk_department_id" 	javaType="String" />
+		<result property="smcatgoname" 		column="smcatgoname" 	javaType="String" />
+		<result property="startdate_view" 	column="startdate_view" javaType="String" />
+		<result property="enddate_view" 	column="enddate_view" 	javaType="String" />
+	</resultMap>
+	<select id="getResrvList" parameterType="HashMap" resultMap="getResrvMap">
+		select reservationno, startdate, enddate, realuser, fk_smcatgono, fk_lgcatgono, reservdate, confirm, status, return_time,
+		       name, fk_employee_id, fk_department_id, smcatgoname, startdate_view, enddate_view
+		from 
+		(
+		    select row_number() over(order by reservationno desc) as rno,
+			reservationno, 
+			to_char(startdate, 'yyyymmddhh24') as startdate, to_char(enddate, 'yyyymmddhh24') as enddate, 
+			to_char(startdate, 'yyyy-mm-dd hh24:mi') as startdate_view, to_char(enddate, 'yyyy-mm-dd hh24:mi') as enddate_view,
+			realuser, R.fk_smcatgono, R.fk_lgcatgono, smcatgoname,
+			to_char(reservdate, 'yyyymmddhh24') as reservdate, 
+			confirm,  R.status, return_time,
+			E.name, R.fk_employee_id, fk_department_id
+		    from tbl_reservation R
+		    join tbl_employees E
+		    ON  R.fk_employee_id = E.employee_id
+		    join tbl_reservation_small_category C
+		    ON R.fk_smcatgono = C.smcatgono
+			where (R.fk_employee_id = #{employee_id} or lower(R.realuser) like '%'||lower(#{email})||'%')
+				
+			<if test='startdate != "" and enddate != ""'>
+				and  ((to_char(startdate,'YYYY-MM-DD') between #{startdate} and #{enddate} )
+						or  ( to_char(enddate,'YYYY-MM-DD') between #{startdate} and #{enddate} ))
+						
+				<!-- 검색타입과 검색어가 없는 경우 -->
+				<if test='pagination.searchType == "" and pagination.searchWord == ""'>
+				</if>
+				
+				<!-- 검색 타입은 있고 검색어가 없는 경우 -->
+				<if test='pagination.searchType != "" and pagination.searchWord == ""'>
+					   and R.fk_lgcatgono = #{pagination.searchType}
+				</if>
+				
+				<!--  검색 타입은 없고 검색어가 있는 경우 -->
+				<if test='pagination.searchType == "" and pagination.searchWord != ""'>
+					  and lower(realuser) like '%'||lower(#{pagination.searchWord})||'%'  or lower(name) like '%'||lower(#{pagination.searchWord})||'%'
+				</if>
+				
+				<!-- 검색 타입과 검색어가 모두 있는 경우 -->
+				<if test='pagination.searchType != "" and pagination.searchWord != ""'>
+					  and R.fk_lgcatgono = #{pagination.searchType}
+					  and (lower(realuser) like '%'||lower(#{pagination.searchWord})||'%' or lower(name) like '%'||lower(#{pagination.searchWord})||'%')
+				</if>
+			
+			</if>	
+		)
+		where rno between #{pagination.startRno} and #{pagination.endRno}
+	</select>
+	
+	
+	<!-- 자원 목록 -->
+	<resultMap type="HashMap" id="resourceMap">
+		<result property="smcatgono" 	column="smcatgono" 		javaType="String" />
+		<result property="smcatgoname" 	column="smcatgoname"	javaType="String" />
+		<result property="sc_status" 	column="sc_status" 		javaType="String" />
+		<result property="fk_employee_id" 	column="fk_employee_id" 		javaType="String" />
+		<result property="lgcatgono" 	column="lgcatgono" 		javaType="String" />
+		<result property="lgcatgoname" 	column="lgcatgoname" 	javaType="String" />
+	</resultMap>
+	<select id="managementResource" resultMap="resourceMap">
+		select smcatgono, smcatgoname, sc_status, C.fk_employee_id, L.lgcatgono, lgcatgoname
+		from tbl_reservation_small_category C 
+		JOIN tbl_reservation_large_category L
+		ON C.fk_lgcatgono = L.lgcatgono
+		order by L.lgcatgono, C.smcatgono
+	</select>
+	
+	
+	<!-- 자원명 수정 메소드 -->
+	<update id="editSmcatgoname" parameterType="HashMap">
+		UPDATE tbl_reservation_small_category SET smcatgoname = #{smcatgoname}, fk_employee_id = #{fk_employee_id} WHERE smcatgono = #{smcatgono}
+	</update>
+	
+	
+	<!-- 자원 추가 메소드 -->
+	<insert id="addSmcatgo" parameterType="HashMap">
+		insert into tbl_reservation_small_category(smcatgono, fk_lgcatgono, smcatgoname, fk_employee_id, sc_status)
+		values(seq_r_smcatgono.nextval, #{fk_lgcatgono}, #{smcatgoname}, #{fk_employee_id}, 1)
+	</insert>
+	
+	
+	<!-- 자원 상태 변경 메소드 -->
+	<update id="changeStatus" parameterType="HashMap">
+		<!-- 이용 가능 상태에서 이용 불가로 변경 -->
+		<if test="sc_status == 1">
+			UPDATE tbl_reservation_small_category SET fk_employee_id = #{employee_id}, sc_status = 0 WHERE smcatgono = #{smcatgono}
+		</if>
+	
+		<!-- 이용 불가 상태에서 이용 가능으로 변경 -->
+		<if test="sc_status == 0">
+			UPDATE tbl_reservation_small_category SET fk_employee_id = #{employee_id}, sc_status = 1 WHERE smcatgono = #{smcatgono}
+		</if>
+	</update>
+	
+	
+	<!-- 버튼 클릭 시 자원 항목 리스트 변경 메소드 -->
+	<resultMap type="HashMap" id="resourceFilterMap">
+		<result property="smcatgono" 	column="smcatgono" 		javaType="String" />
+		<result property="smcatgoname" 	column="smcatgoname"	javaType="String" />
+		<result property="sc_status" 	column="sc_status" 		javaType="String" />
+		<result property="fk_employee_id" 	column="fk_employee_id" 		javaType="String" />
+		<result property="lgcatgono" 	column="lgcatgono" 		javaType="String" />
+		<result property="lgcatgoname" 	column="lgcatgoname" 	javaType="String" />
+	</resultMap>
+	<select id="resourceFilter" parameterType="HashMap" resultMap="resourceFilterMap">
+		select smcatgono, smcatgoname, sc_status, C.fk_employee_id, lgcatgono, lgcatgoname
+		from tbl_reservation_small_category C 
+		JOIN tbl_reservation_large_category L
+		ON C.fk_lgcatgono = L.lgcatgono
+		<if test='fk_lgcatgono != 999'>
+			where L.lgcatgono = #{fk_lgcatgono}
+		</if>
+        
+		order by lgcatgono, smcatgono
+	</select>
+	
+	
+	<!-- 예약 안내 페이지 수정 -->
+	<select id="editResourceContent" parameterType="HashMap" resultType="com.spring.app.domain.ReservLargeCategoryVO">
+		select lgcatgono, lgcatgoname, lgcategcontent, fk_employee_id
+		from tbl_reservation_large_category
+		where lgcatgono = #{lgcatgono}
+	</select>
+	
+	
+	<!-- 자원 안내 수정 최종 -->
+	<update id="endEditResourceContent" parameterType="HashMap">
+		UPDATE tbl_reservation_large_category 
+		SET fk_employee_id = #{employee_id}, lgcategcontent = #{lgcategcontent}
+		WHERE lgcatgono = #{lgcatgono}
+	</update>
+	
+	
+	<!-- 자원 안내 내용 보여주기 -->
+	<select id="mainLgcategContent" parameterType="String" resultType="com.spring.app.domain.ReservLargeCategoryVO">
+		select lgcatgono, lgcatgoname, lgcategcontent, fk_employee_id
+		from tbl_reservation_large_category
+		where lgcatgono = #{lgcatgono}
+	</select>
+	
+	
+	
+	<!-- 자원예약 승인한,취소한 회원 정보 가져오기  -->
+	<resultMap type="HashMap" id="reservConfirmSelect_Map">
+		<result property="name" 		column="name" 			javaType="String" />
+		<result property="phone" 		column="phone"			javaType="String" />
+		<result property="smcatgoname" 	column="smcatgoname" 	javaType="String" />
+		<result property="startdate" 	column="startdate" 		javaType="String" />
+		<result property="enddate" 		column="enddate" 		javaType="String" />
+		
+	</resultMap>
+	<select id="reservConfirmSelect" parameterType="HashMap" resultMap="reservConfirmSelect_Map">
+		select E.name, E.phone, S.smcatgoname, TO_CHAR(R.STARTDATE,'YYYY-MM-DD') AS startdate, TO_CHAR(R.ENDDATE,'YYYY-MM-DD') AS enddate
+			from  tbl_reservation R
+			JOIN  tbl_employees E
+			ON R.fk_employee_id = E.employee_id
+			JOIN tbl_reservation_small_category S
+			ON R.FK_SMCATGONO = S.SMCATGONO
+		where R.reservationno = #{reservationno}
+	</select>
+	
+	
+	<!--  관리자 일때 승인 취소로 바꿔주기 -->
+	<update id="adminreservCancle" parameterType="HashMap">
+		update tbl_reservation set confirm = 2
+		where reservationno = #{reservationno}
+	
+	</update>
+	
+	
+	
+	
+</mapper>
+
+
+

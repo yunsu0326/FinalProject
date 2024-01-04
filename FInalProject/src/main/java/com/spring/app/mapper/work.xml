@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="work">
+
+	<!-- 특정 사원의 근무내역 가져오기 -->
+	<select id="my_workList" parameterType="String" resultType="com.spring.app.domain.WorkVO">
+		select fk_employee_id, work_date, work_start_time, work_end_time,
+		       LPAD(FLOOR((to_date(work_end_time, 'hh24:mi:ss') - to_date(work_start_time, 'hh24:mi:ss')) * 24), 2, '0') || ':'
+		    || LPAD(FLOOR(MOD((to_date(work_end_time, 'hh24:mi:ss') - to_date(work_start_time, 'hh24:mi:ss')) * 24 * 60, 60)), 2, '0') || ':'
+		    || LPAD(FLOOR(MOD((to_date(work_end_time, 'hh24:mi:ss') - to_date(work_start_time, 'hh24:mi:ss')) * 24 * 60 * 60, 60)), 2, '0') AS timeDiff
+		from tbl_work
+		where fk_employee_id = #{employee_id}
+		order by work_date asc
+	</select>
+	
+	<select id="workList" parameterType="HashMap" resultType="com.spring.app.domain.WorkVO">
+		SELECT rownum AS RNO, fk_employee_id
+		     , work_date
+		     , work_start_time
+		     , nvl(work_end_time, '-') AS work_end_time
+		     , NVL(trunc((((to_date(work_end_time, 'hh24:mi:ss') - to_date(work_start_time, 'hh24:mi:ss'))*24)*60)/60), 0)|| '시간 ' ||  
+		       NVL(round(mod((((to_date(work_end_time, 'hh24:mi:ss') - to_date(work_start_time, 'hh24:mi:ss'))*24)*60), 60)), 0) || '분' as timeDiff
+		FROM
+		(
+		    select *
+		    from tbl_work
+		    where fk_employee_id = #{fk_employee_id}
+		    and work_date between( select TRUNC(to_date(#{thisMonthVal}, 'yyyy-mm'), 'iw') from dual ) and (select next_day((last_day(to_date(#{thisMonthVal}, 'yyyy-mm'))),'금') from dual )
+		    order by work_date
+		)V
+	</select>
+	
+	<!-- 출근 버튼 클릭시 근무테이블에 insert 하기 -->
+	<insert id="goToWorkInsert" parameterType="HashMap">
+		insert into tbl_work(fk_employee_id, work_date, work_start_time)
+		values(#{fk_employee_id}, #{work_date}, #{work_start_time})
+	</insert>
+	
+	<!-- 특정 사원의 출근시간 가져오기 -->
+	<select id="todayStartTime" parameterType="HashMap" resultType="String">
+		select work_start_time
+		from tbl_work
+		where fk_employee_id = #{fk_employee_id}
+		and work_date = #{work_date}
+	</select>
+	
+	<!-- 퇴근 버튼 클릭시 근무테이블에 update 하기 -->
+	<update id="goToWorkUpdate" parameterType="HashMap">
+		update tbl_work
+		set work_end_time = #{work_end_time}
+		where fk_employee_id = #{fk_employee_id}
+		AND work_start_time = #{todayStartTime}
+		AND work_date = #{work_date}
+	</update>
+	
+	<!-- 사용자가 신청한 근무를 근무신청테이블에 insert -->
+	<insert id="workRequestInsert" parameterType="HashMap">
+		insert into tbl_work_request(fk_employee_id, work_request_seq, work_request_type, work_request_start_date, work_request_start_time, work_request_end_time, work_request_place, work_request_reason, work_request_date)
+		values(#{employee_id}, work_request_seq_seq.nextval, #{workSelectVal}, TO_DATE(#{workDate}, 'yyyy-mm-dd'), TO_DATE(#{requestStartTime}, 'HH24:MI'), TO_DATE(#{requestEndTime}, 'HH24:MI'), #{work_place}, #{work_reason}, sysdate)
+	</insert>
+	
+	<!-- 특정 사용자가 신청한 근무신청 가져오기 -->
+	<select id="workRequestList" parameterType="String" resultType="com.spring.app.domain.Work_requestVO">
+		select fk_employee_id
+			 , work_request_seq
+			 , work_request_type
+			 , TO_CHAR(work_request_start_date, 'yyyy-mm-dd') AS work_request_start_date
+			 , TO_CHAR(work_request_start_time, 'hh24:mi:ss') AS work_request_start_time
+			 , TO_CHAR(work_request_end_time, 'hh24:mi:ss') AS work_request_end_time
+			 , NVL(work_request_place, '-') AS work_request_place
+			 , NVL(work_request_reason, '-') AS work_request_reason
+			 , TO_CHAR(work_request_date, 'yyyy-mm-dd') AS work_request_date
+		from tbl_work_request
+		where fk_employee_id = #{employee_id}
+		order by work_request_start_date
+	</select>
+	
+	<!-- 특정 근무신청 삭제하기 -->
+	<delete id="work_request_delete" parameterType="String">
+		delete from tbl_work_request
+		where work_request_seq = ${work_request_seq}
+	</delete>
+	
+	
+	<!--  -->
+	<resultMap type="HashMap" id="myDeptEmp_Map">
+		<result property="name" 		column="name" 	  		javaType="String" />
+		<result property="job_name" 	column="job_name" 		javaType="String" />
+		<result property="employee_id" 	column="employee_id" 	javaType="String" />
+	</resultMap>
+	<select id="myDeptEmp" parameterType="String" resultMap="myDeptEmp_Map">
+		select name, job_name, employee_id
+		from tbl_employees E
+		JOIN tbl_jobs J
+		ON E.fk_job_id = J.job_id
+		where E.fk_department_id = #{fk_department_id}
+	</select>
+
+</mapper>

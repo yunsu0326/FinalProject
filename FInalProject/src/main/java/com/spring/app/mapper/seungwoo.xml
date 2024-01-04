@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ==== #29. mapper 기본설정 ==== -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
+<mapper namespace="seungwoo">
+
+	
+	<!-- ================================================ -->
+	<!-- === #39. 시작페이지에서 메인 이미지를 보여주는 것 === -->
+	<select id="getImgfilenameList" resultType="String">
+	   select imgbgfilename
+       from TBL_MAIN_IMAGE
+	</select>
+	
+	<select id="getwelcome_mailList" resultType="com.spring.app.seungwoo.domain.WeclomemailVO">
+	   select mail_seq, mail_name, mail_department, mail_email, mail_phonenumber, mail_senddate
+	   from tbl_welcome_mail
+	   order by mail_seq desc
+	</select>
+	
+	<resultMap type="HashMap" id="unready_member_map">
+	    <result property="employee_id" column="employee_id" javaType="String" />
+	    <result property="name" column="name" javaType="String" />
+	    <result property="email" column="email" javaType="String" />
+	    <result property="phone" column="phone" javaType="String" />
+	    <result property="job_name" column="job_name" javaType="String" />
+	    <result property="gradelevel" column="gradelevel" javaType="String" />
+		<result property="hire_date" column="hire_date" javaType="String" />
+	</resultMap>
+	<select id="unready_member" resultMap="unready_member_map">
+         select E.employee_id , E.name , E.email , E.phone , J.job_name , J.gradelevel , to_char(E.hire_date, 'yyyy-mm-dd') as hire_date   
+		 from tbl_employees E
+		 join tbl_jobs J
+		 on E.fk_job_id = J.job_id
+		 where register_status = 0
+         and E.employee_id != 7777
+         order by hire_date desc
+	</select>
+	
+	
+
+	
+	<select id="getdepartmentList" resultType="com.spring.app.domain.DepartmentVO">
+	    select department_id, department_name, manager_id 
+ 		from tbl_department
+	</select>
+	
+	<select id="searchteam" resultType="com.spring.app.domain.TeamVO" parameterType="String">
+		select team_id, team_name, t_manager_id, fk_department_id
+		from tbl_team
+		where nvl(fk_department_id,0) = #{deptno}
+	</select>
+	
+	<select id="email_uq" resultType="com.spring.app.domain.EmployeesVO" parameterType="String">
+		select email
+		from tbl_employees
+		where email = #{uq_email}							
+	</select>
+	
+	<select id="emptyjob" resultType="com.spring.app.domain.EmployeesVO" parameterType="String">
+		SELECT employee_id
+		FROM tbl_employees
+		WHERE fk_job_id = #{jobno}
+		AND GRADELEVEL IN (3, 5, 10)							
+	</select>
+	
+	<select id="searchseq" resultType="String">
+		select empseq.nextval AS seq 
+		from dual					
+	</select>
+	
+	
+	<select id="searchjob" resultType="com.spring.app.domain.JobsVO" parameterType="String">
+		select job_id, fk_department_id, job_name, basic_salary, min_salary, max_salary, gradelevel, fk_team_id
+		from tbl_jobs
+		where fk_team_id = #{teamno}
+	</select>
+
+
+
+
+	<resultMap type="HashMap" id="selectinfo_map">
+	    <result property="job_id" column="job_id" javaType="String" />
+	    <result property="fk_department_id" column="fk_department_id" javaType="String" />
+	    <result property="job_name" column="job_name" javaType="String" />
+	    <result property="gradelevel" column="gradelevel" javaType="String" />
+	    <result property="team_id" column="team_id" javaType="String" />
+	    <result property="team_name" column="team_name" javaType="String" />
+	    <result property="t_manager_id" column="t_manager_id" javaType="String" />
+	    <result property="basic_salary" column="basic_salary" javaType="String" />
+	    <result property="department_name" column="department_name" javaType="String" />
+	    <result property="manager_id" column="manager_id" javaType="String" />
+	</resultMap>
+	<select id="selectinfo" resultMap="selectinfo_map" parameterType="HashMap">
+	    SELECT V.job_id, V.fk_department_id, V.job_name, V.gradelevel, V.team_id, V.team_name, V.t_manager_id, 
+	    	   V.basic_salary, D.department_name, D.manager_id
+	    FROM 
+	    (
+	    SELECT J.job_id, J.fk_department_id, J.job_name, J.gradelevel, T.team_id, T.team_name, T.t_manager_id,
+	           NVL(J.basic_salary, 9999) AS basic_salary
+	    FROM 
+	    tbl_jobs J
+	    JOIN
+	    tbl_team T ON J.fk_team_id = T.team_id
+	    WHERE J.job_id = #{job_id} AND T.team_id = #{team_id}
+	    ) V
+	    JOIN
+	    tbl_department D ON V.fk_department_id = D.department_id
+	</select>
+	
+	
+	
+	<insert id="insertinfo" parameterType="com.spring.app.domain.EmployeesVO">
+	<if test="gradelevel == 1">    
+	    insert into tbl_employees(employee_id, name, pwd, email, phone, salary, fk_department_id, fk_team_id, manager_id, t_manager_id, fk_job_id, gradelevel) 
+	    values(#{employee_id}, #{name}, #{phone}, #{email}, #{phone},  #{salary}, #{fk_department_id}, #{fk_team_id}, #{manager_id}, #{t_manager_id}, #{fk_job_id}, #{gradelevel})
+	</if>
+	<if test="gradelevel == 3">    
+	    insert into tbl_employees(employee_id, name, pwd, email, phone, salary, fk_department_id, fk_team_id, manager_id, t_manager_id, fk_job_id, gradelevel) 
+	    values(#{employee_id}, #{name}, #{phone}, #{email}, #{phone},  #{salary}, #{fk_department_id}, #{fk_team_id}, #{manager_id}, #{employee_id}, #{fk_job_id}, #{gradelevel})
+	</if>
+	<if test="gradelevel == 5">    
+	    insert into tbl_employees(employee_id, name, pwd, email, phone, salary, fk_department_id, fk_team_id, manager_id, t_manager_id, fk_job_id, gradelevel) 
+	    values(#{employee_id}, #{name}, #{phone}, #{email}, #{phone},  #{salary}, #{fk_department_id}, #{fk_team_id}, #{employee_id}, #{t_manager_id}, #{fk_job_id}, #{gradelevel})
+	</if>
+	<if test="gradelevel == 10">    
+	    insert into tbl_employees(employee_id, name, pwd, email, phone, salary, fk_department_id, fk_team_id, manager_id, t_manager_id, fk_job_id, gradelevel) 
+	    values(#{employee_id}, #{name}, #{phone}, #{email}, #{phone},  #{salary}, #{fk_department_id}, #{fk_team_id}, #{manager_id}, #{t_manager_id}, #{fk_job_id}, #{gradelevel})
+	</if>
+	
+	</insert>
+
+<!-- 	<insert id="insertinfo" parameterType="com.spring.app.domain.EmployeesVO">
+	    insert into tbl_employees(employee_id, name, pwd, email, phone, salary, fk_department_id, fk_team_id, manager_id, t_manager_id, fk_job_id, gradelevel) 
+	    values(empseq.nextval, #{name}, '1234', #{email}, #{phone},  #{salary}, #{fk_department_id}, #{fk_team_id}, #{manager_id}, #{t_manager_id}, #{fk_job_id}, #{gradelevel})
+	</insert>
+	 -->
+	
+	<update id="t_m_update" parameterType="HashMap"> 
+		<if test="gradelevel == 3">     
+		    update tbl_team 
+		    set t_manager_id = #{seq}
+		    where team_id = #{team_id}
+		</if>
+		<if test="gradelevel == 5">     
+			update tbl_department
+			set manager_id = #{seq}
+			where department_id = #{dept_id}
+		</if>
+	</update>
+	
+	<update id="emp_t_m_update" parameterType="HashMap"> 
+		<if test="gradelevel == 3">     
+            update tbl_employees
+			set t_manager_id = #{seq}
+			where fk_team_id = #{team_id}
+		</if>
+		<if test="gradelevel == 5">     
+			update tbl_employees
+			set manager_id = #{seq}
+			where fk_department_id = #{dept_id}
+		</if>
+	</update>
+	
+	<update id="dept_team_update" parameterType="HashMap"> 
+		<if test="gradelevel == 3">     
+		    update tbl_team 
+		    set t_manager_id = 7777
+		    where t_manager_id = #{empid}
+		</if>
+		<if test="gradelevel == 5">     
+			update tbl_department
+			set manager_id = 7777
+			where manager_id = #{empid}
+		</if>
+	</update>
+	
+	<update id="emp_dept_team" parameterType="String"> 
+		<if test="gradelevel == 3">     
+            update tbl_employees
+			set t_manager_id = 7777
+			where t_manager_id = #{empid}
+		</if>
+		<if test="gradelevel == 5">     
+			update tbl_employees
+			set manager_id = 7777
+			where manager_id = #{empid}
+		</if>
+	</update>
+
+	<delete id="last_unreadydel" parameterType="HashMap">
+		delete from tbl_employees
+		<if test="empid_arr != null">
+	     WHERE employee_id IN
+	        <foreach collection="empid_arr" index="i" open="(" separator="," close=")">
+	            '${empid_arr[i]}'
+	        </foreach>
+	    </if>		
+	</delete>
+	
+
+</mapper>

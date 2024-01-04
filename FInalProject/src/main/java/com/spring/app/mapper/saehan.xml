@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="saehan">
+	
+	<!-- 총 게시물 건수(totalCount) 구하기 - 검색이 있을 때와 검색이 없을때 로 나뉜다. -->
+	<select id="getTotalCount" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_freeboard
+		where status = 1 
+		<choose>
+			<when test='searchType == "subject" and searchWord != ""'>
+		    and lower(subject) like '%'||lower(#{searchWord})||'%'
+		    </when>
+		   
+		    <when test='searchType == "content" and searchWord != ""'>
+		    and lower(content) like '%'||lower(#{searchWord})||'%'
+		    </when>
+		   
+		    <when test='searchType == "subject_content" and searchWord != ""'>
+		    and (lower(subject) like '%'||lower(#{searchWord})||'%' OR lower(content) like '%'||lower(#{searchWord})||'%') 
+		    </when>
+		   
+		    <when test='searchType == "name" and searchWord != ""'>
+		    and lower(name) like '%'||lower(#{searchWord})||'%'
+		    </when>	   
+			<otherwise></otherwise>
+		</choose>
+	</select>
+	
+	
+	<!-- 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한 것) -->
+	<select id="boardListSearch_withPaging" parameterType="HashMap" resultType="com.spring.app.domain.BoardVO"> 
+		SELECT seq, fk_email, name, subject, readCount, regDate, commentCount
+       , groupno, fk_seq, depthno, fileName
+			FROM 
+			(
+			    SELECT rownum AS RNO
+			         , seq
+			         , fk_email, name, subject, readCount, regDate, commentCount
+			         , groupno, fk_seq, depthno 
+			         , fileName
+			    FROM 
+			    (
+			        SELECT seq, fk_email, name, subject
+			             , readCount, to_char(regDate, 'yyyy-mm-dd hh24:mi:ss') AS regDate 
+			             , commentCount
+			             , groupno, fk_seq, depthno
+			             , fileName 
+			         FROM tbl_freeboard
+			         WHERE status = 1
+		     <choose>
+			    <when test='searchType == "subject" and searchWord != ""'>
+			       and lower(subject) like '%'||lower(#{searchWord})||'%' 
+			    </when>
+			    <when test='searchType == "content" and searchWord != ""'>
+			       and lower(content) like '%'||lower(#{searchWord})||'%' 
+			    </when>
+			    <when test='searchType == "subject_content" and searchWord != ""'>
+			       and (lower(subject) like '%'||lower(#{searchWord})||'%' or lower(content) like '%'||lower(#{searchWord})||'%')  
+			    </when>
+			    <when test='searchType == "name" and searchWord != ""'>
+			       and lower(name) like '%'||lower(#{searchWord})||'%' 
+			    </when>
+			    <otherwise>
+			    </otherwise>
+			 </choose>
+		    START WITH fk_seq = 0 
+         	CONNECT BY PRIOR seq = fk_seq 
+         	ORDER SIBLINGS BY groupno DESC, seq ASC
+    		) V 
+		) T
+			WHERE RNO BETWEEN #{startRno} AND #{endRno}
+	</select>
+	
+	<!-- 검색어 입력시 자동글 완성하기 -->
+	<select id="wordSearchShow" parameterType="HashMap" resultType="String"> 
+	    <choose>
+			<when test='searchType == "subject"'>
+		    	select subject
+		    </when>
+		    <otherwise>
+		    	select distinct name 
+		    </otherwise>
+		</choose> 
+	    from tbl_freeboard
+	    where status = 1 
+	    <choose>
+		   <when test='searchType == "subject" and searchWord != ""'>
+		       and lower(subject) like '%'||lower(#{searchWord})||'%' 
+		   </when>
+		   <otherwise>
+		       and lower(name) like '%'||lower(#{searchWord})||'%'
+		   </otherwise>
+		</choose>
+		
+		<choose>
+			<when test='searchType == "subject"'>
+		    	order by seq desc
+		    </when>
+		    <otherwise>
+		    	order by name asc 
+		   </otherwise>
+		</choose> 
+	</select>
+	
+	<!-- 답글쓰기에 필요한 값 가져오기 -->
+	<select id="getGroupnoMax" resultType="int">
+	    select nvl(max(groupno), 0)
+	    from tbl_freeboard
+	</select>
+	
+	<!-- 글쓰기(파일첨부가 없는 글쓰기) -->
+	<insert id="add" parameterType="com.spring.app.domain.BoardVO">
+		<!-- 원글쓰기인 경우 -->
+	    <if test='fk_seq.equals("")'>
+	    	insert into tbl_freeboard(seq, fk_email, name, subject, content, pw, readCount, regDate, status, groupno, fk_seq, depthno)
+	        values(freeboard_Seq.nextval, #{fk_email}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, #{groupno}, default, default) 
+	    </if>
+	    
+	    <!-- 답변글쓰기인 경우 -->
+	    <if test='!fk_seq.equals("")'>
+	        insert into tbl_freeboard(seq, fk_email, name, subject, content, pw, readCount, regDate, status, groupno, fk_seq, depthno)
+	        values(freeboard_Seq.nextval, #{fk_email}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, #{groupno}, #{fk_seq}, #{depthno}+1) 
+	    </if> 
+	</insert>
+	
+	<!-- 글쓰기(파일첨부가 있는 글쓰기) -->
+	<insert id="add_withFile" parameterType="com.spring.app.domain.BoardVO" >
+	    <!-- 원글쓰기인 경우 -->
+	    <if test='fk_seq.equals("")'>
+	    	insert into tbl_freeboard(seq, fk_email, name, subject, content, pw, readCount, regDate, status, groupno, fk_seq, depthno, fileName, orgFilename, fileSize)
+	        values(freeboard_Seq.nextval, #{fk_email}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, #{groupno}, default, default, #{fileName}, #{orgFilename}, #{fileSize}) 
+	    </if>
+	    <!--  답변글쓰기인 경우  -->
+        <if test='!fk_seq.equals("")'> 
+        	insert into tbl_freeboard(seq, fk_email, name, subject, content, pw, readCount, regDate, status, groupno, fk_seq, depthno, fileName, orgFilename, fileSize) 
+        	values(freeboard_Seq.nextval, #{fk_email}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, #{groupno}, #{fk_seq}, #{depthno}+1, #{fileName}, #{orgFilename}, #{fileSize}) 
+        </if>
+	</insert>
+	
+		<!-- 글 조회수 증가는 없고 단순히 글 1개만 조회를 해주는 것 -->
+		<select id="getView" parameterType="HashMap" resultType="com.spring.app.domain.BoardVO">
+	    SELECT
+	        previousseq, previoussubject, seq, fk_email, name,
+	        subject, content, readCount, regDate, pw,
+	        nextseq, nextsubject, groupno, fk_seq, depthno,
+	        fileName, orgFilename, fileSize
+	    FROM
+	    (
+	        SELECT
+	            lag(seq, 1) over(order by RNO asc) AS previousseq,
+	            lag(subject, 1) over(order by RNO asc) AS previoussubject,
+	            seq, fk_email, name, subject,
+	            content, readCount, regDate, pw,
+	            lead(seq, 1) over(order by RNO asc) AS nextseq,
+	            lead(subject, 1) over(order by RNO asc) AS nextsubject,
+	            groupno, fk_seq, depthno,
+	            fileName, orgFilename, fileSize
+	        FROM
+	        (
+	            SELECT
+	                rownum AS RNO, seq, fk_email, name, subject,
+	                content, readCount, regDate, pw,
+	                groupno, fk_seq, depthno,
+	                fileName, orgFilename, fileSize
+	            FROM
+	            (
+	                SELECT
+	                    seq, fk_email, name, subject,
+	                    content, readCount,
+	                    to_char(regDate, 'yyyy-mm-dd hh24:mi:ss') AS regDate, pw,
+	                    groupno, fk_seq, depthno,
+	                    fileName, orgFilename, fileSize
+	                FROM tbl_freeboard
+	                WHERE status = 1
+	                <choose>
+	                    <when test="searchType == 'subject' and searchWord != ''">
+	                        AND lower(subject) LIKE '%'||lower(#{searchWord})||'%'
+	                    </when>
+	                    <when test="searchType == 'content' and searchWord != ''">
+	                        AND lower(content) LIKE '%'||lower(#{searchWord})||'%'
+	                    </when>
+	                    <when test="searchType == 'subject_content' and searchWord != ''">
+	                        AND (lower(subject) LIKE '%'||lower(#{searchWord})||'%' OR lower(content) LIKE '%'||lower(#{searchWord})||'%')
+	                    </when>
+	                    <when test="searchType == 'name' and searchWord != ''">
+	                        AND lower(name) LIKE '%'||lower(#{searchWord})||'%'
+	                    </when>
+	                    <otherwise>
+	                    </otherwise>
+	                </choose>
+	                START WITH fk_seq = 0 
+	                CONNECT BY PRIOR seq = fk_seq 
+	                ORDER SIBLINGS BY groupno DESC, seq ASC
+	            ) V
+	        ) T1
+	    ) T2
+	    WHERE T2.seq = #{seq}
+	</select>
+	
+
+	<!-- === 첨부파일 없는 1개글 수정하기 === -->
+	<update id="edit" parameterType="com.spring.app.domain.BoardVO">
+	    update tbl_freeboard set subject = #{subject}
+	                           , content = #{content}
+
+	    where seq = #{seq}
+	</update>
+	
+	<!-- === 자유게시판 수정할떄 첨부파일 삭제하기 === -->
+	<update id="delete_file" parameterType="com.spring.app.domain.BoardVO">
+	    update tbl_freeboard set filename = null
+	                           , orgFilename = null
+	                           , fileSize = null
+	    where seq = #{seq}
+	</update>
+	
+	<!-- === 첨부파일 있는 1개글 수정하기 === -->
+	<update id="edit_withFile" parameterType="com.spring.app.domain.BoardVO">
+	    update tbl_freeboard set subject = #{subject}
+	                           , content = #{content}
+	                           , filename = #{fileName}
+	                           , orgFilename = #{orgFilename}
+   							   , fileSize = #{fileSize}
+	    where seq = #{seq}
+	</update>
+	
+	
+	<!-- === 글조회수 1증가 하기 === -->
+	<update id="increase_readCount" parameterType="String">
+	    update tbl_freeboard set readCount = readCount + 1
+	    where seq = #{seq}
+	</update>
+	
+	<!-- === 1개글 삭제하기 === -->
+	<delete id="del" parameterType="HashMap">
+	    delete from tbl_freeboard
+	    where seq = #{seq}
+	</delete>
+
+	<!-- === 원글 글번호(parentSeq)에 해당하는 댓글의 totalPage 수 알아오기 === -->
+	<select id="getCommentTotalPage" parameterType="HashMap" resultType="int">
+		select ceil(count(*)/#{sizePerPage})
+		from tbl_free_comment
+		where parentseq = #{parentSeq}
+	</select> 
+	
+	<!-- === 원게시물에 딸린 댓글들을 페이징 처리해서 조회해오기 === -->
+	<select id="getCommentList_Paging" parameterType="HashMap" resultType="com.spring.app.domain.CommentVO"> 
+	<!-- 첨부파일이 있는 경우 -->
+		SELECT seq, name, content, regdate, fk_email
+			 , fileName, orgFilename, fileSize 
+		FROM 
+		(
+			select row_number() over(order by seq desc) AS rno
+				 , seq, name, content, to_char(regdate, 'yyyy-mm-dd hh24:mi:ss') AS regdate
+			     , nvl(fileName, ' ') AS fileName
+			     , nvl(orgFilename, ' ') AS orgFilename
+			     , nvl(to_char(fileSize), ' ') AS fileSize
+			     , fk_email as fk_email
+		from tbl_free_comment
+		where status = 1 and parentseq = #{parentSeq} 
+		) V
+		WHERE rno BETWEEN #{startRno} AND #{endRno}
+	</select>
+	
+	
+	<!-- === 댓글쓰기(tbl_comment 테이블에 insert) === -->
+	<insert id="addComment" parameterType="com.spring.app.domain.CommentVO">
+	     <!-- 첨부파일이 없는 경우 -->
+	     <if test="fileName == null">
+	     	insert into tbl_free_comment(seq, fk_email, name, content, regDate, parentSeq, status)
+	     	values(commentSeq.nextval, #{fk_email}, #{name}, #{content}, default, #{parentSeq}, default)
+	     </if>
+	     <!-- 첨부파일이 있는 경우 -->
+	     <if test="fileName != null">
+	     	insert into tbl_free_comment(seq,  fk_email, name, content, regDate, parentSeq, status, fileName, orgFileName, fileSize) 
+	     	values(commentSeq.nextval, #{fk_email}, #{name}, #{content}, default, #{parentSeq}, default, #{fileName}, #{orgFilename}, #{fileSize}) 
+	     </if> 
+	</insert>
+	
+	<!-- === tbl_freeboard 테이블에 commentCount 컬럼이 1증가(update) === -->
+	<update id="updateCommentCount" parameterType="String">
+	    update tbl_freeboard set commentCount = commentCount + 1
+	    where seq = #{parentSeq}
+	</update>
+	
+	
+	<!-- === 파일첨부가 되어진 댓글 1개에서 서버에 업로드되어진 파일명과 오리지널파일명을 조회해주는 것 === -->  
+	<select id="getCommentOne" parameterType="String" resultType="com.spring.app.domain.CommentVO">  
+	    select fileName, orgFilename
+	    from tbl_free_comment
+	    where seq = #{seq}
+	</select> 
+	
+	
+	<!-- === 원게시물에 딸린 댓글들을 조회해오기 === -->
+	<!-- 첨부파일이 없는 경우 -->
+	<select id="getCommentList" parameterType="String" resultType="com.spring.app.domain.CommentVO">
+		select seq,  fk_email, name, content, 
+		       to_char(regdate, 'yyyy-mm-dd hh24:mi:ss') AS regdate
+		from tbl_free_comment
+		where status = 1 and parentSeq = #{parentSeq}
+		order by seq desc
+	</select>
+	
+	<!-- 원래 적혀있던 댓글 내용 불러오기 -->
+	<select id="getComment_One" parameterType="HashMap" resultType="com.spring.app.domain.CommentVO">  
+	    select content
+	    from tbl_free_comment
+	    where seq = #{seq}
+	</select> 	
+
+	<!-- 파일첨부가 되어진 댓글 1개에서 서버에 업로드되어진 파일명과 오리지널파일명을 조회해주는 것   -->
+	<select id="getView_comment" parameterType="String" resultType="com.spring.app.domain.CommentVO">  
+	    select fileName, orgFilename, parentSeq
+	    from tbl_free_comment
+	    where seq = #{seq}
+	</select>
+
+	<!-- 댓글을 수정하기  -->
+	<update id="getupdate_review" parameterType="com.spring.app.domain.CommentVO">
+	    update tbl_free_comment set content = #{content}
+	    where seq = #{seq}
+	</update>
+
+	<!-- === 첨부파일이 있는 댓글삭제 하기 === -->
+	<delete id="del_comment" parameterType="HashMap">
+    	delete from tbl_free_comment
+    	where seq = #{seq}
+    </delete>
+	
+
+	<!-- === 첨부파일이 없는 댓글삭제 하기 === -->
+	<delete id="del_comment_nofile" parameterType="HashMap">
+	    delete from tbl_free_comment
+	    where seq = #{seq}
+    </delete>
+	
+	<!-- === tbl_freeboard 테이블에 commentCount 컬럼이 1 감소(update)  === -->
+	<update id="minusCommentCount" parameterType="String">
+	    update tbl_freeboard set commentcount = commentcount - 1
+	    where seq = #{parentSeq}
+	</update>
+	
+	<!-- 총 공지사항 게시물 건수(NoticeTotalCount) 구하기 - 검색이 있을 때와 검색이 없을때 로 나뉜다. -->
+	<select id="getNoticeTotalCount" parameterType="HashMap" resultType="int">
+		select count(*)
+		from tbl_noticeboard
+		where status = 1 
+		<choose>
+			<when test='searchType == "subject" and searchWord != ""'>
+		    and lower(subject) like '%'||lower(#{searchWord})||'%'
+		    </when>
+		   
+		    <when test='searchType == "content" and searchWord != ""'>
+		    and lower(content) like '%'||lower(#{searchWord})||'%'
+		    </when>
+		   
+		    <when test='searchType == "subject_content" and searchWord != ""'>
+		    and (lower(subject) like '%'||lower(#{searchWord})||'%' OR lower(content) like '%'||lower(#{searchWord})||'%') 
+		    </when>
+		   
+		    <when test='searchType == "name" and searchWord != ""'>
+		    and lower(name) like '%'||lower(#{searchWord})||'%'
+		    </when>	   
+			<otherwise></otherwise>
+		</choose>
+	</select>
+	
+	
+	<!-- 페이징 처리한 공지사항 목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한 것) -->
+	<select id="noticeListSearch_withPaging" parameterType="HashMap" resultType="com.spring.app.domain.NoticeboardVO"> 
+		WITH RankedNoticeboard AS (
+		    SELECT
+		        seq,fk_emp_id,name,subject,read_Count,
+		        to_char(reg_Date, 'yyyy-mm-dd hh24:mi:ss') AS reg_Date,file_Name,
+		     	ROWNUM AS RNO
+		    FROM
+		        tbl_noticeboard
+		    WHERE
+		        status = 1
+		    <choose>
+			    <when test='searchType == "subject" and searchWord != ""'>
+			       and lower(subject) like '%'||lower(#{searchWord})||'%' 
+			    </when>
+			    <when test='searchType == "content" and searchWord != ""'>
+			       and lower(content) like '%'||lower(#{searchWord})||'%' 
+			    </when>
+			    <when test='searchType == "subject_content" and searchWord != ""'>
+			       and (lower(subject) like '%'||lower(#{searchWord})||'%' or lower(content) like '%'||lower(#{searchWord})||'%')  
+			    </when>
+			    <when test='searchType == "name" and searchWord != ""'>
+			       and lower(name) like '%'||lower(#{searchWord})||'%' 
+			    </when>
+			    <otherwise>
+			    </otherwise>
+			 </choose>
+		    ORDER BY
+		        seq ASC
+		)
+		SELECT
+		    T.seq,T.fk_emp_id,T.name,T.subject,
+		    T.read_Count,T.reg_Date,T.file_Name,D.department_name
+		FROM
+		    RankedNoticeboard T
+		LEFT JOIN
+		    tbl_EMPLOYEES E ON T.fk_emp_id = E.EMPLOYEE_id
+		JOIN
+		    tbl_department D ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
+		WHERE
+		    T.RNO BETWEEN #{startRno} AND #{endRno}
+		order by seq asc
+	</select>
+	
+	
+	<!-- 글쓰기(파일첨부가 없는 글쓰기) -->
+	<insert id="notice_add" parameterType="com.spring.app.domain.NoticeboardVO">
+	    insert into tbl_noticeboard(seq, fk_emp_id, name, subject, content, pw, read_Count, reg_Date, status)
+	    values(noticeboard_Seq.nextval, #{fk_emp_id}, #{name}, #{subject}, #{content}, #{pw}, default, default, default) 
+	</insert>
+	
+	<!-- 글쓰기(파일첨부가 있는 글쓰기) -->
+	<insert id="notice_add_withFile" parameterType="com.spring.app.domain.NoticeboardVO">
+		insert into tbl_noticeboard(seq, fk_emp_id, name, subject, content, pw, read_Count, reg_Date, status, file_Name, org_FileName, file_Size)
+	    values(noticeboard_Seq.nextval, #{fk_emp_id}, #{name}, #{subject}, #{content}, #{pw}, default, default, default,  #{file_Name}, #{org_Filename}, #{file_Size}) 
+	</insert>
+	
+	<!-- 공지사항  조회수 증가는 없고 단순히 글 1개만 조회를 해주는 것 -->
+	<select id="getNotice_View" parameterType="HashMap" resultType="com.spring.app.domain.NoticeboardVO">
+		SELECT T2.previousseq, T2.previoussubject
+	     , T2.seq, T2.fk_emp_id, T2.name, T2.subject, T2.content, T2.read_Count, T2.reg_Date, T2.pw
+	     , T2.nextseq, T2.nextsubject
+	     , T2.file_Name, T2.org_Filename, T2.file_Size
+	     , D.department_name 
+		FROM 
+		(
+		    SELECT lag(seq, 1) over(order by RNO asc) AS previousseq
+		         , lag(subject, 1) over(order by RNO asc) AS previoussubject
+		         , seq, fk_emp_id, name, subject, content, read_Count, reg_Date, pw
+		         , lead(seq, 1) over(order by RNO asc) AS nextseq
+		         , lead(subject, 1) over(order by RNO asc) AS nextsubject
+		         , file_Name, org_Filename, file_Size
+		    FROM 
+		    (
+		        SELECT rownum AS RNO
+		             , seq, fk_emp_id, name, subject, content, read_Count, reg_Date, pw
+		             , file_Name, org_Filename, file_Size 
+		        FROM 
+		        ( 
+		            SELECT seq, fk_emp_id, name, subject, content, read_Count
+		                 , to_char(reg_Date, 'yyyy-mm-dd hh24:mi:ss') AS reg_Date, pw
+		                 , file_Name, org_Filename, file_Size
+		            FROM tbl_noticeboard
+		            WHERE status = 1
+				<choose>
+				   <when test='searchType == "subject" and searchWord != ""'>
+				       and lower(subject) like '%'||lower(#{searchWord})||'%' 
+				   </when>
+				   <when test='searchType == "content" and searchWord != ""'>
+				       and lower(content) like '%'||lower(#{searchWord})||'%' 
+				   </when>
+				   <when test='searchType == "subject_content" and searchWord != ""'>
+				       and (lower(subject) like '%'||lower(#{searchWord})||'%' or lower(content) like '%'||lower(#{searchWord})||'%')  
+				   </when>
+				   <when test='searchType == "name" and searchWord != ""'>
+				       and lower(name) like '%'||lower(#{searchWord})||'%' 
+				   </when>
+				   <otherwise>
+				   </otherwise>
+				</choose>
+				ORDER BY seq ASC
+			        ) V
+			    ) T1    
+			) T2
+		LEFT JOIN tbl_EMPLOYEES E ON T2.fk_emp_id = E.EMPLOYEE_id
+		JOIN tbl_department D ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
+		WHERE T2.seq = #{seq}
+	</select>
+	
+	<!-- === 글조회수 1증가 하기 === -->
+	<update id="notice_increase_readCount" parameterType="String">
+	    update tbl_noticeboard set read_Count = read_Count + 1
+	    where seq = #{seq}
+	</update>
+	
+	<!-- ===공지사항 1개글 삭제하기 === -->
+	<delete id="notice_del" parameterType="HashMap">
+	    delete from tbl_noticeboard
+	    where seq = #{seq}
+	</delete>
+	
+	<!-- === 공지사항 1개글 수정하기 === -->
+	<update id="notice_edit" parameterType="com.spring.app.domain.NoticeboardVO">
+	    update tbl_noticeboard set subject = #{subject}
+	                             , content = #{content}
+	    where seq = #{seq}
+	</update>
+	
+	<!-- === 첨부파일 있는 공지사항 1개글 수정하기 === -->
+	<update id="notice_edit_withFile" parameterType="com.spring.app.domain.NoticeboardVO">
+	    update tbl_noticeboard set subject = #{subject}
+	                             , content = #{content}
+	                             , file_name = #{file_Name}
+	                             , org_Filename = #{org_Filename}
+	                             , file_Size = #{file_Size}
+	    where seq = #{seq}
+	</update>
+	
+	<!-- 검색어 입력시 자동글 완성하기 -->
+	<select id="notice_wordSearchShow" parameterType="HashMap" resultType="String"> 
+	    <choose>
+			<when test='searchType == "subject"'>
+		    	select subject
+		    </when>
+		    <otherwise>
+		    	select distinct name 
+		    </otherwise>
+		</choose> 
+	    from tbl_noticeboard
+	    where status = 1 
+	    <choose>
+		   <when test='searchType == "subject" and searchWord != ""'>
+		       and lower(subject) like '%'||lower(#{searchWord})||'%' 
+		   </when>
+		   <otherwise>
+		       and lower(name) like '%'||lower(#{searchWord})||'%'
+		   </otherwise>
+		</choose>
+		
+		<choose>
+			<when test='searchType == "subject"'>
+		    	order by seq desc
+		    </when>
+		    <otherwise>
+		    	order by name asc 
+		   </otherwise>
+		</choose> 
+	</select>
+	
+	<!-- === 공지사항 게시판 수정할떄 첨부파일 삭제하기 === -->
+	<update id="notice_delete_file" parameterType="com.spring.app.domain.NoticeboardVO">
+	    update tbl_noticeboard set file_name = null
+	                           	 , org_Filename = null
+	                             , file_Size = null
+	    where seq = #{seq}
+	</update>
+	
+</mapper>
