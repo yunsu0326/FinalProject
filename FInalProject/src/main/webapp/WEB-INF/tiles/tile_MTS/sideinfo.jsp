@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
             sidebar.classList.add('hidden');
         }
     });
-}); //윤수 사이드바 고침
+}); //마지막으로 레알 고침
 
 function showPopup() {
     var chatWindowName = "chatRoom";
