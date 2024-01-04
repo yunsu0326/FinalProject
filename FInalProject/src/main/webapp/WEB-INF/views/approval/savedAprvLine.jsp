@@ -48,7 +48,7 @@ ul {
 let aprvLineArray = JSON.parse('${aprvLineArray}');
 
 $(()=>{
-	
+	// zz ㅎㅇ
 	console.log(aprvLineArray);
 	
 	let html = "";
