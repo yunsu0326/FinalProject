@@ -84,19 +84,14 @@
 
 <script type="text/javascript">
 
-
-
-
 	
-
-
 $(document).ready(function(){
-	  <%-- === jQuery 를 사용하여 드래그앤드롭(DragAndDrop)을 통한 파일 업로드 시작 === --%>
-		let file_arr = []; // 첨부된어진 파일 정보를 담아 둘 배열
+	<%-- === jQuery 를 사용하여 드래그앤드롭(DragAndDrop)을 통한 파일 업로드 시작 === --%>
+	let file_arr = []; // 첨부된어진 파일 정보를 담아 둘 배열
 
-      // == 파일 Drag & Drop 만들기 == //
-	    $("#file_drop").on("dragenter", function(e){ /* "dragenter" 이벤트는 드롭대상인 박스 안에 Drag 한 파일이 최초로 들어왔을 때 */ 
-	        e.preventDefault();
+    // == 파일 Drag & Drop 만들기 == //
+    $("#file").on("dragenter", function(e){ /* "dragenter" 이벤트는 드롭대상인 박스 안에 Drag 한 파일이 최초로 들어왔을 때 */ 
+        e.preventDefault();
 	        <%-- 
 	                  브라우저에 어떤 파일을 drop 하면 브라우저 기본 동작이 실행된다. 
 	                  이미지를 drop 하면 바로 이미지가 보여지게되고, 만약에 pdf 파일을 drop 하게될 경우도 각 브라우저의 pdf viewer 로 브라우저 내에서 pdf 문서를 열어 보여준다. 
@@ -124,7 +119,7 @@ $(document).ready(function(){
 	
 	        var files = e.originalEvent.dataTransfer.files;  
 	        
-	        
+	        console.log(files); // object
 	        <%--  
 	            jQuery 에서 이벤트를 처리할 때는 W3C 표준에 맞게 정규화한 새로운 객체를 생성하여 전달한다.
 	                     이 전달된 객체는 jQuery.Event 객체 이다. 이렇게 정규화된 이벤트 객체 덕분에, 
@@ -147,7 +142,7 @@ $(document).ready(function(){
 				[[Prototype]]: FileList
           */
 	        if(files != null && files != undefined){
-	        //	console.log("files.length 는 => " + files.length);  
+	        //console.log("files.length 는 => " + files.length);  
 	        // files.length 는 => 1 이 나온다. 
 	          
 	        	
@@ -310,7 +305,7 @@ $(document).ready(function(){
 	                                                      // 같은 key를 가진 값을 여러 개 넣을 수 있다.(덮어씌워지지 않고 추가가 된다.)
 	              });
 	          }
-       }
+      
        
        $("div.loader").show(); // CSS 로딩화면 보여주기
    
@@ -325,7 +320,7 @@ $(document).ready(function(){
          	  //console.log("~~~ 확인용 : " + JSON.stringify(json));
                // ~~~ 확인용 : {"result":1}
                if(json.result == 1) {
-         	     location.href="<%= ctxPath%>/addEnd.gw"; 
+            	   location.href="<%= ctxPath%>/freeboard.gw"; 
                }
                else {
              	  alert("메일보내기가 실패했습니다.");
@@ -336,7 +331,27 @@ $(document).ready(function(){
 		      }
        });
        
-	
+    }
+    else{ //파일이 없는거
+    	  $.ajax({
+              url : "<%= ctxPath%>/nofile_add.gw",
+              type : "post",
+              data : formData,
+              processData:false,  // 파일 전송시 설정 
+              contentType:false,  // 파일 전송시 설정 
+              dataType:"json",
+              success:function(json){
+            	  console.log("~~~ 확인용 : " + JSON.stringify(json));
+                  // ~~~ 확인용 : {"result":1}
+               	   location.href="<%= ctxPath%>/freeboard.gw"; 
+                 
+              },
+              error: function(request, status, error){
+   				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+   		      }
+          });   
+          
+    }
 	   
     }); //end of  $("button#btnWrite").click(function(){ -------------
     // ===== 글쓰기 버튼을 눌렀을 때의 유효성 검사와 전송 끝 =====
@@ -344,7 +359,7 @@ $(document).ready(function(){
 });// end of $(document).ready(function(){})-----------
 
 </script>
-
+<div style="width: 80%;" class="text-center container">
 		<%-- == 원글쓰기 인 경우 == --%>
 	<div style="padding: 0 0 1% 5%;">
 	    <c:if test='${requestScope.fk_seq eq "" }'>
@@ -374,22 +389,23 @@ $(document).ready(function(){
 	 
 	    <%-- ===== 파일첨부하기 시작 ====== --%>
 	    <form name="addFrm" enctype="multipart/form-data" style="margin: 2% 0;">
-		<div style="margin:0px auto; width:90%;">
-			<div style="background-color: #f4f5f6;">
-				<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
-	       			<span class="left_span" style=" font-weight: 600;
+			
+
+	    		<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
+	       			<span  style=" font-weight: 600;
 						line-height: 21px;
 						text-transform: uppercase;
 						padding-left: 20px;
 						position: relative; font-size: 18px; width: 10%;">성명</span>
 					<div style="width: 8%;">
-						<input type="hidden" name="fk_email" value="${sessionScope.loginuser.email}" readonly />
-						<input type="text" name="name" value="${sessionScope.loginuser.name}"  style="width: 160%;" readonly/> 
+							<input type="hidden" name="fk_email" value="${sessionScope.loginuser.email}" readonly />
+							<input type="text" name="name" value="${sessionScope.loginuser.name}"  style="width: 160%;" readonly/> 
 					</div>
 	    		</div>
-	    				
+	    		
+	    			
 				<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
-	       			<span class="left_span" style=" font-weight: 600;
+	       			<span  style=" font-weight: 600;
 						line-height: 21px;
 						text-transform: uppercase;
 						padding-left: 20px;
@@ -407,15 +423,19 @@ $(document).ready(function(){
 	    		</div>
 	    				
 				<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
-      			<span class="left_span" style=" font-weight: 600;
+      			<span  style=" font-weight: 600;
 				line-height: 21px;
 				text-transform: uppercase;
 				position: relative; font-size: 18px; width: 10%;">첨부파일</span>
-				<div style="width: 50%; display: flex; cursor: pointer; color: black;">
-		            <div class=row id="dropzone" style="margin-left:-1.5%; display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
-		            	<div style="margin-right:610px; ">여기에 첨부 파일을 끌어 오세요</div>
-		                <div id="file_drop" name="file_drop" style="display: inline-block; border: solid 2px; margin-left: 10px; width:850px; height:80px; background-color:white;"></div>
-		            </div>
+				<div style="text-align : left;width: 50%; display: flex; cursor: pointer; color: black;">
+		            <div class="filebox">
+						<div class="dropBox mt-2">
+							<div class=row id="dropzone" style="margin-left:-1.5%; display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
+					            	<div style="margin-right:610px; ">여기에 첨부 파일을 끌어 오세요</div>
+					                <div id="file" name="file" style="display: inline-block; border: solid 2px; margin-left: 10px; width:850px; height:80px; background-color:white;"></div>
+					            </div>
+						</div>
+					</div>
 		    	</div>
 			</div>	
 			<textarea style="width: 100%; height: 500px;" name="content" id="content"></textarea>
@@ -425,21 +445,16 @@ $(document).ready(function(){
 	        <input type="hidden" name="fk_seq"  value="${requestScope.fk_seq}" />
 	        <input type="hidden" name="depthno" value="${requestScope.depthno}" />
 	        <%-- ===== 답변글쓰기가 추가된 경우 끝 ===== --%>
-	        
-	        <div style="margin-top: 3%;">
-	        <span class="left_span" style=" font-weight: 600;
-						line-height: 21px;
-						text-transform: uppercase;
-						padding-left: 20px; 
-						position: relative; font-size: 18px; width: 10%; margin-right: 5%;">글암호</span>
-			
-			<input type="password" name="pw" maxlength="20" />
+	        <input type="hidden" name="seq" value="${requestScope.seq}" readonly />
+	        <div style="margin-top: 3%;" class='text-left ml-3'>
+		        <span style=" font-weight: bold; font-size: 15pt; margin-right: 5%;">글암호</span>
+				
+				<input type="password" name="pw" maxlength="20" />
 			</div>
-		</div>
-	
+			
 	</form>
 	<%-- ===== 파일첨부 하기 끝 ====== --%>    
 	    
-	    
+</div>	    
 
     
