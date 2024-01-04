@@ -12,7 +12,7 @@
     min-width: 360px;
     max-width: 800px;
     margin: 1em auto;
-}
+}     
 
 .highcharts-data-table table {
     font-family: Verdana, sans-serif;
