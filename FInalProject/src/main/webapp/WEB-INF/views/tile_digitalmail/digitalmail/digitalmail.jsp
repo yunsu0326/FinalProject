@@ -18,7 +18,7 @@
 	      
 	      // 각 섹션에 대한 클릭 이벤트 리스너 등록
 	      $('div.section').click(function() {
-		      alert('섹션 클릭      됨!');
+		      alert('섹션 클릭됨!');
 	      	  // 기존에 선택된 섹션들에서 'section_selected' 클래스 제거
 	          $('div.section').removeClass('section_selected');
 

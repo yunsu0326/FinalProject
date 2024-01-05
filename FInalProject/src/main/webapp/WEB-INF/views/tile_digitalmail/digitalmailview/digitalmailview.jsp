@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
       rel="stylesheet">
       
-       <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+      <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
   <script>
       // 페이지 로딩 후 실행되는 함수
