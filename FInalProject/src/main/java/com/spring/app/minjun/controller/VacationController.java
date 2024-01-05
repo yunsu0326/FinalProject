@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ModelAndViewDefiningException;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.spring.app.domain.*;
 import com.spring.app.minjun.service.*;
 		
@@ -301,14 +304,11 @@ import com.spring.app.minjun.service.*;
         	// 회원들의 신청된 휴가 중 대기중인 회원 가져오기
             List<Vacation_manageVO> vacList = service.vacList(employee_id);
             
+            
             // 대기중인 휴가 갯수 알아오기
         	String total_count = service.total_count(employee_id);
         	
         /*
-    		
-        	
-        	
-        	
             // String str_currentShowPageNo = request.getParameter("currentShowPageNo");
         	
     		int totalCount = 0;        // 총 게시물 건수
@@ -337,7 +337,6 @@ import com.spring.app.minjun.service.*;
     					// get 방식이므로 사용자가 DB에 존재하는 페이지 수 보다 큰 값을 입력하여 장난친 경우
     					currentShowPageNo = 1;
     				}
-    			  
     			} catch (NumberFormatException e) {
     				// get 방식이므로 사용자가 숫자가 아닌 문자를 입력하여 장난친 경우
     				currentShowPageNo = 1;
@@ -557,10 +556,44 @@ import com.spring.app.minjun.service.*;
 	}
 	
 	
+	////////////////////////////////////////////////////////////////////////
+	// 휴가 통계 페이지 이동
+	@GetMapping("/vacation_chart.gw")
+	public ModelAndView requiredLogin_vacation_chart(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+		
+		mav.setViewName("my_time_off/vacation_chart.tiles_MTS");
+		return mav;
+	}
 	
-	
-	
-	
+	// 차트그리기 (ajax) 월별 휴가사용 수
+	@ResponseBody
+	@RequestMapping(value="monthlyVacCnt.gw", produces="text/plain;charset=UTF-8")
+	public String monthlyVacCnt() {
+		
+		List<Map<String, String>> monthlyVacCntList = service.monthlyVacCnt();
+		
+		JsonArray jsonArr = new JsonArray(); // []
+		
+		for(Map<String, String> map : monthlyVacCntList) {
+			JsonObject jsonObj = new JsonObject(); // {}
+			jsonObj.addProperty("nowMonth11", map.get("nowMonth11"));
+			jsonObj.addProperty("nowMonth10", map.get("nowMonth10"));
+			jsonObj.addProperty("nowMonth9", map.get("nowMonth9"));
+			jsonObj.addProperty("nowMonth8", map.get("nowMonth8"));
+			jsonObj.addProperty("nowMonth7", map.get("nowMonth7"));
+			jsonObj.addProperty("nowMonth6", map.get("nowMonth6"));
+			jsonObj.addProperty("nowMonth5", map.get("nowMonth5"));
+			jsonObj.addProperty("nowMonth4", map.get("nowMonth4"));
+			jsonObj.addProperty("nowMonth3", map.get("nowMonth3"));
+			jsonObj.addProperty("nowMonth2", map.get("nowMonth2"));
+			jsonObj.addProperty("nowMonth1", map.get("nowMonth1")); 
+			jsonObj.addProperty("nowMonth", map.get("nowMonth"));
+			
+			jsonArr.add(jsonObj); 
+		} // end of for------------------------
+		
+		return new Gson().toJson(jsonArr);
+	}
 	
 	
 	
