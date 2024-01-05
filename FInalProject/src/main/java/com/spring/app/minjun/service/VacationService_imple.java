@@ -250,6 +250,14 @@ public class VacationService_imple implements VacationService {
 	}
 
 
+	// 차트그리기 (ajax) 월별 휴가사용 수
+	@Override
+	public List<Map<String, String>> monthlyVacCnt() {
+		List<Map<String, String>> monthlyVacCnt = dao.monthlyVacCnt();
+		return monthlyVacCnt;
+	}
+
+
 
 
 	

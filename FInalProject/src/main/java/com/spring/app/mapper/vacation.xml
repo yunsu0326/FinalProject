@@ -282,6 +282,38 @@
 		delete from tbl_vacation_manage where vacation_seq = #{vacation_seq}
 	</delete>
 	
-	
+	<!-- 차트그리기 (ajax) 월별 휴가사용 수 -->
+	<resultMap type="HashMap" id="monthlyVacCnt_Map">
+		<result property="nowMonth11" 	column="nowMonth11" 	javaType="String"/>
+		<result property="nowMonth10" 	column="nowMonth10" 	javaType="String"/>
+		<result property="nowMonth9" 	column="nowMonth9" 		javaType="String"/>
+		<result property="nowMonth8" 	column="nowMonth8" 		javaType="String"/>
+		<result property="nowMonth7" 	column="nowMonth7" 		javaType="String"/>
+		<result property="nowMonth6" 	column="nowMonth6" 		javaType="String"/>
+		<result property="nowMonth5" 	column="nowMonth5" 		javaType="String"/>
+		<result property="nowMonth4" 	column="nowMonth4" 		javaType="String"/>
+		<result property="nowMonth3" 	column="nowMonth3" 		javaType="String"/>
+		<result property="nowMonth2" 	column="nowMonth2" 		javaType="String"/>
+		<result property="nowMonth1" 	column="nowMonth1" 		javaType="String"/>
+		<result property="nowMonth" 	column="nowMonth" 		javaType="String"/>
+	</resultMap>
+	<select id="monthlyVacCnt" resultMap="monthlyVacCnt_Map">
+		SELECT
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -11), 'YYYY-MM') THEN 1 END) AS "nowMonth11",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -10), 'YYYY-MM') THEN 1 END) AS "nowMonth10",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -9), 'YYYY-MM') THEN 1 END) AS "nowMonth9",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -8), 'YYYY-MM') THEN 1 END) AS "nowMonth8",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -7), 'YYYY-MM') THEN 1 END) AS "nowMonth7",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -6), 'YYYY-MM') THEN 1 END) AS "nowMonth6",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -5), 'YYYY-MM') THEN 1 END) AS "nowMonth5",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -4), 'YYYY-MM') THEN 1 END) AS "nowMonth4",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -3), 'YYYY-MM') THEN 1 END) AS "nowMonth3",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -2), 'YYYY-MM') THEN 1 END) AS "nowMonth2",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(ADD_MONTHS(SYSDATE, -1), 'YYYY-MM') THEN 1 END) AS "nowMonth1",
+		  COUNT(CASE WHEN TO_CHAR(vacation_start_date, 'YYYY-MM') = TO_CHAR(SYSDATE, 'YYYY-MM') THEN 1 END) AS "nowMonth"
+		FROM tbl_vacation_manage
+		WHERE vacation_confirm = 2
+		  AND vacation_start_date >= ADD_MONTHS(SYSDATE, -12)
+	</select>
 
 </mapper>

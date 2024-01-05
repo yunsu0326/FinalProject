@@ -71,6 +71,9 @@ public interface VacationDAO {
 	// 승인 대기중인 휴가 삭제하기
 	void seq_delete(String vacation_seq);
 
+	// 차트그리기 (ajax) 월별 휴가사용 수
+	List<Map<String, String>> monthlyVacCnt();
+
 	
 
 	

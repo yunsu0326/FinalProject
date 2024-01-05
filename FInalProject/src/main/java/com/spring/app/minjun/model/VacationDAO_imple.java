@@ -211,6 +211,14 @@ public class VacationDAO_imple implements VacationDAO {
 	}
 
 
+	// 차트그리기 (ajax) 월별 휴가사용 수
+	@Override
+	public List<Map<String, String>> monthlyVacCnt() {
+		List<Map<String, String>> monthlyVacCnt = sqlsession.selectList("minjun.monthlyVacCnt");
+		return monthlyVacCnt;
+	}
+
+
 	
 
 	

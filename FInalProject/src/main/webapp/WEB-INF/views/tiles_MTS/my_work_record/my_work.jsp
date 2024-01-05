@@ -86,12 +86,14 @@ $(document).ready(function(){
 	var minute = now.getMinutes(); // 현재 해당 분
 	var second = now.getSeconds(); // 현재 해당 초
 	
-	// 한 자리 수일 때 앞에 0 붙이기
-	minute = (minute < 10) ? '0' + minute : minute;
-	second = (second < 10) ? '0' + second : second;
+	// 한 자리 수일 때 앞에 0 붙이기 (함수 활용)
+	hour = padZero(hour);
+	minute = padZero(minute);
+	second = padZero(second);
+	month = padZero(month);
+	day = padZero(day);
 
 	const thisMonth = year+"-"+month; 			 // 2023-12
-	
 	const FullDate = year+"-"+month+"-"+day; 	 // 2023-12-27
 	const FullTime = hour+":"+minute+":"+second; // 16:31:25
 	
@@ -161,39 +163,174 @@ $(document).ready(function(){
     $("button#leaveWork").click(function(){
     	
     	$("input[name='work_date']").val(FullDate);
-    	$("input:hidden[name='work_end_time']").val(FullTime);
-    	
-    	const frm = document.goToWorkUpdate;
-	    frm.method = "post";
-	    frm.action = "<%= ctxPath %>/goToWorkUpdate.gw";
-	    frm.submit();
+	    $("input:hidden[name='work_end_time']").val(FullTime);
+	    
+		/////////////////////////////////////////////////////
+		// 출근시간 날짜형식으로 변환
+	    var TodayStartTime = $('#todayST').val(); // 로그인 한 사원의 오늘 출근 시간
+	    // alert(TodayStartTime); // 08:55:00
+	    // alert(FullTime); // 14:25:05 현재시간 잘 나옴
+	    
+	    var TodayHour = TodayStartTime.substr(0, 2); // 출근 시 구하기
+	    // console.log("TodayHour : "+TodayHour); // 08
+	    
+	    var TodayMinute = TodayStartTime.substr(3, 2); // 출근 분 구하기
+	    // console.log("TodayMinute : "+TodayMinute); // 55
+	    
+	    var TodaySecond = TodayStartTime.substr(6); // 출근 초 구하기
+	    // console.log("TodaySecond : "+TodaySecond); // 00
+	    
+	    todayStartTimeVal = new Date();
+	    
+	    todayStartTimeVal.setHours(TodayHour);
+	    todayStartTimeVal.setMinutes(TodayMinute);
+	    todayStartTimeVal.setSeconds(TodaySecond);
+	    
+	    // console.log("todayStartTimeVal :"+todayStartTimeVal);
+	    /////////////////////////////////////////////////////
+	    
+	    var workTimeNow = now - todayStartTimeVal;
+	    console.log("workTimeNow :"+workTimeNow); 
+	    // overTimeNow :23611081
+	  
+	    var workTimeH = Math.floor(workTimeNow/(1000 * 60 * 60));
+	    // console.log("overTimeH :"+overTimeH); // 최종 근무 시간 / 6
+	    
+	    var workTimeM = Math.floor(workTimeNow / (1000 * 60) % 60);
+	 	// console.log("overTimeM :"+overTimeM); // 최종 근무 분 / 50
+	    
+	    var workTimeC = Math.floor((workTimeNow / 1000) % 60);
+	 	// console.log("overTimeC :"+overTimeC); // 최종 근무 초 / 37
+	    
+	    var workTimeVal = padZero(workTimeH)+":"+padZero(workTimeM)+":"+padZero(workTimeC);
+	 	// console.log(overTimeVal); // 06:50:37
+	 	
+	 	///////////////////////////////////////////////////////////////
+	 	// 연장 근무 시간 구하기
+	 	// 9시간의 밀리초는 32400000 - 23611081 = 12345125
+	 	
+	 	if(workTimeNow > 32400000) { // 연장근무인 경우
+	 		var calculateTime = workTimeNow - 32400000;
+	 		
+	 		var calH = Math.floor(calculateTime/(1000 * 60 * 60));
+		    //console.log("calH :"+calH); // 최종 연장 시간 / 0
+		    
+		    var calM = Math.floor(calculateTime / (1000 * 60) % 60);
+		 	//console.log("calM :"+calM); // 최종 연장 분 / 57
+		    
+		    var calC = Math.floor((calculateTime / 1000) % 60);
+		    //console.log("calC :"+calC); // 최종 연장 초 / 13
+	 		
+		    var overTimeVal = padZero(calH)+":"+padZero(calM)+":"+padZero(calC);
+		 	//console.log(overTimeVal); // 00:59:32
+		 	            
+		 	$("input[name='extended_end_time']").val(overTimeVal);
+		 	
+		 	const frm = document.goToWorkUpdateWithExtended; 
+			frm.method = "post";
+		    frm.action = "<%= ctxPath %>/goToWorkUpdateWithExtended.gw";
+			frm.submit();
+	 	}
+	 	else {
+	 		const frm = document.goToWorkUpdateWithExtended; 
+			frm.method = "post";
+		    frm.action = "<%= ctxPath %>/goToWorkUpdate.gw";
+			frm.submit();
+	 	}
     }); // end of $("button#goToWork").click(function()--------------------
     		
     // 근무신청 버튼 클릭시
    	$("button#workRequestPlace").click(function(){
    		workRequestModal(); // 모달창 띄우는 함수
    	});
+    
+    
+    // 누적근무시간을 이용해 이번주 잔여근무시간, 이번주 연장근무시간 구하기
+    var hourVal = $("span#workRecordHour").text();
+    var minuteVal = $("span#workRecordMinute").text();
+    
+    if(hourVal == "" && minuteVal == "") { // 근무 내역이 없다면
+    	$("span#workRecordHour").text("0");
+    	$("span#workRecordMinute").text("0");
+    }
+    
+    if(minuteVal < 10) { // 분 단위가 한자리라면
+    	minuteVal = "0" + minuteVal; // 앞에 '0' 붙이기
+    }
+    
+    if(hourVal < 40) {
+    	// 여긴 잔여근무시간
+    	$("span#overHour").text("0");
+    	$("span#overMinute").text("0");
+    	
+    	if(minuteVal == 0) { // '분' 이 0 이라면
+    		hourVal = 52 - hourVal; // 주 최대 근무시간 52시간 - 이번주 근무시간
+    		$("span#shortHour").text(hourVal);
+    		$("span#shortMinute").text(minuteVal);
+    	}
+    	else { // '분' 이 0 이 아니라면 시간 - 1
+    		hourVal = 52 - hourVal - 1; // 주 최대 근무시간 52시간 - 이번주 근무시간 - 1
+    		$("span#shortHour").text(hourVal);
     		
+    		minuteVal = 60 - minuteVal;
+    		$("span#shortMinute").text(minuteVal);
+    	}
+    	minuteVal = 60 - minuteVal;
+    	
+    	// console.log(hourVal);
+    	// console.log(minuteVal);
+    }
+    else {
+    	// 여긴 연장근무시간
+    	$("span#shortHour").text("0");
+   		$("span#shortMinute").text("0");
+    	
+    	hourVal = Number(hourVal) - 40;
+    	// console.log("연장근무 시간 : " + hourVal);
+    	// 연장근무 시간 : 5
+    	$("span#overHour").text(hourVal);
+    	$("span#overMinute").text(minuteVal);
+    }
+    
     // 모달창에서 확인 버튼 클릭시 근무관리테이블에 insert 하기
     $("input#workRequest").click(function(){
-    	
     	const workSelect = $("select#workSelect").val();
     	
     	if(workSelect == "") {
     		alert("신청할 근무를 선택하세요");
+    		$("select#workSelect").focus();
     		return false;
     	}
     	if($("input[name='workDate']").val() == "") {
     		alert("신청일자를 선택하세요");
+    		$("input[name='workDate']").focus();
     		return false;
     	}
-    	if($("input[name='detailTime']").val() == "") {
-    		alert("신청일자에 해당하는 상세 시간을 선택하세요");
+    	
+    	var workDate = $("input[name='workDate']").val();
+    	var newDate = new Date(workDate);
+    	
+    	if(newDate < now) {
+    		alert("근무일보다 이전 날짜의 근무신청은 불가합니다.");
+    		$("input[name='workDate']").val("").focus();
+    		return false;
+    	}
+    	
+    	if($("input[name='requestStartTime']").val() == "") {
+    		alert("시간을 선택하세요");
+    		$("input[name='requestStartTime']").focus();
+    		return false;
+    	}
+    	
+    	if($("input[name='requestEndTime']").val() == "") {
+    		alert("시간을 선택하세요");
+    		$("input[name='requestEndTime']").focus();
     		return false;
     	}
     	
     	if($("input[name='requestStartTime']").val() > $("input[name='requestEndTime']").val()) {
-    		alert("신청시간을 확인하세요");
+    		alert("시작시간보다 이전 시간의 근무신청은 불가합니다.");
+    		$("input[name='requestEndTime']").val("");
 			return false;
     	}
     	
@@ -231,7 +368,7 @@ function getMyWorkList() {
 					"<div id='table_week1' class='mt-6 bg-white p-4 border text-center tblShadow'>"+
 						"<table class='table table-hover tables tblShadow'>"+
 							"<thead>"+
-								"<tr class='row border' style='background-color: #e3f2fd;'>"+
+								"<tr class='row border' style='background-color: #ccff99;'>"+
 									"<th class='col'>일자</th>"+
 									"<th class='col'>업무시작</th>"+
 									"<th class='col'>업무종료</th>"+
@@ -247,10 +384,14 @@ function getMyWorkList() {
 					let work_start_time = item.work_date;
 					let work_end_time = item.work_end_time;
 					
+					var workDate = new Date(item.work_date);
+                    var daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+                    var dayOfWeek = daysOfWeek[workDate.getDay()];
+					
 					html += "<tr class='row border'>"+
-			    				"<td class='col'>"+item.work_date+"</td>"+
+			    				"<td class='col'>"+item.work_date+ " (" + dayOfWeek + ")" +"</td>"+
 			    				"<td class='col' id='work_start_time'>"+item.work_start_time+"</td>"+
-			    				"<td class='col'>"+item.work_end_time+"</td>"+
+			    				"<td class='col endTime'>"+item.work_end_time+"</td>"+
 			    				"<td class='col'>"+item.timeDiff+"</td>"+
 			    				"<td class='col'>-</td>"+
 			    			"</tr>";
@@ -266,10 +407,10 @@ function getMyWorkList() {
 							"&nbsp;2 주차"+
 						"</div>"+
 						"<hr>"+
-						"<div id='table_week2' class='mt-6 bg-white p-4 border text-center tblShadow'>"+
+						"<div id='table_week2' class='mt-6 bg-white p-4 border text-center'>"+
 							"<table class='table table-hover tables tblShadow'>"+
 								"<thead>"+
-									"<tr class='row border' style='background-color: #e3f2fd;'>"+
+									"<tr class='row border' style='background-color: #ccff99;'>"+
 										"<th class='col'>일자</th>"+
 										"<th class='col'>업무시작</th>"+
 										"<th class='col'>업무종료</th>"+
@@ -294,7 +435,7 @@ function getMyWorkList() {
 						"<div id='table_week3' class='mt-6 bg-white p-4 border text-center'>"+
 							"<table class='table table-hover tables'>"+
 								"<thead>"+
-									"<tr class='row border' style='background-color: #e3f2fd;'>"+
+									"<tr class='row border' style='background-color: #ccff99;'>"+
 										"<th class='col'>일자</th>"+
 										"<th class='col'>업무시작</th>"+
 										"<th class='col'>업무종료</th>"+
@@ -316,10 +457,10 @@ function getMyWorkList() {
 						"&nbsp;4 주차"+
 					"</div>"+
 					"<hr>"+
-					"<div id='table_week4' class='mt-6 bg-white p-4 border text-center tblShadow'>"+
+					"<div id='table_week4' class='mt-6 bg-white p-4 border text-center'>"+
 						"<table class='table table-hover tables tblShadow'>"+
 							"<thead>"+
-								"<tr class='row border' style='background-color: #e3f2fd;'>"+
+								"<tr class='row border' style='background-color: #ccff99;'>"+
 									"<th class='col'>일자</th>"+
 									"<th class='col'>업무시작</th>"+
 									"<th class='col'>업무종료</th>"+
@@ -341,10 +482,10 @@ function getMyWorkList() {
 						"&nbsp;5 주차"+
 					"</div>"+
 					"<hr>"+
-					"<div id='table_week2' class='mt-6 bg-white p-4 border text-center tblShadow'>"+
+					"<div id='table_week5' class='mt-6 bg-white p-4 border text-center'>"+
 						"<table class='table table-hover tables tblShadow'>"+
 							"<thead>"+
-								"<tr class='row border' style='background-color: #e3f2fd;'>"+
+								"<tr class='row border' style='background-color: #ccff99;'>"+
 									"<th class='col'>일자</th>"+
 									"<th class='col'>업무시작</th>"+
 									"<th class='col'>업무종료</th>"+
@@ -549,9 +690,11 @@ function padZero(value) {
                 		<input type="hidden" name="fk_employee_id" value="${sessionScope.loginuser.employee_id}"/>
                 	</form>
                 	
-                	<form name="goToWorkUpdate">
+                	<%-- 연장근무인 경우 보낼 form --%>
+                	<form name="goToWorkUpdateWithExtended">
                 		<input type="hidden" name="work_date"/>
                 		<input type="hidden" name="work_end_time"/>
+                		<input type="hidden" name="extended_end_time"/>
                 		<input type="hidden" name="fk_employee_id" value="${sessionScope.loginuser.employee_id}"/>
                 	</form>
 				</li>
@@ -576,26 +719,19 @@ function padZero(value) {
     </div>
 
     <div class="mt-6 horizontal-scroll">
-        <div style="width: 18%;">
+        <div style="width: 18%; margin-left: 13%; margin-right: auto;">
             <h4>이번주 <br>누적근무시간</h4>
-            <p>40시간 0분</p>
+            <p><span id='workRecordHour'>${requestScope.myWorkRecord.time}</span>시간 <span id='workRecordMinute'>${requestScope.myWorkRecord.minute}</span>분</p>
         </div>
-        <div style="width: 18%;">
-            <h4>이번주 <br>초과근무시간</h4>
-            <p>0시간 0분</p>
-        </div>
-        <div style="width: 18%;">
+        <div style="width: 18%; margin: 0 auto;">
             <h4>이번주 <br>잔여근무시간</h4>
-            <p>0시간 0분</p>
+            <p><span id='shortHour'></span>시간 <span id='shortMinute'></span>분</p>
         </div>
-        <div style="width: 18%;">
-            <h4>이번달 <br>누적근무시간</h4>
-            <p>40시간 0분</p>
-        </div>
-        <div style="width: 18%;">
+        <div style="width: 18%; margin-right: 13%; margin-left: auto;">
             <h4>이번주 <br>연장근무시간</h4>
-            <p>0시간 0분</p>
+            <p><span id='overHour'></span>시간 <span id='overMinute'></span>분</p>
         </div>
+        <input type='hidden' id='todayST' value='${requestScope.myTodayStartTime}'/>
     </div>
 </div>
 <%-- 본문 내용 [끝] --%>
@@ -661,7 +797,7 @@ function padZero(value) {
   				  </td>
               </tr>
               <tr style="text-align: left;">
-               	  <td>사유</td>
+               	  <td>사유 <span style="font-size: 10pt;">(선택)</span></td>
 	        	  <td>
   					<input id="work_reason" name="work_reason" type="text"/>
   				  </td>
