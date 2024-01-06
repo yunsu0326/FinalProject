@@ -34,8 +34,12 @@ public interface EmpService {
 	// 팀 생성하기
 	String team_add(Map<String, String> paraMap);
 
-	// 해당 부서의 부서장 정보 조회하기
+	// 해당 부서의 정보 조회하기
 	List<Map<String, String>> get_department_info(String department_id);
+	// 해당 팀의 정보 조회하기	
+	List<Map<String, String>> get_team_info(String team_id);
+	// 부서 삭제하기
+	int department_del(String department_id);
 	
 	
 	

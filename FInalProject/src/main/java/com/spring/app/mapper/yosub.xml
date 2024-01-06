@@ -331,11 +331,45 @@
 	    values(JOB_ID_seq.nextval, #{department_id}, #{team_name}||'사원', 12600000, 1, #{team_id})
 	</insert>
 
+
+	<resultMap type="HashMap" id="get_department_info_Map">
+		<result property="name" 		column="name"  			javaType="String"/>
+		<result property="job_name" 	column="job_name"  		javaType="String"/>
+		<result property="employee_id" 	column="employee_id"  	javaType="String"/>
+		<result property="gradelevel" 	column="gradelevel"  	javaType="String"/>
+		<result property="phone" 		column="phone"  		javaType="String"/>
+	</resultMap>
 	<!--  부서정보 가져오기 등록하기  -->
-	<select id="get_department_info" parameterType="String" resultType="com.spring.app.domain.DepartmentVO">
-	    select department_id, department_name, manager_id
-		from tbl_department
-		where FK_DEPARTMENT_ID = #{department_id}
+	<select id="get_department_info" parameterType="String" resultMap="get_department_info_Map">
+	    select name, job_name, employee_id, E.gradelevel, phone
+		from tbl_employees E
+		JOIN tbl_jobs J
+		ON E.fk_job_id = J.job_id
+		where E.fk_department_id = #{department_id}
+		  and E.gradelevel > 1
+        order by 4 desc, 2 asc
 	</select>
+	
+	<resultMap type="HashMap" id="get_team_info_Map">
+		<result property="name" 		column="name"  			javaType="String"/>
+		<result property="job_name" 	column="job_name"  		javaType="String"/>
+		<result property="employee_id" 	column="employee_id"  	javaType="String"/>
+		<result property="gradelevel" 	column="gradelevel"  	javaType="String"/>
+		<result property="phone" 		column="phone"  		javaType="String"/>
+	</resultMap>
+	<!--  팀정보 가져오기 등록하기  -->
+	<select id="get_team_info" parameterType="String" resultMap="get_team_info_Map">
+	    select name, job_name, employee_id, E.gradelevel, phone
+		from tbl_employees E
+		JOIN tbl_jobs J
+		ON E.fk_job_id = J.job_id
+		where E.fk_team_id = #{team_id}
+        order by 4 desc
+	</select>
+
+	<!-- 부서삭제하기  -->
+	<delete id="department_del" parameterType="String">
+	   DELETE FROM tbl_department WHERE department_id = #{department_id}
+	</delete>  
 
 </mapper>

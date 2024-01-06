@@ -202,7 +202,7 @@ function showPopup() {
             </a>
         </li>
         <li class="nav-item">
-            <a href="<%= ctxPath %>/email.gw">
+            <a href="<%= ctxPath %>/digitalmail.gw">
                 <i class="fa-solid fa-id-card nav-icon nav-icon"></i>
                 <span class="nav-link-text">웹메일</span>
             </a>

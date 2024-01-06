@@ -10,38 +10,33 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+         	paddig : 20px;
         }
+        .parent {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		grid-template-rows: repeat(5, 1fr);
+		grid-column-gap: 20px;
+		grid-row-gap: 20px;
+		height:600px;
+		}
+		
+		.div1 { grid-area: 1 / 2 / 4 / 4; }
+		.div2 { grid-area: 4 / 2 / 5 / 4; }
+		.div3 { grid-area: 5 / 2 / 6 / 4; }
+		.div4 { grid-area: 1 / 1 / 2 / 2; }
+		.div5 { grid-area: 2 / 1 / 6 / 2; }
+		.div6 { grid-area: 1 / 4 / 3 / 6; }
+		.div7 { grid-area: 3 / 4 / 5 / 6; }
+		.div8 { grid-area: 5 / 4 / 6 / 6; }
+		
+		.widget-container {
+		    background-color: #ffffff;
+		    padding: 20px;
+		    border-radius: 8px;
+		    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.1);   
 
-        /* 컨테이너 스타일 */
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(330px, 3fr));
-            gap: 30px;
-            padding: 20px;
-        }
-
-        /* 위젯 컨테이너 스타일 */
-        .widget-container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.1);
-            height: 200px; /* 모든 위젯의 높이를 200px로 설정 */
-            
-        }
-
-        /* 위젯 헤더 스타일 */
-        .widget-header {
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        /* 특정 위젯 스타일 */
-        .widget-todo {
-            min-height: 633px; /* todo 위젯의 높이를 최소 633px로 설정 */
-        }
+		}
         
         .highcharts-figure,
 	.highcharts-data-table table {
@@ -302,11 +297,36 @@ function showWeather(){
     
     
 <body>
-   <div class="container flex">
+   <div class="parent">
+	   <div class="widget-container div4">
+	            <div class="widget-header">프로필</div>
+		            <div >
+				
+					<div id="photo" class="mx-2">
+						<img src="<%= ctxPath%>/resources/images/${requestScope.loginuser.photo}" style="width: 100px; height: 100px; border-radius: 50%;" />
+					</div>
+						
+					<table id="table1" class="myinfo_tbl">
+						<tr>
+							<th width="50%;">성명</th>
+							<td>${requestScope.loginuser.name}</td>
+						</tr>
+						<tr>	
+							<th>이메일</th>
+							<td>${requestScope.loginuser.email}</td>
+						</tr>
+						<tr>
+							<th>입사일자</th>
+							<td>${requestScope.loginuser.hire_date}</td>
+						</tr>
+					</table>
+				
+			</div>
+        </div>
 	    <!-- todo -->
-	    <div class="widget-container widget-todo  my-3">
+	    <div class="widget-container div5">
 	        <div class="widget-header">To-Do</div>
-		        <div class="listContainer">
+		        <div class="listContainer ">
 					<h5 class="mb-3">결재 대기 문서</h5>
 					<h6 class="mb-3">결재해야 할 문서가 <span style="color:#086BDE" id="draftCnt">${requestedDraftCnt}</span>건 있습니다.</h6>
 					
@@ -335,61 +355,52 @@ function showWeather(){
 						<a href="<%= ctxPath%>/schedule/scheduleManagement.gw"><i class="fas fa-angle-double-right"></i> 더보기</a>
 					</div>
 				</div>
-	        <!-- To-Do 컨텐츠 -->
-	        <!-- ... -->
 	    </div>
-	
-	    <!-- 나머지 위젯을 옆으로 배치하기 위한 div 추가 -->
-	    <div class="flex">
-	        <!-- 프로필 조직도 -->
-	        <div class="widget-container widget-profile my-3">
-	            <div class="widget-header">프로필</div>
-	            <div style="display: flex; justify-content: center;">
-			
-			<div id="photo" class="mx-2">
-				<img src="<%= ctxPath%>/resources/images/${requestScope.loginuser.photo}" style="width: 100px; height: 100px; border-radius: 50%;" />
-			</div>
-				
-			<table id="table1" class="myinfo_tbl">
-				<tr>
-					<th width="50%;">성명</th>
-					<td>${requestScope.loginuser.name}</td>
-				</tr>
-				<tr>	
-					<th>이메일</th>
-					<td>${requestScope.loginuser.email}</td>
-				</tr>
-				<tr>
-					<th>입사일자</th>
-					<td>${requestScope.loginuser.hire_date}</td>
-				</tr>
-			</table>
-			
-		</div>
+	    
+	     	<!-- 일정관리 -->
+	        <div class="widget-container div1 ">
+	            <div class="widget-header">일정관리</div>
+	            <!-- 웹메일 컨텐츠 -->
+	            <!-- ... -->
 	        </div>
-	
-	        <!-- 웹메일 -->
-	        <div class="widget-container widget-mail my-3">
+	        
+	        <!-- 일정관리 -->
+	        <div class="widget-container div3 ">
+	            <div class="widget-header">검색</div>
+	            <!-- 웹메일 컨텐츠 -->
+	            <!-- ... -->
+	        </div>
+	         <!-- 출퇴근 -->
+	        <div class="widget-container div6 ">
+	            <div class="widget-header">출퇴근</div>
+	            <!-- 웹메일 컨텐츠 -->
+	            <!-- ... -->
+	        </div>
+	    	 <!-- 웹메일 -->
+	        <div class="widget-container div7 ">
 	            <div class="widget-header">웹메일</div>
 	            <!-- 웹메일 컨텐츠 -->
 	            <!-- ... -->
 	        </div>
 	        
 	        <!-- 공지사항 -->
-	        <div class="widget-container widget-notice my-3">
+	        <div class="widget-container div2 ">
 	            <div class="widget-header">공지사항</div>
 	            <!-- 공지사항 컨텐츠 -->
 	            <!-- ... -->
 	        </div>
-	    </div>
+	
+	
+	       
+	  
 	    
-	    
+	     <!-- 나머지 위젯을 옆으로 배치하기 위한 div 추가 -->
+	   <div class="div8">
 			<%-- 차트그리기 --%>
 			<figure class="highcharts-figure">
-			    <div id="weather_chart_container" class="widget-container"></div>
-			</figure> 
+			    <div id="weather_chart_container" class=" widget-container"></div>
+			</figure>
+			</div> 
+ </div>
 		
-		
-</div>
-
     
