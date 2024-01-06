@@ -29,7 +29,7 @@ public class Vacation_manageVO {
 	
 	public String getVacation_seq() {
 		return vacation_seq;
-	}
+	} 
 
 	public void setVacation_seq(String vacation_seq) {
 		this.vacation_seq = vacation_seq;

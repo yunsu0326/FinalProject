@@ -105,7 +105,7 @@ public class VacationDAO_imple implements VacationDAO {
 		return vacApprovedList;
 	}
 	
-		
+		 
 	//////////////////////////////////////////////////////////////////////
 	// 휴가 결재시 휴가관리테이블 업데이트 하기
 	@Override

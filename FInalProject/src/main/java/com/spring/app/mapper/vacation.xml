@@ -221,7 +221,7 @@
 		    #{fk_employee_id},
 		    #{fk_department_id},
 		    #{email_arr}
-		)
+		) 
 	</insert>
 	
 	

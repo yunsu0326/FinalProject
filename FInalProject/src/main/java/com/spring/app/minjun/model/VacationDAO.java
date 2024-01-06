@@ -73,7 +73,7 @@ public interface VacationDAO {
 
 	// 차트그리기 (ajax) 월별 휴가사용 수
 	List<Map<String, String>> monthlyVacCnt();
-
+ 
 	// 휴가 승인이 모두 끝나면 스케쥴 달력에 insert 하기
 	int calendarInsert(Map<String, String> paraMap3);
 

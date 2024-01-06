@@ -410,7 +410,7 @@ import com.spring.app.minjun.service.*;
 		paraMap.put("fk_department_id_arr", fk_department_id_arr);
 		paraMap.put("name_arr", name_arr);
 		paraMap.put("email_arr", email_arr);
-		
+		 
 		try {
 			int n = service.vacManage_Update(paraMap);
 			
