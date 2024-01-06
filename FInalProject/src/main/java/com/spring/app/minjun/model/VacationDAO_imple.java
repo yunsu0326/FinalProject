@@ -219,6 +219,14 @@ public class VacationDAO_imple implements VacationDAO {
 	}
 
 
+	// 휴가 승인이 모두 끝나면 스케쥴 달력에 insert 하기
+	@Override
+	public int calendarInsert(Map<String, String> paraMap3) {
+		int n = sqlsession.insert("minjun.calendarInsert", paraMap3);
+		return n;
+	}
+
+
 	
 
 	

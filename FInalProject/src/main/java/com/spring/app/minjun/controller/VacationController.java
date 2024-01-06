@@ -370,6 +370,9 @@ import com.spring.app.minjun.service.*;
 		String fk_employee_id = request.getParameter("fk_employee_id"); 		  // 사원번호
 		String vacation_type = request.getParameter("vacation_type"); 	  		  // 휴가종류
 		String daysDiff = request.getParameter("daysDiff"); 					  // 날짜차이
+		String fk_department_id = request.getParameter("fk_department_id"); 	  // 부서번호
+		String name = request.getParameter("name"); 	  						  // 이름
+		String email = request.getParameter("email"); 	  						  // 이메일
 
 		/*
 		System.out.println("vacation_seq => " + vacation_seq); 				 // vacation_seq => 14,10
@@ -378,7 +381,9 @@ import com.spring.app.minjun.service.*;
 		System.out.println("fk_employee_id => " + fk_employee_id); 		     // fk_employee_id => 9905,10000
 		System.out.println("vacation_type => " + vacation_type); 			 // vacation_type => 2,2
 		System.out.println("daysDiff => " + daysDiff); 					     // daysDiff => 1,10
+		System.out.println("fk_department_id => " + fk_department_id); 	     // fk_department_id => 200
 		*/
+		
 		
 		// System.out.println("vacation_type => " + vacation_type);
 		
@@ -388,6 +393,9 @@ import com.spring.app.minjun.service.*;
 		String[] fk_employee_id_arr = fk_employee_id.split(",");
 		String[] vacation_type_arr = vacation_type.split(",");
 		String[] daysDiff_arr = daysDiff.split(",");
+		String[] fk_department_id_arr = fk_department_id.split(",");
+		String[] name_arr = name.split(",");
+		String[] email_arr = email.split(",");
 		
 		// System.out.println("vacation_type_arr => " + vacation_type_arr);
 		
@@ -399,6 +407,9 @@ import com.spring.app.minjun.service.*;
 		paraMap.put("fk_employee_id_arr", fk_employee_id_arr);
 		paraMap.put("vacation_type_arr", vacation_type_arr);
 		paraMap.put("daysDiff_arr", daysDiff_arr);
+		paraMap.put("fk_department_id_arr", fk_department_id_arr);
+		paraMap.put("name_arr", name_arr);
+		paraMap.put("email_arr", email_arr);
 		
 		try {
 			int n = service.vacManage_Update(paraMap);

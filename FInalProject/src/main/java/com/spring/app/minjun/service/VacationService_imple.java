@@ -106,7 +106,7 @@ public class VacationService_imple implements VacationService {
 	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
 	public int vacManage_Update(Map<String, String[]> paraMap) throws Throwable {
 		
-		int n1=0, n2=0;
+		int n1=0, n2=0, n3=0;
 		
 		n1 = dao.vacManage_Update(paraMap); // 휴가 관리 테이블에서 vacation_confirm 컬럼을 2로 업데이트
 		
@@ -119,6 +119,11 @@ public class VacationService_imple implements VacationService {
 				String fk_employee_id = paraMap.get("fk_employee_id_arr")[i];
 				String daysDiff = paraMap.get("daysDiff_arr")[i];
 				String vacation_type = paraMap.get("vacation_type_arr")[i];
+				String fk_department_id = paraMap.get("fk_department_id_arr")[i];
+				String vacation_start_date_arr = paraMap.get("vacation_start_date_arr")[i];
+				String vacation_end_date_arr = paraMap.get("vacation_end_date_arr")[i];
+				String name_arr = paraMap.get("name_arr")[i];
+				String email_arr = paraMap.get("email_arr")[i];
 				
 				//System.out.println("daysDiff = " +daysDiff);
 				//System.out.println("fk_employee_id = " +fk_employee_id);
@@ -164,10 +169,26 @@ public class VacationService_imple implements VacationService {
 						n2 = dao.vacUpdate_plus(paraMap2);
 					break;
 				}
+				System.out.println("n2 => "+n2);
+				if(n2 == 1) {
+					Map<String, String> paraMap3 = new HashMap<>();
+					paraMap3.put("fk_employee_id", fk_employee_id);
+					paraMap3.put("fk_department_id", fk_department_id);
+					paraMap3.put("vacation_start_date_arr", vacation_start_date_arr);
+					paraMap3.put("vacation_end_date_arr", vacation_end_date_arr);
+					paraMap3.put("name_arr", name_arr);
+					paraMap3.put("email_arr", email_arr);
+					
+					System.out.println("paraMap3 => "+paraMap3);
+					// paraMap3=> {fk_department_id=200, fk_employee_id=9, vacation_end_date_arr=2024-01-11, vacation_start_date_arr=2024-01-09}
+					
+					// 휴가 승인이 모두 끝나면 스케쥴 달력에 insert 하기
+					n3 = dao.calendarInsert(paraMap3);
+				}
 			}
 		} 
 		
-		return n1*n2;
+		return n1*n2*n3;
 	}
 
 
