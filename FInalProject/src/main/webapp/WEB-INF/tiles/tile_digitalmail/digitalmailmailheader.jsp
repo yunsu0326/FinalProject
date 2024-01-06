@@ -10,40 +10,42 @@
   $(document).ready(function(){
 	  
 	  $("li.searchopt").click(function (e) {
-		    alert('헤더에서 클릭됨!');
+		    
 		    $("input[name='searchType']").val($(e.target).text());
-	  		
+		    
 		    if($("input[name='searchType']").val()=="이름"){
 	  			$("input[name='searchType']").val("name") 
 	  		}
+		    
 		    if($("input[name='searchType']").val()=="제목"){
 	  			$("input[name='searchType']").val("subject") 
 	  		}
+		    
 		    if($("input[name='searchType']").val()=="직급"){
 	  			$("input[name='searchType']").val("job") 
 	  		}
-	  
-	  
-	  
+		    
+		    if($("input[name='searchType']").val()=="내용"){
+		    	alert('내용은 자동완성 기능이 제공되지 않습니다. 제목 검색으로 이동합니다.');
+		    	$("input[name='searchType']").val("subject") 
+	  		}
+
 	  });
 
-      
       $("input:text[name='searchWord']").bind("keyup", function(e){
 		  if(e.keyCode == 13){ // 엔터를 했을 경우 
 			  alert("가보자고");
 			  goSearch();
 		  }  
 	  });
-	  
-	  
+      
 	  // 검색시 검색조건 및 검색어값 유지시키기
 	  if(${not empty requestScope.paraMap}) {
 		  $("input[name='searchType']").val("${requestScope.paraMap.searchType}");
 		  $("input[name='searchWord']").val("${requestScope.paraMap.searchWord}");
 	  } 
 	  
-	  
-	  <%-- === #107. 검색어 입력시 자동글 완성하기 2 === --%>
+	  <%-- === 검색어 입력시 자동글 완성하기 === --%>
 	  $("div#displayList").hide();
 	  
 	  $("input[name='searchWord']").keyup(function(){
@@ -53,17 +55,14 @@
 		  
 		  if(wordLength == 0) {
 			  $("div#displayList").hide();
-			  // 검색어가 공백이거나 검색어 입력후 백스페이스키를 눌러서 검색어를 모두 지우면 검색된 내용이 안 나오도록 해야 한다.
 		  }
-		  
 		  else {
-		  
 			  if( $("input[name='searchType']").val() == "subject" || 
 				  $("input[name='searchType']").val() == "name" ||
 				  $("input[name='searchType']").val() == "job") {
 			  
 				  $.ajax({
-					  url:"<%= ctxPath%>/wordSearchShow.gw",
+					  url:"<%= ctxPath%>/emailwordSearchShow.gw",
 					  type:"get",
 					  data:{"searchType":$("input[name='searchType']").val()
 						   ,"searchWord":$("input[name='searchWord']").val()},
@@ -73,7 +72,6 @@
 				    	  console.log(JSON.stringify(json));
 				    	  
 				    	  if(json.length > 0) {
-				    		  // alert("시발");
 				    		  
 				    		  let v_html = ``;
 				    		  
@@ -83,7 +81,7 @@
 		
 				    			  const len = $("input[name='searchWord']").val().length; 
 
-				    		      const result = word.substring(0, idx) + "<span style='color:purple;'>"+word.substring(idx, idx+len)+"</span>" + word.substring(idx+len); 
+				    		      const result = word.substring(0, idx) + "<span style='color:green;'>"+word.substring(idx, idx+len)+"</span>" + word.substring(idx+len); 
 				    			  
 				    		      v_html += `<span style='cursor:pointer;' class='result'>\${result}</span><br>`; 
 				    		  
@@ -112,14 +110,12 @@
 	  $(document).on("click", "span.result", function(){
 		  const word = $(this).text();
 		  $("input[name='searchWord']").val(word); // 텍스트박스에 검색된 결과의 문자열을 입력해준다. 
-		  $("div#displayList").hide();
-		  alert("가보자고12");
+		  $("div#displayList").hide(); 
+		  
 		  goSearch();
 		 
 	  });
 	  
-
-      
   });
   
   function goSearch() {
@@ -143,7 +139,7 @@
 			<input type="text" name="searchWord" id="searchWord" placeholder="Search email">
 			<input type="text" style="display: none;"/> <%-- form 태그내에 input 태그가 오로지 1개 뿐일경우에는 엔터를 했을 경우 검색이 되어지므로 이것을 방지하고자 만든것이다. --%> 
 		<div id="displayList" style="display: block; max-height: 80px; overflow-y: auto;">
-			<%-- 메일 자동환성 --%>
+			<%-- 메일 자동완성 --%>
 		</div>
 		<div class="dropdown">
 	    	<button type="button" class="dropdown-toggle" id="searchDropdown" data-toggle="dropdown" style="cursor: pointer;">
@@ -157,14 +153,17 @@
 			</ul>
 		</div>
 	</div>
+	
 	<form name="searchFrm">
 		<input type="hidden" name="searchWord"/>
-		<input type="hidden" name="searchType"/>
+		<input type="hidden" name="searchType" value="subject"/>
 	</form>
+	
 	<!-- 오른쪽-->
 	<div class="mr-4 textbox" style="display: flex;">
+	
 		<div class="icon_set mr-3">
-			<span class="material-icons-outlined icon_img" style="font-size: 28pt;">forward_to_inbox</span>
+			<a href="https://mail.naver.com"><span class="material-icons-outlined icon_img" style="font-size: 28pt;">forward_to_inbox</span></a>
 			<span class="icon_text">외부메일</span>
 		</div>
 

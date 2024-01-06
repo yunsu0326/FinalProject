@@ -5,7 +5,6 @@
 %>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
-
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
       rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -21,11 +20,11 @@
 		      alert('섹션 클릭됨!');
 	      	  // 기존에 선택된 섹션들에서 'section_selected' 클래스 제거
 	          $('div.section').removeClass('section_selected');
-
 	          // 현재 클릭된 섹션에 'section_selected' 클래스 추가
 	          $(this).addClass('section_selected');
 	      });
 		  	
+	      /* 안쓰는듯?
 	      $('div.opti').click(function() {
 	         alert('시발섹션 클릭됨!');
 
@@ -34,6 +33,7 @@
 	         $('div.show').addClass('section_selected');
 	        	
 	      });
+		  */
 		  
 	      // 각 섹션에 대한 클릭 이벤트 리스너 등록
 	  	  $('div.opt').click(function() {
@@ -50,6 +50,7 @@
 	          $('div.hide .list_name').text(menuNameText);
 	      });
 	      
+		  // 체크 메뉴
 	      $(".digitalmail_check").click(function(){
 	          let bFlag = false;
 	          $(".digitalmail_check").each(function(){
@@ -68,17 +69,11 @@
       });
       
       // 함수 정의 시작      
+      
+      // 체크박스 전체 체크 해제 
       function allCheckBox() {
-          var bool = $("#all_check").is(":checked");
           
-          /*
-          
-          	$("#all_check").is(":checked"); 은
-                     선택자 $("#all_check") 이 체크되어지면 true를 나타내고,
-                     선택자 $("#all_check") 이 체크가 해제되어지면 false를 나타내어주는 것이다.
-          
-    	  */
-          
+    	  var bool = $("#all_check").is(":checked");          
           $(".digitalmail_check").prop("checked", bool);
         
       }// end of function allCheckBox()------------------------- 다했음
@@ -133,10 +128,11 @@
 
 
 	<!-- 결과물 시작하기 <div class="main_body"> -->
-	<!-- Inicio Email List  <div class="emailList"> -->
-	<!-- Inicio Email List Settings-->
-	<div class="emailList_settings">
+	<!-- Email List  <div class="emailList"> -->
+	<!-- 메일함 리스트 세팅-->
 	
+	<div class="emailList_settings">
+		
 		<!--왼쪽 세팅-->
 		<div class="emailList_settingsLeft">
 	        <input type="checkbox" id="all_check" onclick="allCheckBox();">                        
@@ -153,21 +149,16 @@
 				<span class="icon_text">휴지통</span>
 			</div>                        
 		</div>
+        <!--왼쪽 세팅-->
+        
         <!--오른쪽 세팅-->
         <div class="emailList_settingsRight">
-			${requestScope.pageBar}
-			<%--
-			<div class="icon_set">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">chevron_left</span>
-				<span class="icon_text">이전</span>
-			</div>
-			<div class="icon_set">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">chevron_right</span>
-				<span class="icon_text">다음</span>
-			</div>
-            --%>    
+			${requestScope.pageBar}  
 		</div>
+		<!--오른쪽 세팅-->
+		
 	</div>
+	
 	<!--셀렉션 세팅-->
 	<div class="emailList_sections">
     	<div class="section section_selected show">
@@ -180,8 +171,10 @@
         </div>
 	</div> 
 	<!--셀렉션 세팅 끝-->
+	
 	<!--이메일 리스트-->
 	<div class="emailList_list">
+		
 		<c:if test="${empty requestScope.emailVOList}">
     		<div class="emailRow" style="width: 100%; display: flex;">
 				<span style="display:inline-block; margin: 0 auto;">받은 메일이 없습니다.</span>
@@ -190,8 +183,9 @@
 		
 		<c:if test="${not empty requestScope.emailVOList}">
 			<c:forEach var="emailVO" items="${requestScope.emailVOList}" varStatus="status">
-				<div class="emailRow" onclick = "selectOneEmail('${emailVO.send_email_seq}')">
-					<!--이메일 옵션 or 카테고리-->
+				<div class="emailRow">
+					
+					<!-- 즐겨찾기 여부 -->
 					<div class="emailRow_options">
 						<input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
 		                <c:if test="${emailVO.receipt_favorites==0}">
@@ -201,228 +195,33 @@
 		                	<span class="material-icons-outlined ml-2" style="color: red;">favorite</span>
 		                </c:if>
 					</div>
-						<c:if test="${emailVO.email_receipt_read_count==0}">
-		                	<span class="material-icons-outlined ml-2">mark_email_unread</span>
-		                </c:if>
-		                <c:if test="${emailVO.email_receipt_read_count==1}">
-		                	<span class="material-icons-outlined ml-2" style="color: red;">drafts</span>
-		                </c:if>		
-						<span class="emailRow_title ml-2">${emailVO.job_name}&nbsp;${emailVO.name}</span>
-						<!-- 메시지 미리보기-->
-						<div class="emailRow_message">
+					<!-- 즐겨찾기 여부 -->
+					
+					<!-- 읽음 여부 정보 -->
+					<c:if test="${emailVO.email_receipt_read_count==0}">
+	                	<span class="material-icons-outlined ml-2">mark_email_unread</span>
+	                </c:if>
+	                <c:if test="${emailVO.email_receipt_read_count==1}">
+	                	<span class="material-icons-outlined ml-2" style="color: red;">drafts</span>
+	                </c:if>		
+			        <!-- 읽음 여부 정보 -->
+			                
+					<!-- 수신자 정보 -->
+					<span class="emailRow_title ml-2">${emailVO.job_name}&nbsp;${emailVO.name}</span>
+					<!-- 수신자 정보 -->
+					
+					<!-- 제목-->
+					<div class="emailRow_message" onclick = "selectOneEmail('${emailVO.send_email_seq}')">
 						<span>${emailVO.email_subject}</span>
-						</div>
-						<!-- 메시지 미리보기-->
-						<!--전송시간-->
-						<span class="mr-3">${emailVO.send_time}</span>
 					</div>
-				</c:forEach>
-			</c:if>
-				
-		<!--가로 한줄-->
-		<div class="emailRow" onclick = "selectOneEmail('25')">
-			<!--이메일 옵션 or 카테고리-->
-			<div class="emailRow_options">
-				<input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
-                <span class="material-icons-outlined ml-2" style="color: red;">favorite</span>
-                <span class="material-icons-outlined ml-2">drafts</span>
-			</div>
-			<!--이메일 옵션 or 카테고리-->			
-			<span class="emailRow_title ml-2">박승우</span>
-			<!-- 메시지 미리보기-->
-			<div class="emailRow_message">
-				<span>입사를 환영합니다.</span>
-			</div>
-			<!-- 메시지 미리보기-->
-			<!--전송시간-->
-			<span class="mr-3">2023-12-30 15:15:20</span>
-
-		</div>
-		<!--가로 한줄 끝-->
-                    
-                    <!--Fim do email Row-->
-                    <div class="emailRow">
-                        <div class="emailRow_options">
-                            <input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
-                            <span class="material-icons-outlined ml-2" style="color: red;">mark_email_unread</span>
-                            <span class="material-icons-outlined ml-2">drafts</span>
-                            
-                        </div><!--Fechamento options-->
+					<!-- 제목 -->
 						
-						<span class="emailRow_title ml-2">박승우</span>
+					<!--전송시간-->
+					<span class="mr-3" onclick = "selectOneEmail('${emailVO.send_email_seq}')">${emailVO.send_time}</span>
+					<!--전송시간-->
+				</div>
+			</c:forEach>
+		</c:if>
+	</div>
 
-                        <!--Inicio do message-->
-                        <div class="emailRow_message">
-                        <span>입사를 환영합니다.
-                        </span>
-                        </div><!--Fim do Message-->
-
-                        <!--Inicio time-->
-                        <span class="mr-3">2023-12-30 15:15:20</span>
-
-                    </div>
-                    <!--Fim do email Row-->
-                    
-                    <!--Fim do email Row-->
-                    <div class="emailRow">
-                        <div class="emailRow_options">
-                            <input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
-                            <span class="material-icons-outlined ml-2" style="color: red;">favorite</span>
-                            <span class="material-icons-outlined ml-2">drafts</span>
-                            
-                        </div><!--Fechamento options-->
-						
-						<span class="emailRow_title ml-2">박승우</span>
-
-                        <!--Inicio do message-->
-                        <div class="emailRow_message">
-                        <span>입사를 환영합니다.
-                        </span>
-                        </div><!--Fim do Message-->
-
-                        <!--Inicio time-->
-                        <span class="mr-3">2023-12-30 15:15:20</span>
-
-                    </div>
-                    <!--Fim do email Row-->
-                    
-                    <!--Fim do email Row-->
-                    <div class="emailRow">
-                        <div class="emailRow_options">
-                            <input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
-                            <span class="material-icons-outlined ml-2">favorite_border</span>
-                            <span class="material-icons-outlined ml-2">mark_email_unread</span>
-                            
-                        </div><!--Fechamento options-->
-						
-						<span class="emailRow_title ml-2">박승우</span>
-
-                        <!--Inicio do message-->
-                        <div class="emailRow_message">
-                        <span>입사를 환영합니다.
-                        </span>
-                        </div><!--Fim do Message-->
-
-                        <!--Inicio time-->
-                        <span class="mr-3">2023-12-30 15:15:20</span>
-
-                    </div>
-                    <!--Fim do email Row-->
-                    
-                    <!--Fim do email Row-->
-                    <div class="emailRow">
-                        <div class="emailRow_options">
-                            <input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
-                            <span class="material-icons-outlined ml-2" style="color: red;">favorite</span>
-                            <span class="material-icons-outlined ml-2">drafts</span>
-                            
-                        </div><!--Fechamento options-->
-						
-						<span class="emailRow_title ml-2">박승우</span>
-
-                        <!--Inicio do message-->
-                        <div class="emailRow_message">
-                        <span>입사를 환영합니다.
-                        </span>
-                        </div><!--Fim do Message-->
-
-                        <!--Inicio time-->
-                        <span class="mr-3">2023-12-30 15:15:20</span>
-
-                    </div>
-                    <!--Fim do email Row-->
-                    
-                    <!--Fim do email Row-->
-                    <div class="emailRow">
-                        <div class="emailRow_options">
-                            <input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
-                            <span class="material-icons-outlined ml-2" style="color: red;">favorite</span>
-                            <span class="material-icons-outlined ml-2">drafts</span>
-                            
-                        </div><!--Fechamento options-->
-						
-						<span class="emailRow_title ml-2">박승우</span>
-
-                        <!--Inicio do message-->
-                        <div class="emailRow_message">
-                        <span>입사를 환영합니다.
-                        </span>
-                        </div><!--Fim do Message-->
-
-                        <!--Inicio time-->
-                        <span class="mr-3">2023-12-30 15:15:20</span>
-
-                    </div>
-                    <!--Fim do email Row-->
-                    
-                    <!--Fim do email Row-->
-                    <div class="emailRow">
-                        <div class="emailRow_options">
-                            <input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
-                            <span class="material-icons-outlined ml-2" style="color: red;">favorite</span>
-                            <span class="material-icons-outlined ml-2">drafts</span>
-                            
-                        </div><!--Fechamento options-->
-						
-						<span class="emailRow_title ml-2">박승우</span>
-
-                        <!--Inicio do message-->
-                        <div class="emailRow_message">
-                        <span>입사를 환영합니다.
-                        </span>
-                        </div><!--Fim do Message-->
-
-                        <!--Inicio time-->
-                        <span class="mr-3">2023-12-30 15:15:20</span>
-
-                    </div>
-                    <!--Fim do email Row-->
-                    
-                    <!--Fim do email Row-->
-                    <div class="emailRow">
-                        <div class="emailRow_options">
-                            <input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
-                            <span class="material-icons-outlined ml-2" style="color: red;">favorite</span>
-                            <span class="material-icons-outlined ml-2">drafts</span>
-                            
-                        </div><!--Fechamento options-->
-						
-						<span class="emailRow_title ml-2">박승우</span>
-
-                        <!--Inicio do message-->
-                        <div class="emailRow_message">
-                        <span>입사를 환영합니다.
-                        </span>
-                        </div><!--Fim do Message-->
-
-                        <!--Inicio time-->
-                        <span class="mr-3">2023-12-30 15:15:20</span>
-
-                    </div>
-                    <!--Fim do email Row-->
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                   
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-
-   
-                    
-                </div>
-                <!-- </div> Fim do Email List list-->
-        <!--</div> Fim do Email List-->
-
-
-     
-<!-- 결과물 시작하기 -->
      

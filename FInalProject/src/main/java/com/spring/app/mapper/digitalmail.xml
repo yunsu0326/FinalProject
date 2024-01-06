@@ -88,5 +88,68 @@
 		) T
 		WHERE RNO BETWEEN #{startRno} AND #{endRno}
 	</select>
+	
+	<!-- === 검색어 입력시 자동글 완성하기  ===  -->
+	<select id="emailWordSearchShow" parameterType="HashMap" resultType="String"> 
+	    <choose>
+		   <when test='searchType == "subject"'>
+		      select e.email_subject
+		   </when>
+		   <when test='searchType == "name"'>
+		      select distinct p.name 
+		   </when>
+		   	<when test='searchType == "job"'>
+		      select distinct j.job_name  
+		   </when>
+		   <otherwise></otherwise>
+		</choose> 
+	    from tbl_receipt_email r
+		join tbl_email e 
+		on r.fk_send_email_seq = e.send_email_seq
+		join tbl_employees p 
+		on p.email = e.fk_sender_email
+		join tbl_jobs j 
+		on j.job_id = p.fk_job_id 
+	    <choose>
+		   <when test='searchType == "subject" and searchWord != ""'>
+		      and lower(e.email_subject) like '%'||lower(#{searchWord})||'%' 
+		   </when>
+		   <when test='searchType == "name" and searchWord != ""'>
+		   	  and lower(p.name) like '%'||lower(#{searchWord})||'%'
+		   </when>
+		   <otherwise>
+		      and lower(j.job_name) like '%'||lower(#{searchWord})||'%'
+		   </otherwise>
+		</choose>
+		<choose>
+		   <when test='searchType == "subject"'>
+		      order by e.send_email_seq desc
+		   </when>
+		   <when test='searchType == "name"'>
+		      order by p.name  asc
+		   </when>
+		   <when test='searchType == "job"'>
+		      order by j.job_name asc
+		   </when>
+		</choose> 
+	</select>
+	
+	<!-- E메일리스트 가져오기 -->
+	<select id="getEmailList" resultType="String"> 
+   		select '"'||t.team_name||' '||j.job_name||' '||e.name||'<![CDATA[<]]>'||e.email||'<![CDATA[>]]>'||'"' as empinfo , t.team_name, d.department_name
+   		from tbl_employees e
+   		left join tbl_jobs j
+   		on e.FK_JOB_ID = j.job_id
+   		left join tbl_department d
+   		on e.FK_DEPARTMENT_ID = d.DEPARTMENT_ID
+   		left join tbl_team t
+   		on e.fk_team_id = t.team_id
+   		where e.employee_id != 7777
+	</select>
+	
+	<select id="getEmailseq" resultType="String">
+		select emailseq.nextval AS emailseq 
+		from dual					
+	</select>
 
 </mapper>

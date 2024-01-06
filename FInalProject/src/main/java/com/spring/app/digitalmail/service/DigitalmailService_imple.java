@@ -25,11 +25,9 @@ public class DigitalmailService_imple implements DigitalmailService {
 		int cnt = dao.getTotalCount(paraMap);
 		return cnt;
 	}
-	
 	// 전자메일 시작
 	@Override
 	public ModelAndView digitalmail(ModelAndView mav, Map<String, String> paraMap) {
-		
 		List<EmailVO> emailVOList = null;
 		emailVOList = dao.SelectMyEmail_withPaging(paraMap);
 		// System.out.println("이거 떠야되는데 =>"+emailVOList.size());
@@ -37,5 +35,23 @@ public class DigitalmailService_imple implements DigitalmailService {
 		mav.setViewName("digitalmail/digitalmail.tiles_digitalmail");	
 		return mav;
 	}
+	
+	// 이메일 키워드 입력시 자동글 완성하기 //
+	@Override
+	public List<String> emailWordSearchShow(Map<String, String> paraMap) {
+		List<String> wordList = dao.emailWordSearchShow(paraMap);
+		return wordList;
+	}
+	
+	// === 이메일 쓰기 페이지 이동  === //
+	@Override
+	public ModelAndView digitalmailwrite(ModelAndView mav) {
+		List<String> EmailList = dao.getEmailList();
+		mav.addObject("EmailList", EmailList);
+		mav.setViewName("digitalmailwrite/digitalmailwrite.tiles_digitalmail");
+		return mav;
+	}
+	
+	
 
 }

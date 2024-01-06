@@ -338,23 +338,23 @@
 				  if(oxEmail == true){
 						
 					  if(emailOnly == '${sessionScope.loginuser.email}'){
-						  $("#recipient").append('<div class="emailinf o_span col-5 myMail" style="display: flex; align-items: center;">' +
-						  '<span class="removeEmail" name="removeEmail" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + getEmail +			    			
-						  '<span class="material-icons-outlined" style="margin-left: 5px;">clear</span></span></div>');
+						  $("#recipient").append('<div class="emailinf o_span col-5 myMail">' +
+						  '<span class="removeEmail" name="removeEmail">' + getEmail +			    			
+						  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
 
 						  $("#selfMail").prop("checked", true);
 						}
 					  else{
-						  $("#recipient").append('<div class="emailinf o_span col-5" style="display: flex; align-items: center;">' +
-						  '<span class="removeEmail" name="removeEmail" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + getEmail +
-						  '<span class="material-icons-outlined" style="margin-left: 5px;">clear</span></span></div>');
+						  $("#recipient").append('<div class="emailinf o_span col-5">' +
+						  '<span class="removeEmail" name="removeEmail">' + getEmail +
+						  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
 					
 						}
 					}
 					else{
-						$("#recipient").append('<div class="emailinf x_span col-5" style="display: flex; align-items: center;">' +
-		    			'<span class="removeEmail" name="removeEmail" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + getEmail +
-		    			'<span class="material-icons-outlined" style="margin-left: 5px;">clear</span></span></div>');
+						$("#recipient").append('<div class="emailinf x_span col-5">' +
+		    			'<span class="removeEmail" name="removeEmail">' + getEmail +
+		    			'<span class="material-icons-outlined x_icon" style="margin-left: 5px;">clear</span></span></div>');
 					}
 					$("input#receieveEmail").val("");
 					
@@ -410,24 +410,24 @@
 				  
 				  if(oxEmail == true){
 					  if(emailOnly == '${sessionScope.loginuser.email}'){
-						  $("#recipientplus").append('<div class="emailinf o_span col-5 myMail" style="display: flex; align-items: center;">' +
-						  '<span class="removeEmail" name="removeEmail" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + getEmail +
-						  '<span class="material-icons-outlined" style="margin-left: 5px;">clear</span></span></div>');
+						  $("#recipientplus").append('<div class="emailinf o_span col-5 myMail">' +
+						  '<span class="removeEmail" name="removeEmail">' + getEmail +
+						  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
 						  $("#selfMail").prop("checked", true);
 							
 						}
 						
 						else{
-							$("#recipientplus").append('<div class="emailinf o_span col-5" style="display: flex; align-items: center;">' +
-	    					'<span class="removeEmail" name="removeEmail" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + getEmail +
-	    					'<span class="material-icons-outlined" style="margin-left: 5px;">clear</span></span></div>');
+							$("#recipientplus").append('<div class="emailinf o_span col-5">' +
+	    					'<span class="removeEmail" name="removeEmail">' + getEmail +
+	    					'<span class="material-icons-outlined x_icon">clear</span></span></div>');
 					
 						}
 					}
 					else{
-						$("#recipientplus").append('<div class="emailinf x_span col-5" style="display: flex; align-items: center;">' +
-		    			'<span class="removeEmail" name="removeEmail" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + getEmail +
-		    			'<span class="material-icons-outlined" style="margin-left: 5px;">clear</span></span></div>');
+						$("#recipientplus").append('<div class="emailinf x_span col-5">' +
+		    			'<span class="removeEmail" name="removeEmail">' + getEmail +
+		    			'<span class="material-icons-outlined x_icon">clear</span></span></div>');
 					}
 					$("input[name='receieveplusEmail']").val("");
 					
@@ -487,24 +487,24 @@
 				if(oxEmail == true){
 					
 					if(emailOnly == '${sessionScope.loginuser.email}'){
-						$("#recipientplushidden").append('<div class="emailinf o_span col-5 myMail" style="display: flex; align-items: center;">' +
-		    					'<span class="removeEmail" name="removeEmail" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + getEmail +
-		    					'<span class="material-icons-outlined" style="margin-left: 5px;">clear</span></span></div>');
+						$("#recipientplushidden").append('<div class="emailinf o_span col-5 myMail">' +
+		    					'<span class="removeEmail" name="removeEmail">' + getEmail +
+		    					'<span class="material-icons-outlined x_icon">clear</span></span></div>');
 						$("#selfMail").prop("checked", true);
 						
 					}
 					
 					else{
-						$("#recipientplushidden").append('<div class="emailinf o_span col-5" style="display: flex; align-items: center;">' +
-    					'<span class="removeEmail" name="removeEmail" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + getEmail +
-    					'<span class="material-icons-outlined" style="margin-left: 5px;">clear</span></span></div>');
+						$("#recipientplushidden").append('<div class="emailinf o_span col-5">' +
+    					'<span class="removeEmail" name="removeEmail">' + getEmail +
+    					'<span class="material-icons-outlined x_icon">clear</span></span></div>');
 				
 					}
 				}
 				else{
-					$("#recipientplushidden").append('<div class="emailinf x_span col-5" style="display: flex; align-items: center;">' +
-	    			'<span class="removeEmail" name="removeEmail" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + getEmail +
-	    			'<span class="material-icons-outlined" style="margin-left: 5px;">clear</span></span></div>');
+					$("#recipientplushidden").append('<div class="emailinf x_span col-5" >' +
+	    			'<span class="removeEmail" name="removeEmail" >' + getEmail +
+	    			'<span class="material-icons-outlined x_icon">clear</span></span></div>');
 				}
 				$("input[name='receievehiddenEmail']").val("");
 				
@@ -546,9 +546,9 @@
 	    	 	}
 	        	
 	        	
-	        	$("#recipient").append('<div class="emailinf o_span col-5 myMail" style="display: flex; align-items: center;">' +
-    					'<span class="removeEmail" name="removeEmail" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + emailinf +
-    					'<span class="material-icons-outlined" style="margin-left: 5px;">clear</span></span></div>');
+	        	$("#recipient").append('<div class="emailinf o_span col-5 myMail">' +
+    					'<span class="removeEmail" name="removeEmail">' + emailinf +
+    					'<span class="material-icons-outlined x_icon">clear</span></span></div>');
 	        	
 	        	receieveEmailList.push('${sessionScope.loginuser.email}');
 	        	
@@ -615,7 +615,7 @@
 		});
 		
 		// 파일 드래그 드랍 시작
-		var obj = $("#dropzone");
+		var obj = $("#dropzone_in");
 
 	     obj.on('dragenter', function (e) {
 	          e.stopPropagation();
@@ -661,16 +661,8 @@
 	    	 		  }
 	    	 	}
 	    	 	
-
 	    	 	console.log(all_file);
 	    	 	
-	    	 // FormData의 값 확인
-	    	 /*
-	    	 	 for (var pair of formData.entries()) {
-	    	 	  console.log(pair[0]+ ', ' + pair[1]);
-	    	 	  console.log(pair[1])
-	    	 	} 
-	    	 */
 				$(this).parent().remove();
 				uploadFileCheck();
 			});
@@ -806,8 +798,8 @@
   	          fileSize = filesize_tostirng(file.size);
   	          fileSizeList.push(fileSize);
   	        
-  	          $('#dropzone').append('<div class="emailinf o_span uploadFile col-5" style="display: flex; align-items: center;">'
-  	          +'<span class="removeFile" name="removeFile" file_size="'+file.size+'"file_name="'+file.name+'" style="font-size: 10pt; margin: 0 auto; display: flex; align-items: center;">' + file.name + fileSize + '<span class="material-icons-outlined" style="margin-left: 5px;">clear</span>');
+  	          $('#dropzone_in').append('<div class="emailinf o_span uploadFile col-5">'
+  	          +'<span class="removeFile" name="removeFile" file_size="'+file.size+'"file_name="'+file.name+'">' + file.name + fileSize + '<span class="material-icons-outlined x_icon">clear</span>');
   	          
   	          fileseq++;
   	          uploadFileCheck();
@@ -817,9 +809,12 @@
   	function uploadFileCheck(){
 		if($('.uploadFile').length){
 			$('div#dropzoneMessage').hide();
+			var file_len = $('.uploadFile').length 
+			$('span#file_length').span(file_len + '개');
 		}
 		else{
 			$('div#dropzoneMessage').show();
+			$('span#file_length').hide();
 		}
 	}
       
@@ -834,19 +829,36 @@
 		  top: -6px;
 		  height: 32px;
 		  width: 4px;
-		  background: #e53637;
+		  background: rgb(3, 199, 90);
 		  content: "";
       }
       
       .o_span{
           padding: 1px 5px;
           margin: 1px 5px;
-          background-color: #E3F2FD;
+          background-color: rgb(3, 199, 90);
+          display: flex; 
+          align-items: center;
+          color: white !important;
 	  }
       .x_span{
 	      padding: 1px 5px;
           margin: 1px 5px;
           background-color: lightcoral;
+		  display: flex; 
+          align-items: center;
+          color: white !important;
+      }
+      
+      .removeEmail{
+          font-size: 10pt; 
+          margin: 0 auto; 
+          display: flex; 
+          align-items: center;"
+      }
+      
+      .x_icon{
+      	margin-left: 5px;
       }
       
       /* 파일 필드 숨기기 */
@@ -861,9 +873,105 @@
 		  border: 0;
 		}
 		
-		#dropzone{
-			min-height: 100px;
-			border: dashed 2px gray;
+
+		.uploadFile{
+		
+			display: flex; 
+			align-items: center;"
+		
+		}
+		
+		.removeFile{
+			font-size: 10pt; 
+			margin: 0 auto; 
+			display: flex; 
+			align-items: center;"
+		
+		}
+		
+		.btn_set{
+		
+			display: flex; 
+			align-items: center; 
+			border-bottom-width: 2px; 
+			padding: 15px; 
+			min-width: 200px; 
+			color: black; 
+			border-width: 0; 
+			cursor: pointer;
+		}
+		
+		.emailwrite{
+			background-color: #f4f5f6
+		}
+		.emailwritezon{
+			margin:0px auto; 
+			width:90%; 
+		}
+		
+		.section-title{
+			display: flex; 
+			align-items: center;
+			margin-top: 20px;
+			height: 30px; 
+		}
+		
+		.left_span{
+			font-weight: 600;
+			line-height: 21px;
+			text-transform: uppercase;
+			padding-left: 20px;
+			position: relative; 
+			font-size: 18px; 
+			width: 10%;"
+		}
+		
+		#check_span{
+			font-size: 10px;
+		}
+		
+		#check_set{
+			display: flex; 
+			align-items: center;
+			width: 8%;
+		}
+		
+		.email_input{
+			margin-left:18%; 
+			width: 95%
+		}
+		
+		.sminput{
+			width: 50%; 
+			display: flex; 
+			align-items: center; 
+			cursor: pointer; 
+			color: black;
+		}
+		
+		.dropzone{
+			margin-top: 25px;
+			margin-bottom: 25px
+			min-height: 200px;
+			border: dashed 2px rgb(3, 199, 90);
+			box-sizing: border-box;
+			display: flex; 
+			align-items: center;
+			justify-content: center; 
+		}
+		
+		#dropzone_in{
+			display: flex; 
+			align-items: center; 
+			justify-content: center; 
+			width:95%; 
+			min-height: 200px;
+			max-height: 200px;
+			overflow-y: scroll;
+			font-size: 24px;
+			color: red;
+			font-weight: bold;
+			
 		}
 		 
   </style>
@@ -871,58 +979,17 @@
 	
 	<!-- 결과물 시작하기 <div class="main_body"> -->
 	<!-- Inicio Email List  <div class="emailList"> -->
-	<!-- Inicio Email List Settings-->
-	<div class="emailList_settings">
-		<!--왼쪽 세팅-->
-		<div class="emailList_settingsLeft">
-			<div class="icon_set ml-3 mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">redo</span>
-				<span class="icon_text">보내기</span>
-			</div>
-			<div class="icon_set mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt; color: red;">favorite</span>
-				<span class="icon_text">예약</span>
-			</div>						           
-			<div class="icon_set mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">delete</span>
-				<span class="icon_text">내게쓰기</span>
-			</div>
-			<div class="icon_set mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">delete</span>
-				<span class="icon_text">임시저장</span>
-			</div>                         
-		</div>
-        <!--오른쪽 세팅-->
-        <div class="emailList_settingsRight">
-			<div class="icon_set">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">chevron_left</span>
-				<span class="icon_text">이전</span>
-			</div>
-			<div class="icon_set">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">chevron_right</span>
-				<span class="icon_text">다음</span>
-			</div>   
-		</div>
-	</div>
-	
+	<!-- Inicio Email List Settings-->	
 	<!--셀렉션 세팅-->
 	<div class="emailList_sections">
     	<div class="section section_selected show">
         	<span class="material-icons-outlined" style="font-size:24px;"> send </span> 
 			<span class="list_name">메일쓰기</span>
 		</div>
-		<div class="section">
-			<span class="material-icons-outlined">save_alt</span> 
-            <span class="list_name">임시저장메일선택</span>
-        </div>
-        <div class="section">
-			<span class="material-icons-outlined">quiz</span> 
-            <span class="list_name">전달하기</span>
-        </div>
-        <div class="ml-auto" style="display: flex; align-items: center; border-bottom-width: 2px; padding: 15px; min-width: 200px; color: black; border-width: 0; cursor: pointer;">
+		
+        <div class="ml-auto btn_set">
 			<button type="button" id="btnWrite" class="mr-2">메일보내기</button>
 			<button class="mr-2">임시저장하기</button>
-			<button class="mr-2">내게쓰기</button>
 		</div>
 	</div> 
 	<!--셀렉션 세팅 끝-->
@@ -930,122 +997,86 @@
 	
 	<!--이메일 쓰기-->
 	
-	<div class="emailList_list " style="background-color: #f4f5f6">		
-		<div style="margin:0px auto; width:90%; background-color: white;">
+	<div class="emailwrite">		
+		<div class="emailwritezon">
 			<form name="sendFrm" enctype="multipart/form-data">
-			<div style="background-color: #f4f5f6;">
-				<div style="margin-bottom: 30px;"><span style="color: #f4f5f6">dd</span></div>
-				
-				<div class="section-title" style="background-color: #f4f5f6; display: flex; align-items: center; ">
-	       			<span class="left_span" style=" font-weight: 600;
-						line-height: 21px;
-						text-transform: uppercase;
-						padding-left: 20px;
-						position: relative; font-size: 18px; width: 10%;">받는사람</span>
-					<div style="width: 8%;">
+			<div>
+				<div style="height: 20px;"></div>
+				<div class="section-title">
+	       			<span class="left_span">받는사람</span>
+					<div id="check_set" >
 						<input type="checkbox" id="individual"/>
 						<input type="hidden" id="individualval" name="individualval" value="0" />
-						<span>개인별</span>
+						<span id="check_span">개인별</span>
 					</div>
 					<input type="text" id="receieveEmail" name="receieveEmail" placeholder="받는사람을 입력하세요" style="width: 70%;"/>
 					<input type="checkbox" id="selfMail" style="margin-left: 3px;">
 	    		</div>
-	    		<div id="recipient" style="margin-left:18%; width: 100%" class="row">
-				<!-- 새로운 옵션들이 여기에 동적으로 추가될 것입니다. -->
-				</div>
+	    		<div id="recipient" class="row email_input"></div>
+	    		 
+				
 	    		
-	    		<div class="section-title" style="background-color: #f4f5f6; display: flex; align-items: center; ">
-	       			<span class="left_span" style=" font-weight: 600;
-						line-height: 21px;
-						text-transform: uppercase;
-						padding-left: 20px;
-						position: relative; font-size: 18px; width: 10%;">참조</span>
-					<div style="width: 8%;">
+	    		<div class="section-title">
+	       			<span class="left_span">참조</span>
+					<div id="check_set" >
 						<input type="checkbox" id="plus"/>
-						<span>참조</span>
+						<span id="check_span">숨은참조</span>
 					</div>
 					<input type="text" id="receieveplusEmail" name="receieveplusEmail" placeholder="참조받을 사람을 입력하세요" style="width: 70%;"/>
 	    		</div>
-	    		<div id="recipientplus" style="margin-left:18%; width: 100%" class="row">
-				<!-- 새로운 옵션들이 여기에 동적으로 추가될 것입니다. -->
-				</div>
+	    		<div id="recipientplus" class="row"></div>
 	    		
-	    		<div class="section-title hidden" style="background-color: #f4f5f6; display: flex; align-items: center; ">
-	       			<span class="left_span" style=" font-weight: 600;
-						line-height: 21px;
-						text-transform: uppercase;
-						padding-left: 20px;
-						position: relative; font-size: 18px; width: 10%;">숨은참조</span>
-					<div style="width: 8%;">
-						<%--<input type="checkbox" id="hiddenplus"/> --%>
+	    		<div class="section-title hidden">
+	       			<span class="left_span">숨은참조</span>
+					<div id="check_set">
 					</div>
 					<input type="text" id="receievehiddenEmail" name="receievehiddenEmail" placeholder="받는사람을 입력하세요" style="width: 70%;"/>
 	    		</div>
-							
-				<div id="recipientplushidden" style="margin-left:18%; width: 100%" class="row">
-			    <!-- 새로운 옵션들이 여기에 동적으로 추가될 것입니다. -->
-				</div>
-	    		
-	    		<div style="margin-bottom: 30px;">
-	    		</div>
-				
-				<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
-	       			<span class="left_span" style=" font-weight: 600;
-						line-height: 21px;
-						text-transform: uppercase;
-						padding-left: 20px;
-						position: relative; font-size: 18px; width: 10%;">제목</span>
-					<div style="width: 8%;">
+				<div id="recipientplushidden"></div>
+	    						
+				<div class="section-title">
+	       			<span class="left_span">제목</span>
+					<div id="check_set" >
 						<input type="checkbox" id="important"/>
-						<span>중요</span>
+						<span id="check_span">중요</span>
 						<input type="hidden" id="impt" name="impt" value="0"/>
 					</div>
 					<input type="text" id="subject" style="width: 70%;"/>
 	    		</div>
 	    		
 	    		
-	    		<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
-	       			<span class="left_span" style="font-weight: 600;
-						line-height: 21px;
-						text-transform: uppercase;
-						padding-left: 20px;
-						position: relative; font-size: 18px; width: 10%;">예약메일</span>
-					<div style="width: 8%;">
+	    		<div class="section-title">
+	       			<span class="left_span">예약메일</span>
+					<div id="check_set" >
 						<input type="checkbox" id="reservationch" name="reservationch"/>
-						<span>예약</span>
+						<span id="check_span">예약</span>
 					</div>
 					<div id="reservationTime" style="width: 50%; display: flex; cursor: pointer; color: black;">
-							<input type="date" id="yymmdd" name='yymmdd' class="rounded-lg block w-full p-2.5" style='height: 30px; border: solid 1px gray;' required>   
-                    		<input id="hh24mi" name='hh24mi' type="time" step='600'/>
+						<input type="date" id="yymmdd" name='yymmdd' class="rounded-lg block w-full p-2.5" style='height: 30px; border: solid 1px gray;' required>   
+                    	<input id="hh24mi" name='hh24mi' type="time" step='600'/>
 					</div>
 	    		</div>
 	    		
-	    		<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
-	       			<span class="left_span" style="font-weight: 600;
-						line-height: 21px;
-						text-transform: uppercase;
-						padding-left: 20px;
-						position: relative; font-size: 18px; width: 10%;">암호메일</span>
-					<div style="width: 8%;">
+	    		<div class="section-title">
+	       			<span class="left_span">암호메일</span>
+					<div id="check_set" >
 						<input type="checkbox" id="passwordch" name="passwordch"/>
-						<span>암호</span>
+						<span id="check_span">암호</span>
 					</div>
-					<div id="password" style="width: 50%; display: flex; align-items: center; cursor: pointer; color: black;">
+					<div class="sminput" id="password">
 					    <input class="bottomLine" type="password" name="pwd" id="pwd" /> 
 					    <i class="fa fa-eye fa-lg"></i>
 					</div>
 	    		</div>
+	    		<div></div>
 	    		
-	    		<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
-	       			<span class="left_span" style="font-weight: 600;
-						line-height: 21px;
-						text-transform: uppercase;
-						padding-left: 20px;
-						position: relative; font-size: 18px; width: 10%;">카테고리</span>
-					<div style="width: 8%;">
+	    		<div class="section-title">
+	       			<span class="left_span">카테고리</span>
+					<div id="check_set">
 						<input type="checkbox" name="categoryck" id="categoryck"/>
+						<span id="check_span">카테고리</span>
 					</div>
-					<div id="categorybox" style="width: 50%; display: flex; align-items: center; cursor: pointer; color: black;">
+					<div class="sminput" id="categorybox">
 						<select name="categoryval" id="categoryval">
 		                	<option value="error">선택안함</option>
 						    <option value="1">옵션1</option>
@@ -1054,34 +1085,31 @@
 		            	</select>
 		            </div>
 	    		</div>
+	    		<div></div>
 	    			
-	    		<div class="section-title" style="background-color: #f4f5f6; display: flex; align-items: center; ">
-	       			<span class="left_span" style="font-weight: 600;
-						line-height: 21px;
-						text-transform: uppercase;
-						padding-left: 20px;
-						position: relative; font-size: 18px; width: 10%;">파일첨부</span>
+	    		<div class="section-title">
+	       			<span class="left_span">파일첨부</span>
 					<div style="width: 8%;">
 					</div>
-					<div style="width: 50%; display: flex; cursor: pointer; color: black;">
+					<div class="sminput">
 						<label class="btn btn-outline-secondary" for="ex_file">업로드</label>
-						<input type="file" id="ex_file" multiple>  
+						<span id="file_length"></span>
+						<input style="display: none;" type="file" id="ex_file" multiple>  
 					</div>
 	    		</div>
-				
-				<div class=row id="dropzone" style="margin-left:18%; display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
-				    <div id="dropzoneMessage" style="display: inline-block;">여기에 첨부 파일을 끌어 오세요</div>
-				</div>
-				
-				<div style="background-color:#f4f5f6; color:#f4f5f6;">
-				ddddd
-				</div>
-
-				
-			</div>	
-			<div>
-			<textarea style=" width:100%; height: 612px; " name="contents" id="contents"></textarea>
+	    		
+		    	<div class="dropzone" id="dropzone">
+		    		<div class="row" id="dropzone_in">
+						<div id="dropzoneMessage" style="display: inline-block;">여기에 첨부 파일을 끌어 오세요</div>
+					</div>
+				</div>	
+	    									
 			</div>
+		
+			<div style="background-color: white">
+				<textarea style=" width:100%; height: 612px; name="contents" id="contents"></textarea>
+			</div>
+			
 			</form>
 		</div>
 	</div>

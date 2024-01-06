@@ -132,7 +132,7 @@
 	div.sidebarOption:hover > span.menu_name:hover:hover
 	{
 	    background-color: white;
-	    color: #70c4fa;
+	    color: rgb(3, 199, 90);
 	    font-weight: 800;
 	}
 	
@@ -155,24 +155,15 @@
 	}
 			
 	.cart__bigorderbtn {
-	  width: 120px;
+	  background-color: rgb(3, 199, 90);
+	  width: 220px;
 	  height: 45px;
 	  font-size: 14px;
 	  font-weight:bold;
 	  margin: auto;
 	  border-radius: 5px;
-	}
-			
-	.cart__bigorderbtn.left {
-	  background-color: #22B4E6;
 	  color: white;
 	  border: none;
-	}
-			
-			
-	.cart__bigorderbtn.right{
-	  background-color: white;
-	  border: 1px lightgray solid;
 	}
 
 /*  사이드 시작 */
@@ -257,12 +248,12 @@ body{
 .section_selected{
     background-color: white;
     border-width: 4px;
-    color: #70c4fa;
-    border-bottom: 3px solid #70c4fa;
+    color: rgb(3, 199, 90);
+    border-bottom: 3px solid rgb(3, 199, 90);
 }
 
 .section_selected .material-icons-outlined{
-    color: #70c4fa;
+    color: rgb(3, 199, 90);
 }
 
 .section:hover{
@@ -335,7 +326,7 @@ body{
 		top: -6px;
 		height: 32px;
 		width: 4px;
-		background: #e53637;
+		background: rgb(3, 199, 90);
 		content: "";
 	}
 

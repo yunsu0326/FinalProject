@@ -49,22 +49,13 @@
         	 
   }); 
         
-        
-
-
-            
-
-
-
-        
   </script>
 
 
 	<!--사이드바 시작-->
 	<div class="sidebar ml-4 mt-1">
     	<div class="cart__mainbtns mb-1">
-     		<button class="cart__bigorderbtn left">메일 쓰기</button>
-     		<button class="cart__bigorderbtn right">내게 쓰기</button>
+     		<button type="button" class="cart__bigorderbtn left" onclick="window.location.href='<%=ctxPath%>/digitalmailwrite.gw'">메일 쓰기</button>
  		</div>
        	<div class="sidebarOption opt">
 			<span class="material-icons-outlined">mail_outline</span>

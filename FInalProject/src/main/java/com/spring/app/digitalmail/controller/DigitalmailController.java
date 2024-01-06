@@ -1,15 +1,19 @@
 package com.spring.app.digitalmail.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import com.spring.app.common.MyUtil;
 import com.spring.app.common.digitalmail.util.DigitalmailFileManager;
@@ -130,13 +134,13 @@ public class DigitalmailController {
 		String pageBar = "<div class='emailList_settingsRight'>";
 		
 		pageBar +=	"<div class='icon_set'>";
-		pageBar += "<a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(pageNo-1)+"'>";
+		pageBar += "<a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(pageNo)+"'>";
 		pageBar += "<span class='material-icons-outlined icon_img' style='font-size: 24pt;'>chevron_left</span></a>";
-		pageBar += "<span class='icon_text'>이전"+pageNo+"pg</span></div>";
+		pageBar += "<span class='icon_text'>이전</span></div>";
 		pageBar +=	"<div class='icon_set'>";
-		pageBar += "<a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(pageNo+1)+"'>";
+		pageBar += "<a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(pageNo)+"'>";
 		pageBar += "<span class='material-icons-outlined icon_img' style='font-size: 24pt;'>chevron_right</span></a>";
-		pageBar += "<span class='icon_text'>다음"+pageNo+1+"pg</span></div>";
+		pageBar += "<span class='icon_text'>다음</span></div>";
 		pageBar += "</div>";
 		
 		mav.addObject("pageBar", pageBar);
@@ -149,6 +153,47 @@ public class DigitalmailController {
     
     }
     // 메일 홈페이지 끝
-
-
+    
+    // === 이메일 키워드 입력시 자동글 완성하기  === //
+ 	@ResponseBody
+ 	@GetMapping(value="/emailwordSearchShow.gw", produces="text/plain;charset=UTF-8")
+ 	public String WordSearchShow(HttpServletRequest request) {
+ 		
+ 		String searchType = request.getParameter("searchType");
+ 		String searchWord = request.getParameter("searchWord");
+ 		
+ 		// System.out.println("searchType=>"+searchType);
+ 		// System.out.println("searchType=>"+searchWord);
+ 		
+ 		Map<String, String> paraMap = new HashMap<>();
+ 		paraMap.put("searchType", searchType);
+ 		paraMap.put("searchWord", searchWord);
+ 		
+ 		List<String> wordList = service.emailWordSearchShow(paraMap);
+ 		
+ 		JSONArray jsonArr = new JSONArray(); // [] 
+ 		
+ 		if(wordList != null) {
+ 			for(String word : wordList) {
+ 				JSONObject jsonObj = new JSONObject(); // {} 
+ 				jsonObj.put("word", word);
+ 				
+ 				jsonArr.put(jsonObj); // [{},{},{}]
+ 			}// end of for------------
+ 		}
+ 		
+ 		return jsonArr.toString();
+ 	}
+ 	// === 이메일 키워드 입력시 자동글 완성하기  === //
+ 	
+ 	// === 이메일 쓰기 페이지 이동  === //
+    @GetMapping(value="/digitalmailwrite.gw", produces="text/plain;charset=UTF-8")
+    public ModelAndView requiredLogin_digitalmailwrite(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+    	
+    	mav = service.digitalmailwrite(mav);
+	    return mav;
+	    
+    }// end of public ModelAndView home(ModelAndView mav)
+    // === 이메일 쓰기 페이지 이동  === //
+ 	
 }
