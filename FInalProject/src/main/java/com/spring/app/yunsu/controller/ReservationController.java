@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -797,7 +798,40 @@ public class ReservationController {
 	} // end of public ModelAndView changeStatus(ModelAndView mav, HttpServletRequest request) throws Throwable 
 	
 	
-	
+	@GetMapping("/reservationChart.gw")
+	public ModelAndView reservationChart(HttpServletRequest request, ModelAndView mav) { 
+		
+				
+		mav.setViewName("reservation/admin/chart.tiles_ys");
+
+		return mav;
+	}
+	//차트 보여주는 페이지
+	@ResponseBody
+	@GetMapping("/meetingroomchart.gw")
+	public String meetingroomchart(HttpServletRequest request) { 
+		
+		List<Map<String,String>> list = service.meetingroomchart();
+		
+		JSONArray jsArr = new JSONArray();
+		
+			for(Map<String,String> paraMap : list) {
+				JSONObject jsObj = new JSONObject();
+				jsObj.put("MeetingRoom", paraMap.get("MeetingRoom"));
+				jsObj.put("nowMonth6", paraMap.get("nowMonth6"));
+				jsObj.put("nowMonth5", paraMap.get("nowMonth5"));
+				jsObj.put("nowMonth4", paraMap.get("nowMonth4"));
+				jsObj.put("nowMonth3", paraMap.get("nowMonth3"));
+				jsObj.put("nowMonth2", paraMap.get("nowMonth2"));
+				jsObj.put("nowMonth1", paraMap.get("nowMonth1"));
+				jsObj.put("nowMonth", paraMap.get("nowMonth"));
+				
+				jsArr.put(jsObj);
+			}
+		
+
+		return jsArr.toString();
+	}
 	
 	
 	

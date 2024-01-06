@@ -271,13 +271,7 @@ public class SeungwooService_imple implements SeungwooService {
 		return del;
 	}
 	
-	// 전자메일 시작
-	@Override
-	public ModelAndView digitalmail(ModelAndView mav) {
-		mav.setViewName("digitalmail/digitalmail.tiles_MTS");
-					
-		return mav;
-	}
+
 	
 
 

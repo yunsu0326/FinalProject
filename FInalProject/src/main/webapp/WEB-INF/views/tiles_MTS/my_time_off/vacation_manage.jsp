@@ -136,6 +136,9 @@
 				const ArrcheckSeq = new Array();
 				const ArrVacationType = new Array();
 				const ArrdaysDiff = new Array();
+				const ArrDepartment_id = new Array();
+				const ArrName = new Array();
+				const ArrEmail = new Array();
 				
 				const checkNoCnt = $("input:checkbox[name='checkNo']").length;
 				
@@ -155,12 +158,16 @@
 	              		ArrEndDate.push( $("input:hidden[name='vacation_end_date']").eq(i).val() );
 	              		ArrEmployee_id.push( $("input:hidden[name='fk_employee_id']").eq(i).val() );
 	              		ArrVacationType.push( $("input:hidden[name='vacation_type']").eq(i).val() );
+	              		ArrDepartment_id.push( $("input:hidden[name='fk_department_id']").eq(i).val() );
+	              		ArrName.push( $("input:hidden[name='name']").eq(i).val() );
+	              		ArrEmail.push( $("input:hidden[name='email']").eq(i).val() );
 	              		ArrdaysDiff.push(daysDiff);
 	              		
 	               	} // end of if -----
 	               	
 				} // end of for----------------------
-				
+				console.log("ArrEmail"+ArrEmail);
+				// ArrcheckSeq37,44,45 ArrEmployee_id9,9,9 ArrDepartment_id200,200,200 ArrName김경민,김경민,김경민
 	
 				if(ArrStartDate == "") {
 					alert("결재할 번호를 선택하세요.");
@@ -177,6 +184,9 @@
               		$("input:hidden[name='fk_employee_id']").val(ArrEmployee_id);
               		$("input:hidden[name='vacation_type']").val(ArrVacationType);
               		$("input:hidden[name='daysDiff']").val(ArrdaysDiff);
+              		$("input:hidden[name='fk_department_id']").val(ArrDepartment_id);
+              		$("input:hidden[name='name']").val(ArrName);
+              		$("input:hidden[name='email']").val(ArrEmail);
 					
 					const frm = document.vac_manage_frm; 
 					
@@ -382,9 +392,12 @@
 		            		<input type="hidden" name="vacation_end_date" value="${vacList.vacation_end_date}"/>
 		            		<input type="hidden" name="fk_employee_id" value="${vacList.fk_employee_id}"/>
 		            		<input type="hidden" name="vacation_type" value="${vacList.vacation_type}"/>
+		            		<input type="hidden" name="fk_department_id" value="${vacList.fk_department_id}"/>
+		            		<input type="hidden" name="name" value="${vacList.name}"/>
+		            		<input type="hidden" name="email" value="${vacList.email}"/>
 		            		<input type="hidden" name="daysDiff" class="daysDiffClass" />
 		        		</div>
-		        	</td>
+		        	</td> 
 		        	<td class='col col-1' id="name">${vacList.name}</td>
 		            <td class='col col-1' id="employee_id">${vacList.fk_employee_id}</td>
 		            

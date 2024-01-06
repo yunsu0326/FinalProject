@@ -115,10 +115,11 @@
 	
 	<!-- 회원들의 신청된 휴가 정보 중 대기중인 회원 가져오기 -->
 	<select id="vacList" resultType="com.spring.app.domain.Vacation_manageVO">
-		select vacation_seq, name, fk_employee_id, vacation_reason, to_char(vacation_start_date, 'yyyy-mm-dd') AS vacation_start_date,
+		select vacation_seq, name, fk_employee_id, vacation_reason, 
+			   to_char(vacation_start_date, 'yyyy-mm-dd') AS vacation_start_date,
 		       to_char(vacation_end_date, 'yyyy-mm-dd') AS vacation_end_date, 
 		       to_char(vacation_reg_date, 'yyyy-mm-dd') AS vacation_reg_date,
-		       vacation_confirm, vacation_type, vacation_manager
+		       vacation_confirm, vacation_type, vacation_manager, fk_department_id, name, email
 		from tbl_vacation_manage M
 		JOIN tbl_employees E
 		ON M.fk_employee_id = E.employee_id
@@ -168,7 +169,7 @@
 		set vacation_confirm = 2
 		where vacation_seq IN
 		<foreach collection="vacation_seq_arr" index="i" open="(" separator="," close=")">
-        ${vacation_seq_arr[i]}
+        	${vacation_seq_arr[i]}
     	</foreach>
 	</update>
 	
@@ -185,7 +186,48 @@
         set ${vacation_type} = (SELECT ${vacation_type} FROM tbl_vacation WHERE fk_employee_id = #{fk_employee_id}) + #{daysDiff}
         where fk_employee_id = #{fk_employee_id}
 	</update>
+	
+	
 	<!-- 트랜잭션처리함 -->
+	
+	
+	<!-- 휴가 승인시 calendar 테이블에 insert -->
+	<insert id="calendarInsert" parameterType="HashMap">
+		INSERT INTO tbl_calendar_schedule (
+		    scheduleno,
+		    startdate,
+		    enddate,
+		    subject,
+		    color,
+		    place,
+		    joinuser,
+		    content,
+		    fk_smcatgono,
+		    fk_lgcatgono,
+		    fk_employee_id,
+		    fk_department_id,
+		    fk_email
+		) VALUES (
+		    seq_scheduleno.nextval,
+		    TO_DATE(#{vacation_start_date_arr}, 'YYYY-MM-DD'),
+		    TO_DATE(#{vacation_end_date_arr}, 'YYYY-MM-DD'),
+		    #{name_arr},
+		    '#bf80ff',
+		    '휴가',
+		    null,
+		    '휴가',
+		    30,
+		    2,
+		    #{fk_employee_id},
+		    #{fk_department_id},
+		    #{email_arr}
+		) 
+	</insert>
+	
+	
+	
+	
+	
 	
 	<!-- 휴가 신청한 회원들의 보유 휴가 가져오기 -->
 	<select id="keepVacList" parameterType="String" resultType="com.spring.app.domain.Vacation_manageVO">

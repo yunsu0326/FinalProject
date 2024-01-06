@@ -96,29 +96,29 @@ $(document).ready(function(){
 	
 	    if(daysDiff < 0) { 
 	       alert("날짜를 정확하게 입력하세요.");
-	       return;
+	       return false;
 	    }
 	    
 	    if(vacation_start_date == "") {
 	    	alert("시작일을 지정하세요.");
-	    	return;
+	    	return false;
 	    }
 	    
 	    if(vacation_end_date == "") {
 	    	alert("종료일을 지정하세요.");
-	    	return;
+	    	return false;
 	    }
 	    
 	    if(vacation_type == 1) {
 		    if(annual < daysDiff) {
 		    	alert("보유 연차가 신청 일수보다 적습니다.");
-		    	return;
+		    	return false;
 		    }
 	    }
 	    
 	    if(vacation_reason == "") {
 	       alert("사유를 입력하세요.");
-	       return;
+	       return false;
 	    }
 	    
 	    // 보낼 데이터
@@ -155,8 +155,6 @@ window.onclick = function(event) {
         closeModal();
     }
 }                     
-
-
 
 </script>
 
@@ -198,7 +196,7 @@ window.onclick = function(event) {
         <div class="row">
             <div id="annual" class="col-sm-3" onclick="openModal('1')">
             	<div class="vacBoard mt-4" id="annual_div" style="margin: 0 2%;">
-	                <img src="<%= ctxPath%>/resources/images/연차아이콘.png"/>
+	                <img src="<%= ctxPath%>/resources/img/연차아이콘.png"/>
 	                <br><br><br>
 	                <span>연차</span> <br>
 	                <span style="color: gray; font-size: 10pt;">${requestScope.annual}일</span>
@@ -207,7 +205,7 @@ window.onclick = function(event) {
             </div>
             <div id="family_care" class="col-sm-3" onclick="openModal('2')">
             	<div class="vacBoard mt-4" style="margin: 0 2%;">
-	                <img src="<%= ctxPath%>/resources/images/가족아이콘.png"/>
+	                <img src="<%= ctxPath%>/resources/img/가족아이콘.png"/>
 	                <br><br><br>
 	                <span>가족돌봄</span> <br>
 	                <span style="color: gray; font-size: 10pt;">신청 시 1일 지급</span>
@@ -215,7 +213,7 @@ window.onclick = function(event) {
             </div>
             <div id="reserve_forces" class="col-sm-3" onclick="openModal('3')">
             	<div class="vacBoard mt-4" style="margin: 0 2%;">
-	                <img src="<%= ctxPath%>/resources/images/예비군아이콘.png"/>
+	                <img src="<%= ctxPath%>/resources/img/예비군아이콘.png"/>
 	                <br><br><br>
 	                <span>군소집훈련</span> <br>
 	                <span style="color: gray; font-size: 10pt;">신청 시 지급</span>
@@ -223,7 +221,7 @@ window.onclick = function(event) {
             </div>
             <div id="infertility_treatment" class="col-sm-3" onclick="openModal('4')">
             	<div class="vacBoard mt-4" style="margin: 0 2%;">
-	                <img src="<%= ctxPath%>/resources/images/치료아이콘.png"/>
+	                <img src="<%= ctxPath%>/resources/img/치료아이콘.png"/>
 	                <br><br><br>
 	                <span>난임 치료</span> <br>
 	                <span style="color: gray; font-size: 10pt;">매년 3일 지급</span>
@@ -236,7 +234,7 @@ window.onclick = function(event) {
             
             <div id="infertility_treatment" class="col-sm-3" onclick="openModal('5')">
             	<div class="vacBoard mb-4 mt-3" style="margin: 0 2%;">
-	                <img src="<%= ctxPath%>/resources/images/출산아이콘.png"/>
+	                <img src="<%= ctxPath%>/resources/img/출산아이콘.png"/>
 	                <br><br><br>
 	                <span>배우자 출산</span> <br>
 	                <span style="color: gray; font-size: 10pt;">매년 3일 지급</span>
@@ -244,7 +242,7 @@ window.onclick = function(event) {
             </div>
             <div id="infertility_treatment" class="col-sm-3" onclick="openModal('6')">
             	<div class="vacBoard mb-4 mt-3" style="margin: 0 2%;">
-	                <img src="<%= ctxPath%>/resources/images/결혼아이콘.png"/>
+	                <img src="<%= ctxPath%>/resources/img/결혼아이콘.png"/>
 	                <br><br><br>
 	                <span>결혼</span> <br>
 	                <span style="color: gray; font-size: 10pt;">매년 3일 지급</span>
@@ -252,7 +250,7 @@ window.onclick = function(event) {
             </div>
             <div id="infertility_treatment" class="col-sm-3" onclick="openModal('7')">
            		<div class="vacBoard mb-4 mt-3" style="margin: 0 2%;">
-	                <img src="<%= ctxPath%>/resources/images/포상아이콘.png"/>
+	                <img src="<%= ctxPath%>/resources/img/포상아이콘.png"/>
 	                <br><br><br>
 	                <span>포상</span> <br>
 	                <span style="color: gray; font-size: 10pt;">매년 3일 지급</span>
@@ -270,10 +268,10 @@ window.onclick = function(event) {
       <h5 class='mb-3' style="margin-left: 5%; font-weight: bold;">내 휴가 </h5>
       
       <div class="max-form">
-      <table class="table" style="width: 95%;">
+      <table class="table ml-5" style="width: 90%;">
          <thead>
             <tr class='row' style='background-color: #ccff99;'>
-	        	<th class='col' style="margin-left: 5%;">연차</th>
+	        	<th class='col'>&nbsp;&nbsp;연차</th>
 	            <th class='col'>가족돌봄</th>
 	            <th class='col'>군소집훈련</th>
 	            <th class='col'>난임치료</th>
@@ -287,7 +285,7 @@ window.onclick = function(event) {
          <tbody>
             
 	        <tr class='row'>
-	        	<td class='col' style="margin-left: 5%;">${requestScope.annual}일</td>
+	        	<td class='col'>&nbsp;&nbsp;${requestScope.annual}일</td>
 	            <td class='col'>${requestScope.family_care}일</td>
 	            <td class='col'>${requestScope.reserve_forces}일</td>
 	            <td class='col'>${requestScope.infertility_treatment}일</td>

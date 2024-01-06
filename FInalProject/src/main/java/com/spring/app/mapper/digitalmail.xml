@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="digitalmail">
+
+	<!-- 내가 받은 총 메일 건수(totalCount) 구하기  if(검색이 있을 때와 검색이 없을때 로 나뉜다.) --> 
+	<select id="getTotalCount" parameterType="HashMap" resultType="int">
+		select count(*) 
+		from tbl_receipt_email r
+		join tbl_email e 
+		on r.fk_send_email_seq = e.send_email_seq
+		join tbl_employees p 
+		on p.email = e.fk_sender_email
+		join tbl_jobs j 
+		on j.job_id = p.fk_job_id 
+		where (r.fk_recipient_email = #{email} 
+       		or r.fk_reference_email = #{email} 
+       		or r.fk_hidden_reference_email = #{email}
+       	)
+       	and r.receipt_delete = 0 
+		<choose>
+		   <when test='searchType == "subject" and searchWord != ""'>
+		     and lower(e.email_subject) like '%'||lower(#{searchWord})||'%'
+		   </when>
+		   
+		   <when test='searchType == "content" and searchWord != ""'>
+		     and lower(e.email_contents) like '%'||lower(#{searchWord})||'%'
+		   </when>
+		   
+		   <when test='searchType == "subject_content" and searchWord != ""'>
+		     and (lower(e.email_subject) like '%'||lower(#{searchWord})||'%' OR lower(content) like '%'||lower(#{searchWord})||'%') 
+		   </when>
+		   
+		   <when test='searchType == "name" and searchWord != ""'>
+		     and lower(p.name) like '%'||lower(#{searchWord})||'%'
+		   </when>
+		   <when test='searchType == "job" and searchWord != ""'>
+		     and lower(j.job_name) like '%'||lower(#{searchWord})||'%'
+		   </when>
+		   <otherwise></otherwise>
+		</choose>
+	</select>
+	
+	<!-- 페이징 처리된 내가 받은 총 메일 보기  --> 	   
+	<select id="SelectMyEmail_withPaging" parameterType="HashMap" resultType="com.spring.app.digitalmail.domain.EmailVO">
+		SELECT 
+		    T.send_email_seq, T.email_subject, T.name, T.job_name, T.send_time
+    		, T.receipt_favorites, T.email_receipt_read_count
+		FROM 
+		(
+		SELECT rownum AS RNO
+			, V.send_email_seq, V.email_subject, V.name, V.job_name, V.send_time
+			, V.receipt_favorites, V.email_receipt_read_count
+		FROM 
+		(
+		SELECT 
+			e.send_email_seq, e.email_subject, p.name, j.job_name, to_char(e.send_time, 'yyyy-mm-dd hh24:mi') as send_time
+		    , r.receipt_favorites, r.email_receipt_read_count
+		    FROM tbl_receipt_email r
+			JOIN tbl_email e ON r.fk_send_email_seq = e.send_email_seq
+			JOIN tbl_employees p ON p.email = e.fk_sender_email
+			JOIN tbl_jobs j ON j.job_id = p.fk_job_id 
+	        WHERE 
+	            (r.fk_recipient_email = #{email} 
+	            OR r.fk_reference_email = #{email} 
+	            OR r.fk_hidden_reference_email = #{email})
+	            AND r.receipt_delete = 0
+	            <choose>
+	                <when test='searchType == "subject" and searchWord != ""'>
+	                    AND lower(e.email_subject) LIKE '%' || lower(#{searchWord}) || '%'
+	                </when>
+	                <when test='searchType == "content" and searchWord != ""'>
+	                    AND lower(e.email_contents) LIKE '%' || lower(#{searchWord}) || '%'
+	                </when>
+	                <when test='searchType == "subject_content" and searchWord != ""'>
+	                    AND (lower(e.email_subject) LIKE '%' || lower(#{searchWord}) || '%' OR lower(content) LIKE '%' || lower(#{searchWord}) || '%') 
+	                </when>
+	                <when test='searchType == "name" and searchWord != ""'>
+	                    AND lower(p.name) LIKE '%' || lower(#{searchWord}) || '%'
+	                </when>
+	                <when test='searchType == "job" and searchWord != ""'>
+	                    AND lower(j.job_name) LIKE '%' || lower(#{searchWord}) || '%'
+	                </when>
+	                <otherwise></otherwise>
+	            </choose>    
+	        	order by r.fk_send_email_seq desc
+	    ) V
+		) T
+		WHERE RNO BETWEEN #{startRno} AND #{endRno}
+	</select>
+	
+	<!-- === 검색어 입력시 자동글 완성하기  ===  -->
+	<select id="emailWordSearchShow" parameterType="HashMap" resultType="String"> 
+	    <choose>
+		   <when test='searchType == "subject"'>
+		      select e.email_subject
+		   </when>
+		   <when test='searchType == "name"'>
+		      select distinct p.name 
+		   </when>
+		   	<when test='searchType == "job"'>
+		      select distinct j.job_name  
+		   </when>
+		   <otherwise></otherwise>
+		</choose> 
+	    from tbl_receipt_email r
+		join tbl_email e 
+		on r.fk_send_email_seq = e.send_email_seq
+		join tbl_employees p 
+		on p.email = e.fk_sender_email
+		join tbl_jobs j 
+		on j.job_id = p.fk_job_id 
+	    <choose>
+		   <when test='searchType == "subject" and searchWord != ""'>
+		      and lower(e.email_subject) like '%'||lower(#{searchWord})||'%' 
+		   </when>
+		   <when test='searchType == "name" and searchWord != ""'>
+		   	  and lower(p.name) like '%'||lower(#{searchWord})||'%'
+		   </when>
+		   <otherwise>
+		      and lower(j.job_name) like '%'||lower(#{searchWord})||'%'
+		   </otherwise>
+		</choose>
+		<choose>
+		   <when test='searchType == "subject"'>
+		      order by e.send_email_seq desc
+		   </when>
+		   <when test='searchType == "name"'>
+		      order by p.name  asc
+		   </when>
+		   <when test='searchType == "job"'>
+		      order by j.job_name asc
+		   </when>
+		</choose> 
+	</select>
+	
+	<!-- E메일리스트 가져오기 -->
+	<select id="getEmailList" resultType="String"> 
+   		select '"'||t.team_name||' '||j.job_name||' '||e.name||'<![CDATA[<]]>'||e.email||'<![CDATA[>]]>'||'"' as empinfo , t.team_name, d.department_name
+   		from tbl_employees e
+   		left join tbl_jobs j
+   		on e.FK_JOB_ID = j.job_id
+   		left join tbl_department d
+   		on e.FK_DEPARTMENT_ID = d.DEPARTMENT_ID
+   		left join tbl_team t
+   		on e.fk_team_id = t.team_id
+   		where e.employee_id != 7777
+	</select>
+	
+	<select id="getEmailseq" resultType="String">
+		select emailseq.nextval AS emailseq 
+		from dual					
+	</select>
+
+</mapper>
