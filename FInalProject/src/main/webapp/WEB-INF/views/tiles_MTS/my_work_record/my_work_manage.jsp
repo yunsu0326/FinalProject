@@ -7,6 +7,8 @@
 %>
 
 <style type="text/css">
+#container {width: 75%; margin:0 auto; margin-top:100px;}
+#Navbar {margin-left: 2%; margin-right: 5%; width: 80%; background-size: cover; background-position: center; background-repeat: no-repeat; height: 70px;}
 #Navbar > li > a {
 	color: gray;
 	font-weight: bold;
@@ -27,45 +29,24 @@ i#deleteIcon:hover {
 }
 
 /* 테이블 스타일 변경 */
-.tblShadow{
-    width: 100%;
-    border-collapse: collapse;
+div.listContainer {
+	width: 93%; 
+	margin: 0 auto; 
+	padding: 20px; 
+	border-radius: 10px;
+	border-collapse: collapse;
     margin-bottom: 30px;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.1);
-}
+    }
+tr.table_tr {background-color: #ccff99; width: 94%;}
 </style>
 
 <script type="text/javascript">
 $(document).ready(function(){
-	
 	$("td#listHide").hide();
 	$("td#seqHide").hide();
-	
-	// 휴지통 클릭시 삭제하기
-	<%-- $(document).on("click", "i#deleteIcon", function () {
-		
-		const work_request_seq = $(this).parent().find("#seqHide").text();
-   		alert(work_request_seq);
-   		
-		var vac_approved = confirm("근무신청을 철회 하시겠습니까?");
-	
-		if(vac_approved) {
-	   		const fk_employee_id = $("td#listHide").text();
-	   		
-	   		$("input:hidden[id='fk_employee_id']").val(fk_employee_id);
-	   		$("input:text[id='work_request_seq']").val(work_request_seq);
-	   		/*
-			const frm = document.workDeleteFrm; 
-			
-			frm.method = "post";
-			frm.action = "<%= ctxPath %>/work_request_delete.gw";
-			frm.submit();
-			*/
-		}
-	});  --%>
-	
 });
 
 // 근무신청 승인해주는 함수
@@ -109,10 +90,10 @@ function deleteRequest(seq){
 </script>
 
 
-<div id="container" style="width: 75%; margin:0 auto; margin-top:100px;">
+<div id="container">
 	
     <%-- 상단 메뉴바 시작 --%>
-    <nav class="navbar navbar-expand-lg mt-5 mb-4" style=" margin-left: 2%; margin-right: 5%; width: 80%; background-size: cover; background-position: center; background-repeat: no-repeat; height: 70px">
+    <nav class="navbar navbar-expand-lg mt-5 mb-4">
 		<div class="collapse navbar-collapse">
 			<ul class="navbar-nav" id="Navbar">
 				<li class="nav-item">
@@ -134,12 +115,12 @@ function deleteRequest(seq){
 	</nav>
 	
 	<!-- 내 근태 신청 내역 [시작] -->
-   <div class='listContainer border mb-5 tblShadow' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
+   <div class='listContainer border mb-5 tblShadow'>
       <h5 class='mb-3 ml-5' style="font-weight: bold;">나의 근태 신청 내역</h5>
       <div class="max-form">
       <table class="table ml-5 text-center">
          <thead>
-            <tr class='row table_tr' style="background-color: #ccff99; width: 94%;">
+            <tr class='row table_tr'>
                	<th style='width: 40px;'>&nbsp;&nbsp;no</th>
                	<th class='col'>근무일자</th>
 	        	<th class='col'>시작시간</th>
@@ -207,12 +188,12 @@ function deleteRequest(seq){
    
    <!-- 내 부서원의 근태 결제대기 내역[시작] -->
    <c:if test="${sessionScope.loginuser.gradelevel >= 5}">
-   <div class='listContainer border mb-5 tblShadow' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
+   <div class='listContainer border mb-5 tblShadow'>
       <h5 class='mb-3 ml-5' style="font-weight: bold;">근태 결제대기 내역 (관리자용)</h5>
       <div class="max-form">
       <table class="table ml-5 text-center">
          <thead>
-            <tr class='row table_tr' style="background-color: #ccff99; width: 94%;">
+            <tr class='row table_tr'>
                	<th style='width: 40px;'>&nbsp;&nbsp;no</th>
                	<th class='col'>이름</th>
                	<th class='col'>근무일자</th>
@@ -284,12 +265,12 @@ function deleteRequest(seq){
    
    <!-- 내 부서원의 근태 결제승인 내역[시작] -->
    <c:if test="${sessionScope.loginuser.gradelevel >= 5}">
-   <div class='listContainer border mb-5 tblShadow' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
+   <div class='listContainer border mb-5 tblShadow'>
       <h5 class='mb-3 ml-5' style="font-weight: bold;">근태 결제승인 내역 (관리자용)</h5>
       <div class="max-form">
       <table class="table ml-5 text-center">
          <thead>
-            <tr class='row table_tr' style="background-color: #ccff99; width: 94%;">
+            <tr class='row table_tr'>
                	<th style='width: 40px;'>&nbsp;&nbsp;no</th>
                	<th class='col'>이름</th>
                	<th class='col'>근무일자</th>
@@ -343,12 +324,12 @@ function deleteRequest(seq){
    
    <!-- 내 부서원의 근태 결제반려 내역[시작] -->
    <c:if test="${sessionScope.loginuser.gradelevel >= 5}">
-   <div class='listContainer border mb-5 tblShadow' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
+   <div class='listContainer border mb-5 tblShadow'>
       <h5 class='mb-3 ml-5' style="font-weight: bold;">근태 결제반려 내역 (관리자용)</h5>
       <div class="max-form">
       <table class="table ml-5 text-center">
          <thead>
-            <tr class='row table_tr' style="background-color: #ccff99; width: 94%;">
+            <tr class='row table_tr'>
                	<th style='width: 40px;'>&nbsp;&nbsp;no</th>
                	<th class='col'>이름</th>
                	<th class='col'>근무일자</th>

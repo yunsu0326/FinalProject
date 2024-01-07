@@ -1,20 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- ==== #29. mapper 기본설정 ==== -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-
-<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
 <mapper namespace="minjun">
 
-	
-	<!-- ================================================ -->
 	<!-- === #39. 시작페이지에서 메인 이미지를 보여주는 것 === -->
 	<select id="getImgfilenameList" resultType="String">
 	   select imgbgfilename
        from TBL_MAIN_IMAGE
 	</select>
-	
 	
 	<!-- 휴가신청시 tbl_vacation_manage 테이블에  insert 하기 -->
 	<insert id="annual_insert" parameterType="HashMap">
@@ -40,14 +33,12 @@
 			#{vacation_manager})
 	</insert>
 	
-	
 	<!-- 특정 회원의 휴가 정보 가져오기 -->
 	<select id="vacation_select" resultType="com.spring.app.domain.VacationVO">
 		select annual, family_care, reserve_forces, infertility_treatment, childbirth, marriage, reward
 		from tbl_vacation
 		where fk_employee_id = #{employee_id}
 	</select>
-	
 	
 	<!-- 특정 사용자의 대기중인 휴가 가져오기 -->
 	<select id="myHoldList" resultType="com.spring.app.domain.Vacation_manageVO">
@@ -61,7 +52,6 @@
 		where vacation_confirm = 1 and fk_employee_id = #{employee_id}
 	</select>
 	
-	
 	<!-- 특정 사용자의 승인완료된 휴가 가져오기 -->
 	<select id="myApprovedList" resultType="com.spring.app.domain.Vacation_manageVO">
 		select vacation_seq, name, fk_employee_id, vacation_reason, to_char(vacation_start_date, 'yyyy-mm-dd') AS vacation_start_date,
@@ -73,7 +63,6 @@
 		ON M.fk_employee_id = E.employee_id
 		where vacation_confirm = 2 and fk_employee_id = #{employee_id}
 	</select>
-	
 	
 	<!-- 특정 사용자의 반려된 휴가 가져오기 -->
 	<select id="myReturnList" resultType="com.spring.app.domain.Vacation_manageVO">
@@ -161,7 +150,6 @@
 		</if>
 	</select>
 	
-	
 	<!-- 트랜잭션처리함 -->
 	<!-- 휴가 승인 결재시 휴가관리테이블 업데이트 하기 -->
 	<update id="vacManage_Update" parameterType="HashMap">
@@ -186,10 +174,6 @@
         set ${vacation_type} = (SELECT ${vacation_type} FROM tbl_vacation WHERE fk_employee_id = #{fk_employee_id}) + #{daysDiff}
         where fk_employee_id = #{fk_employee_id}
 	</update>
-	
-	
-	<!-- 트랜잭션처리함 -->
-	
 	
 	<!-- 휴가 승인시 calendar 테이블에 insert -->
 	<insert id="calendarInsert" parameterType="HashMap">
@@ -224,11 +208,6 @@
 		) 
 	</insert>
 	
-	
-	
-	
-	
-	
 	<!-- 휴가 신청한 회원들의 보유 휴가 가져오기 -->
 	<select id="keepVacList" parameterType="String" resultType="com.spring.app.domain.Vacation_manageVO">
 		select V.fk_employee_id, annual, family_care, reserve_forces, infertility_treatment, childbirth, marriage, reward
@@ -236,7 +215,6 @@
 		JOIN tbl_vacation V
 		ON M.fk_employee_id = V.fk_employee_id
 	</select>
-	
 	
 	<select id="vacHoldList_one" resultType="HashMap" parameterType="String">
 		select name, fk_employee_id, vacation_type, to_char(vacation_start_date, 'yyyy-mm-dd') AS vacation_start_date, 
@@ -249,13 +227,11 @@
 		where vacation_seq = #{vacation_seq}
 	</select>
 	
-	
 	<!-- 휴가 반려시 반려테이블에 insert 하기 -->
 	<insert id="vacInsert_return" parameterType="HashMap">
 		insert into tbl_vacation_manage_return(vacation_return_seq, fk_vacation_seq, fk_employee_id, vacation_return_reason, vacation_return_date, vacation_manager)
 		values(vacation_return_seq.nextval, #{vacation_seq}, #{employee_id}, #{vacation_return_reason}, sysdate, #{loginuser_name})
 	</insert>
-	
 	
 	<!-- 휴가 반려 결재시 휴가관리테이블 업데이트 하기 -->
 	<update id="vacUpdate_return" parameterType="HashMap">
@@ -263,9 +239,6 @@
 		set vacation_confirm = 3
 		where vacation_seq = #{vacation_seq}
 	</update>
-	
-	
-	
 	<!-- ================== 휴가 관리 페이지 [끝] ===================== -->
 	
 	<!-- 휴가 재신청시  insert 하기 -->

@@ -19,7 +19,6 @@ public interface WorkService {
 	// 특정 사원의 근무내역 가져오기
 	List<WorkVO> workList(Map<String, String> paraMap);
 	
-	
 	////////////////////////////////////////////////
 	// 사용자가 신청한 근무를 근무신청테이블에 insert
 	int workRequestInsert(Map<String, String> paraMap);
@@ -80,10 +79,5 @@ public interface WorkService {
 
 	// 오늘날짜의 퇴근시간 얻어오기
 	String todayEndTime(String fk_employee_id);
-
-	
-
-
-
 
 }

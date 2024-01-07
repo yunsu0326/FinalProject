@@ -100,7 +100,4 @@ public class Work_requestVO {
 		this.name = name;
 	}
 	
-	
-	
-	
 }

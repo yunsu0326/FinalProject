@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- ==== #29. mapper 기본설정 ==== -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
 <mapper namespace="work">
 
 	<!-- 특정 사원의 근무내역 가져오기 -->
@@ -146,7 +143,6 @@
 		where work_request_seq = ${work_request_seq}
 	</delete>
 	
-	
 	<!-- 자신의 부서번호에 따른 이름, 직급명 가져오기 -->
 	<resultMap type="HashMap" id="myDeptEmp_Map">
 		<result property="name" 		column="name" 	  		javaType="String" />
@@ -205,16 +201,20 @@
 	
 	<!-- 해당 부서 직급, 이름 가져오기 -->
 	<resultMap type="HashMap" id="deptSelectList_Map">
-		<result property="name" 		column="name" 	  javaType="String" />
-		<result property="job_name" 	column="job_name" javaType="String" />
-		<result property="employee_id" 	column="employee_id" javaType="String" />
+		<result property="name" 			column="name" 	  		 javaType="String" />
+		<result property="job_name" 		column="job_name" 		 javaType="String" />
+		<result property="employee_id" 		column="employee_id" 	 javaType="String" />
+		<result property="work_start_time" 	column="work_start_time" javaType="String" />
 	</resultMap>
 	<select id="deptSelectList" parameterType="HashMap" resultMap="deptSelectList_Map">
-		select name, job_name, employee_id
+		select name, job_name, employee_id, work_start_time
 		from tbl_employees E
 		JOIN tbl_jobs J
 		ON E.fk_job_id = J.job_id
+		left JOIN tbl_work W
+		ON E.employee_id = W.fk_employee_id
 		where E.fk_department_id = #{selectVal}
+		and nvl(work_date, to_char(sysdate, 'yyyy-mm-dd')) = to_char(sysdate, 'yyyy-mm-dd')
 	</select>
 	
 	<!-- 해당 부서명 가져오기 -->

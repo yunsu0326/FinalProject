@@ -10,6 +10,8 @@
 <link rel="stylesheet" type="text/css" href="<%= ctxPath%>/resources/jquery-ui-1.13.1.custom/jquery-ui.css">
 
 <style>
+	#container {width: 75%; margin:0 auto; margin-top:100px;}
+	#Navbar {margin-left: 2%; margin-right: 5%; width: 80%; background-size: cover; background-position: center; background-repeat: no-repeat; height: 70px;}
     a {
 		margin-right: 10px;
 		text-decoration: none !important;
@@ -71,6 +73,13 @@
 	    overflow: hidden;
 	    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.1);
 	}
+	div#thisMonth {font-size: 20pt; position: relative; bottom: 6px;}
+	i#prevMonth, i#nextMonth {font-size: 20pt;}
+	div#leftDiv {width: 18%; margin-left: 13%; margin-right: auto;}
+	div#middleDiv {width: 18%; margin: 0 auto;}
+	div#rightDiv {width: 18%; margin-right: 13%; margin-left: auto;}
+	input#workDate {height: 30px; border: solid 1px gray;}
+	div#choiceMonth{display: flex; margin-left: 40%;}
 	
 </style>
 
@@ -105,10 +114,8 @@ $(document).ready(function(){
 	$("#prevMonth").click(function(){ // ------------------------------------
 		
 		let monthVal = $("#thisMonth").text();
-		// console.log(monthVal);
 		
 		monthVal = new Date(monthVal.substr(0,4), parseInt(monthVal.substr(5,2))-2);
-		// console.log(monthVal);
 		
 		let newMonth;
 		if( parseInt(monthVal.getMonth())+1 <10 ){
@@ -130,7 +137,6 @@ $(document).ready(function(){
 		
 		if(thisMonth != monthVal){			
 			monthVal = new Date(monthVal.substr(0,4), parseInt(monthVal.substr(5,2)));
-			// console.log(monthVal);
 			
 			let newMonth;
 			if( parseInt(monthVal.getMonth())+1 <10 ){
@@ -168,17 +174,12 @@ $(document).ready(function(){
 		/////////////////////////////////////////////////////
 		// 출근시간 날짜형식으로 변환
 	    var TodayStartTime = $('#todayST').val(); // 로그인 한 사원의 오늘 출근 시간
-	    // alert(TodayStartTime); // 08:55:00
-	    // alert(FullTime); // 14:25:05 현재시간 잘 나옴
 	    
 	    var TodayHour = TodayStartTime.substr(0, 2); // 출근 시 구하기
-	    // console.log("TodayHour : "+TodayHour); // 08
 	    
 	    var TodayMinute = TodayStartTime.substr(3, 2); // 출근 분 구하기
-	    // console.log("TodayMinute : "+TodayMinute); // 55
 	    
 	    var TodaySecond = TodayStartTime.substr(6); // 출근 초 구하기
-	    // console.log("TodaySecond : "+TodaySecond); // 00
 	    
 	    todayStartTimeVal = new Date();
 	    
@@ -186,25 +187,17 @@ $(document).ready(function(){
 	    todayStartTimeVal.setMinutes(TodayMinute);
 	    todayStartTimeVal.setSeconds(TodaySecond);
 	    
-	    // console.log("todayStartTimeVal :"+todayStartTimeVal);
 	    /////////////////////////////////////////////////////
-	    
+	    // 근무 시간 가져오기
 	    var workTimeNow = now - todayStartTimeVal;
-	    console.log("workTimeNow :"+workTimeNow); 
-	    // overTimeNow :23611081
 	  
-	    var workTimeH = Math.floor(workTimeNow/(1000 * 60 * 60));
-	    // console.log("overTimeH :"+overTimeH); // 최종 근무 시간 / 6
+	    var workTimeH = Math.floor(workTimeNow/(1000 * 60 * 60));   // 근무 시간
 	    
-	    var workTimeM = Math.floor(workTimeNow / (1000 * 60) % 60);
-	 	// console.log("overTimeM :"+overTimeM); // 최종 근무 분 / 50
+	    var workTimeM = Math.floor(workTimeNow / (1000 * 60) % 60); // 근무 분
 	    
-	    var workTimeC = Math.floor((workTimeNow / 1000) % 60);
-	 	// console.log("overTimeC :"+overTimeC); // 최종 근무 초 / 37
+	    var workTimeC = Math.floor((workTimeNow / 1000) % 60);	    // 근무 초
 	    
 	    var workTimeVal = padZero(workTimeH)+":"+padZero(workTimeM)+":"+padZero(workTimeC);
-	 	// console.log(overTimeVal); // 06:50:37
-	 	
 	 	///////////////////////////////////////////////////////////////
 	 	// 연장 근무 시간 구하기
 	 	// 9시간의 밀리초는 32400000 - 23611081 = 12345125
@@ -212,17 +205,13 @@ $(document).ready(function(){
 	 	if(workTimeNow > 32400000) { // 연장근무인 경우
 	 		var calculateTime = workTimeNow - 32400000;
 	 		
-	 		var calH = Math.floor(calculateTime/(1000 * 60 * 60));
-		    //console.log("calH :"+calH); // 최종 연장 시간 / 0
+	 		var calH = Math.floor(calculateTime/(1000 * 60 * 60)); 	 // 연장 시간
 		    
-		    var calM = Math.floor(calculateTime / (1000 * 60) % 60);
-		 	//console.log("calM :"+calM); // 최종 연장 분 / 57
+		    var calM = Math.floor(calculateTime / (1000 * 60) % 60); // 연장 분
 		    
-		    var calC = Math.floor((calculateTime / 1000) % 60);
-		    //console.log("calC :"+calC); // 최종 연장 초 / 13
+		    var calC = Math.floor((calculateTime / 1000) % 60); 	 // 연장 초
 	 		
 		    var overTimeVal = padZero(calH)+":"+padZero(calM)+":"+padZero(calC);
-		 	//console.log(overTimeVal); // 00:59:32
 		 	            
 		 	$("input[name='extended_end_time']").val(overTimeVal);
 		 	
@@ -276,9 +265,6 @@ $(document).ready(function(){
     		$("span#shortMinute").text(minuteVal);
     	}
     	minuteVal = 60 - minuteVal;
-    	
-    	// console.log(hourVal);
-    	// console.log(minuteVal);
     }
     else {
     	// 여긴 연장근무시간
@@ -286,8 +272,7 @@ $(document).ready(function(){
    		$("span#shortMinute").text("0");
     	
     	hourVal = Number(hourVal) - 40;
-    	// console.log("연장근무 시간 : " + hourVal);
-    	// 연장근무 시간 : 5
+
     	$("span#overHour").text(hourVal);
     	$("span#overMinute").text(minuteVal);
     }
@@ -340,7 +325,6 @@ $(document).ready(function(){
    	    frm.method = "post";
    	    frm.action = "<%= ctxPath %>/workRequest.gw";
    	    frm.submit();	
-    	
     }); 
 }); // end of $(document).ready(function() -------------------------
 
@@ -356,7 +340,6 @@ function getMyWorkList() {
 			  "fk_employee_id":fk_employee_id},
 		dataType:"JSON",
 		success:function(json){
-			// console.log(JSON.stringify(json));
 			let html = "";
 			
 			html += "<div id='week1' class='widths' style='width: 60%; margin-left: 20%;'>"+
@@ -610,10 +593,6 @@ function todayDate() {
 
     // 2023-12-21 형식으로 바꾸기
     var todayDate = year+'-'+month+'-'+day;
-
-    // 현재 날짜를 출력
-    // alert(formattedDate);
-    // 2023-12-21
 }
 
 // 출퇴근 관련 함수 [시작]
@@ -644,7 +623,6 @@ function recordEndTime() {
 function parseTime(timeString) {
     var timeParts = timeString.split(":");
     
-
     var hours = parseInt(timeParts[0], 10) * 60 * 60 * 1000;
     var minutes = parseInt(timeParts[1], 10) * 60 * 1000;
     var seconds = parseInt(timeParts[2], 10) * 1000;
@@ -659,12 +637,12 @@ function padZero(value) {
 //출퇴근 관련 함수 [끝]
 </script>
 
-<div id="container" style="width: 75%; margin:0 auto; margin-top:100px;">
+<div id="container">
 	
     <%-- 상단 메뉴바 시작 --%>
-    <nav class="navbar navbar-expand-lg mt-5 mb-4" style="margin-left: 2%; margin-right: 5%; width: 100%; background-size: cover; background-position: center; background-repeat: no-repeat; height: 70px">
-		<div class="collapse navbar-collapse" style="width: 100%">
-			<ul class="navbar-nav" id="Navbar" style="width: 100%">
+    <nav class="navbar navbar-expand-lg mt-5 mb-4">
+		<div class="collapse navbar-collapse">
+			<ul class="navbar-nav" id="Navbar">
 				<li class="nav-item">
 					<a class="nav-link" href="<%= ctxPath %>/my_work.gw">근퇴조회</a>
 				</li>
@@ -708,26 +686,26 @@ function padZero(value) {
 
 <%-- 본문 내용 [시작] --%>
 <div class="container text-center">
-    <div class="p-4" style="display: flex; margin-left: 40%;">
+    <div class="p-4" id='choiceMonth'>
         <div>
-            <span><i class="fa-solid fa-angle-left" style="font-size: 20pt;" id="prevMonth"></i></span>
+            <span><i class="fa-solid fa-angle-left" id="prevMonth"></i></span>
         </div>
-        <div class="mx-3" style="font-size: 20pt; position: relative; bottom: 6px;" id="thisMonth"></div>
+        <div class="mx-3" id="thisMonth"></div>
         <div>
-            <span><i class="fa-solid fa-angle-right" style="font-size: 20pt;" id="nextMonth"></i></span>
+            <span><i class="fa-solid fa-angle-right" id="nextMonth"></i></span>
         </div>
     </div>
 
     <div class="mt-6 horizontal-scroll">
-        <div style="width: 18%; margin-left: 13%; margin-right: auto;">
+        <div id='leftDiv'>
             <h4>이번주 <br>누적근무시간</h4>
             <p><span id='workRecordHour'>${requestScope.myWorkRecord.time}</span>시간 <span id='workRecordMinute'>${requestScope.myWorkRecord.minute}</span>분</p>
         </div>
-        <div style="width: 18%; margin: 0 auto;">
+        <div id='middleDiv'>
             <h4>이번주 <br>잔여근무시간</h4>
             <p><span id='shortHour'></span>시간 <span id='shortMinute'></span>분</p>
         </div>
-        <div style="width: 18%; margin-right: 13%; margin-left: auto;">
+        <div id='rightDiv'>
             <h4>이번주 <br>연장근무시간</h4>
             <p><span id='overHour'></span>시간 <span id='overMinute'></span>분</p>
         </div>
@@ -759,11 +737,11 @@ function padZero(value) {
       <div class="modal-body">
           <form name="modal_frm">
           <table style="width: 100%;" class="table table-bordered">
-              <tr style="text-align: left;">
+              <tr>
                	  <td style="width: 25%;">신청인</td>
 	        	  <td id="frm_name">${sessionScope.loginuser.name}</td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>종류</td>
 	        	  <td>
 	        	  	<select style='height: 30px;' id='workSelect'>
@@ -774,29 +752,29 @@ function padZero(value) {
 	        	  	</select> 
 	        	  </td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>신청일자</td>
-	        	  <td><input type="date" name='workDate' class="rounded-lg block w-full p-2.5" style='height: 30px; border: solid 1px gray;' required></td>
+	        	  <td><input type="date" name='workDate' class="rounded-lg block w-full p-2.5" required></td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>시작시간</td>
 	        	  <td>
   					<input id="requestStartTime" name="requestStartTime" type="time"/>
   				  </td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>종료시간</td>
 	        	  <td>
   					<input id="requestEndTime" name="requestEndTime" type="time"/>
   				  </td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>장소 <span style="font-size: 10pt;">(선택)</span></td>
 	        	  <td>
   					<input id="work_place" name="work_place" type="text"/>
   				  </td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>사유 <span style="font-size: 10pt;">(선택)</span></td>
 	        	  <td>
   					<input id="work_reason" name="work_reason" type="text"/>

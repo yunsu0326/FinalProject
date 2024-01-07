@@ -5,8 +5,10 @@
 <%
     String ctxPath = request.getContextPath();
 %>
-
 <style type="text/css">
+#container {width: 75%; margin:0 auto; margin-top:100px;}
+#Navbar {margin-left: 2%; margin-right: 5%; width: 80%; background-size: cover; background-position: center; background-repeat: no-repeat; height: 70px;}
+tr.table_tr {background-color: #ccff99; width: 94%;}
 #Navbar > li > a {
 	color: gray;
 	font-weight: bold;
@@ -44,6 +46,12 @@ div.shadow {
     overflow: hidden;
     box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.1);
 }
+div#monthChoice {display: block; width: 100%;}
+.table_tr {background-color: #ccff99; width: 94%;}
+div#div_monthChoice {display: flex; margin-left: 40%; margin-top: 39px;}
+i#prevMonth, i#nextMonth, div#div_thisMonth {font-size: 20pt;}
+span#myDeptName, span#selectDeptName {font-size: 15pt; font-weight: bold;}
+div#thisMonth {font-size: 20pt; position: relative; bottom: 6px;}
 </style>
 
 <script type="text/javascript">
@@ -67,7 +75,6 @@ $(document).ready(function(){
 		if(enddate < 10){enddate = '0'+enddate;}
 		
 		end = end.getFullYear() + "-" + (end.getMonth()+1) + "-" + enddate + "(" + day_kor(end.getDay()) + ")";
-		// console.log(end);
 	}
 	else { // 오늘이 금요일 이라면
 		end = year + "-" + month + "-" + date + "(" + day_kor(day) + ")";
@@ -89,10 +96,8 @@ $(document).ready(function(){
 	$("#prevMonth").click(function(){ // ------------------------------------
 		
 		let monthVal = $("#thisMonth").text();
-		// console.log(monthVal);
 		
 		monthVal = new Date(monthVal.substr(0,4), parseInt(monthVal.substr(5,2))-2);
-		// console.log(monthVal);
 		
 		$("tbody#empWorkListDisplay").empty();
 		
@@ -117,7 +122,6 @@ $(document).ready(function(){
 		
 		if(thisMonth != monthVal){			
 			monthVal = new Date(monthVal.substr(0,4), parseInt(monthVal.substr(5,2)));
-			// console.log(monthVal);
 			
 			let newMonth;
 			if( parseInt(monthVal.getMonth())+1 <10 ){
@@ -166,8 +170,6 @@ function empWorkList(employee_id){
 			  "thisMonth":thisMonth},
 		dataType:"JSON",
 		success:function(json){
-			// console.log(JSON.stringify(json));
-			// 잘나옴
 			html = "";
 			
 			if(json.length > 0) {
@@ -202,22 +204,28 @@ function empWorkList(employee_id){
 // (관리자용) select 옵션의 값에 따라 해당 부서의 직급, 이름 가져오기
 function empWorkList_admin(department_id) {
 	var selectVal = $("select#deptSelect").val();
-	// console.log(selectVal)
 	
 	$.ajax({
 		url:"<%=ctxPath%>/deptSelectList.gw",
 		data:{"selectVal":selectVal},
 		dataType:"JSON",
 		success:function(json){
-			// console.log(JSON.stringify(json));
-			
 			html = "";
 			if(json.length > 0) {
 				$.each(json, function(index, item) {
 					html += "<tr class='deptSelectEmpList'>"+
 								"<td>"+item.job_name+"</td>"+
-								"<td>"+item.name+"<span class='employee_id'>"+item.employee_id+"</span></td>"+
-							"</tr>"		
+								"<td style='align-items: center; display: flex;'>"+item.name+
+									"<span class='employee_id' style='display: none;'>"+item.employee_id+"</span>";
+					if(item.work_start_time != null) {
+						html += "<span class='material-icons-outlined ml-4' style='color:green;'>check_circle_outline</span>";
+					}
+					else {
+						html += "<span class='material-icons-outlined ml-4'>highlight_off</span>";
+					}
+									
+					html +=	"</td>"+
+							"</tr>";		
 				}); // end of $.each(json, function(index, item)
 			}
 			$("tbody#selectValDisplay").html(html);
@@ -243,12 +251,6 @@ function getSelectDeptName(deptIdSelectVal) {
 		data:{"IdSelectVal":IdSelectVal},
 		dataType:"JSON",
 		success:function(json){
-			// console.log(JSON.stringify(json));
-			//  {"getSelectDeptName":"개발부"}
-			
-			// console.log(json.getSelectDeptName);
-			// 개발부
-			// 마케팅부
 			$("#selectDeptName").text(json.getSelectDeptName);
 		},
 		error: function(request, status, error){
@@ -283,11 +285,13 @@ function day_kor(day){
 }
 </script>
 
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
-<div id="container" style="width: 75%; margin:0 auto; margin-top:100px;">
+<div id="container">
 	
     <%-- 상단 메뉴바 시작 --%>
-    <nav class="navbar navbar-expand-lg mt-5 mb-4" style=" margin-left: 2%; margin-right: 5%; width: 80%; background-size: cover; background-position: center; background-repeat: no-repeat; height: 70px">
+    <nav class="navbar navbar-expand-lg mt-5 mb-4">
 		<div class="collapse navbar-collapse">
 			<ul class="navbar-nav" id="Navbar">
 				<li class="nav-item">
@@ -309,14 +313,11 @@ function day_kor(day){
 	</nav>
 	
 	<%-- 본문 내용 [시작] --%>
-    
-    
     <div class="mt-5" style="display: flex;">
       <div style="width: 30%; margin-top: 6.4%;">
       	<div class='mb-2' style="display: flex;">
-      		<span style="font-size: 15pt; font-weight: bold;" id="myDeptName">${requestScope.getMyDeptName}</span>
-      		
-      		<span style="font-size: 15pt; font-weight: bold;" id="selectDeptName">
+      		<span id="myDeptName">${requestScope.getMyDeptName}</span>
+      		<span id="selectDeptName">
       		
       		</span>
       		<div style="margin-left: auto;">
@@ -330,40 +331,41 @@ function day_kor(day){
       		</div>
       	</div>
     	<table class="table table-hover shadow">
-    		<tr style="background-color: #ccff99;">
-    			<th style="width: 70%;">직급</th>
+    		<tr style='background-color: #ccff99;'>
+    			<th style="width: 60%;">직급</th>
     			<th>이름</th>
     		</tr>
     		<c:if test="${not empty requestScope.myDeptEmpList}">
     			<c:forEach varStatus="status" var="myDeptEmpList" items="${requestScope.myDeptEmpList}">
     				<tr class="empList" id="empListDisplay">
     					<td>${myDeptEmpList.job_name}</td>
-    					<td>${myDeptEmpList.name}<input type="hidden" name="employee_id" value="${myDeptEmpList.employee_id}" /></td>
+    					<td>${myDeptEmpList.name}
+    						<input type="hidden" name="employee_id" value="${myDeptEmpList.employee_id}" />
+    					</td>
     				</tr>
     			</c:forEach>
     		</c:if>
-    		
     		<tbody id='selectValDisplay'>
     		</tbody>
     	</table>
       </div>
     	
     	
-   	  <div style="display: block; width: 100%;">
-    	<div class="p-4" style="display: flex; margin-left: 40%; margin-top: 39px;">
+   	  <div id='monthChoice'>
+    	<div class="p-4" id='div_monthChoice'>
 	        <div>
-	            <span><i class="fa-solid fa-angle-left" style="font-size: 20pt;" id="prevMonth"></i></span>
+	            <span><i class="fa-solid fa-angle-left" id="prevMonth"></i></span>
 	        </div>
-	        <div class="mx-3" style="font-size: 20pt; position: relative; bottom: 6px;" id="thisMonth"></div>
+	        <div class="mx-3" id="thisMonth"></div>
 	        <div>
-	            <span><i class="fa-solid fa-angle-right" style="font-size: 20pt;" id="nextMonth"></i></span>
+	            <span><i class="fa-solid fa-angle-right" id="nextMonth"></i></span>
 	        </div>
 	    </div>
 	    
     	<div>
     		<table class="table ml-5">
 	         <thead>
-	            <tr class='row table_tr text-center' style="background-color: #ccff99; width: 94%;">
+	            <tr class='row table_tr text-center'>
 	               	<th class='col'>근무일자</th>
 	               	<th class='col'>출근시간</th>
 		        	<th class='col'>퇴근시간</th>
@@ -375,14 +377,6 @@ function day_kor(day){
     	</div>
    	 </div>
    </div>
-   
-   
-   <div>
-   </div>
-<%-- 본문 내용 [끝] --%>
 </div>
-
-
-
-
+<%-- 본문 내용 [끝] --%>
 
