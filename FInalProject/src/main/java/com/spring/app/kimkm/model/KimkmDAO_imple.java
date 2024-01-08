@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.spring.app.domain.DepartmentVO;
 import com.spring.app.domain.EmployeesVO;
 
 
@@ -71,13 +72,6 @@ public class KimkmDAO_imple implements KimkmDAO {
 		return n;
 	}
 
-	// 급여계산 하기
-	@Override
-	public Map<String, String> selectSalary(String employee_id) {
-		Map<String, String> salary = sqlsession.selectOne("kimkm.selectSalary", employee_id);
-		return salary;
-	}
-
 	// 급여 조회하기
 	@Override
 	public List<Map<String, String>> monthSal(String employee_id) {
@@ -98,12 +92,49 @@ public class KimkmDAO_imple implements KimkmDAO {
 		List<Map<String, String>> salaryList = sqlsession.selectList("kimkm.salaryList", paraMap);
 		return salaryList;
 	}
+	
+	// department테이블  select하기
+	@Override
+	public List<Map<String,String>> selectdept(DepartmentVO deptvo) {
+		List<Map<String,String>> deptList = sqlsession.selectList("kimkm.selectdept", deptvo);
+		return deptList;
+	}
 
+	// 조직도 리스트 가져오기
 	@Override
 	public List<Map<String, String>> employeeList() {
 		List<Map<String, String>> employeeList = sqlsession.selectList("kimkm.employeeList");
 		return employeeList;
 	}
+	
+	// 월급 테이블 insert 하기위한 값 가져오기
+	@Override
+	public List<Map<String, String>> emp_salary_List(String lastMonth) {
+		List<Map<String, String>> emp_salary_List = sqlsession.selectList("kimkm.emp_salary_List", lastMonth);
+		return emp_salary_List;
+	}
+
+	// 월급 테이블 insert 하기
+	@Override
+	public int insert_PayslipTemplate(List<Map<String, String>> emp_salary_List) {
+		int n = sqlsession.insert("kimkm.insert_PayslipTemplate", emp_salary_List);
+		return n;
+	}
+	
+	// 공지사항 글쓰기를 위한 급여명세서 발급자 정보 select 하기
+	@Override
+	public Map<String, String> select_human_resources_manager(String manager) {
+		Map<String, String> manager_name_empId = sqlsession.selectOne("kimkm.select_human_resources_manager", manager);
+		return manager_name_empId;
+	}
+	
+	// 공지사항 insert 하기
+	@Override
+	public int insert_notice_board(Map<String, String> manager_name_empId) {
+		int n = sqlsession.insert("kimkm.insert_notice_board", manager_name_empId);
+		return n;
+	}
+	
 
 	// receipt_favorites update하기
 	@Override
@@ -149,6 +180,12 @@ public class KimkmDAO_imple implements KimkmDAO {
 		int n = sqlsession.update("kimkm.receipt_important_update", paraMap);
 		return n;
 	}
+	
+	
+	
+	
+	
+
 	
 
 	

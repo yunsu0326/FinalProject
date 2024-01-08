@@ -1,6 +1,7 @@
 package com.spring.app.kimkm.controller;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +26,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.spring.app.common.FileManager;
 import com.spring.app.common.Sha256;
-import com.spring.app.digitalmail.domain.EmailVO;
+import com.spring.app.domain.DepartmentVO;
 import com.spring.app.domain.EmployeesVO;
 import com.spring.app.kimkm.service.KimkmService;
 
@@ -68,6 +69,7 @@ public class KimkmController {
 		}
 		
 		evo.setPostcode("사원증기본이미지.png");
+		evo.setSignimg("승인.png");
 		
 		int n = service.add_register(evo);
 		
@@ -288,7 +290,7 @@ public class KimkmController {
 		
 			List<Map<String, String>> monthSalList = service.monthSal(employee_id);
 			
-		 	System.out.println(monthSalList);
+		 //	System.out.println(monthSalList);
 			
 			mav.addObject("monthSalList", monthSalList);
 			mav.setViewName("salary/monthsalaryfile.tiles_MTS");
@@ -319,7 +321,7 @@ public class KimkmController {
 		    salaryStatement.put("JOB_NAME", JOB_NAME);
 		}
 		
-	 	System.out.println(salaryStatement);
+	 //	System.out.println(salaryStatement);
 		
 		mav.addObject("salaryStatement", salaryStatement);
 		mav.setViewName("salary/salary.tiles_MTS");
@@ -345,17 +347,83 @@ public class KimkmController {
     	
     	service.salary_to_Excel(paraMap, model);
 		
-		
 		return "excelDownloadView";
          
 	}
 	
 	
 	// 조직도 페이지 요청하기
-	@GetMapping("chart.gw")
-	public String requiredLogin_empmanager_chart(HttpServletRequest request, HttpServletResponse response) {
+	@GetMapping("/chart.gw")
+	public String requiredLogin_empmanager_chart(HttpServletRequest request, HttpServletResponse response, DepartmentVO deptvo) {
+		
+		List<Map<String,String>> deptList = service.selectdept(deptvo);
+		
+		request.setAttribute("deptList", deptList);
 		
 		return "emp/orgchart.tiles_MTS";
+	}
+	
+	
+	// 조직도 페이지 요청하기
+	@ResponseBody
+	@GetMapping(value="/chart/deptList.gw", produces="text/plain;charset=UTF-8")
+	public String deptList(DepartmentVO deptvo) {
+		
+		List<Map<String,String>> deptList = service.selectdept(deptvo);
+		
+		JsonArray jsonArr = new JsonArray(); // []
+		
+		for(Map<String, String> map : deptList) {
+			
+			JsonObject jsonObj = new JsonObject();
+			
+			jsonObj.addProperty("department_id", map.get("department_id"));
+			jsonObj.addProperty("department_name", map.get("department_name"));
+			
+			jsonArr.add(jsonObj);
+		}// end of for
+		
+		return new Gson().toJson(jsonArr);
+		
+	}
+	
+	// 회사 조직도 
+	@ResponseBody
+	@GetMapping(value="/chart/company.gw", produces="text/plain;charset=UTF-8")
+	public String company() {
+		
+		List<Map<String, String>> employeeList =  service.employeeList();
+		
+		JsonArray jsonArr = new JsonArray(); // []
+		
+		for(Map<String, String> map : employeeList) {
+			
+			JsonObject jsonObj = new JsonObject();
+			
+			String job_name = map.get("job_name");
+			if (job_name != null && job_name.length() >= 4) {
+			    if (job_name.substring(job_name.length() - 3).equals("부서장")) {
+			    	jsonObj.addProperty("job_name", job_name.substring(0, job_name.length() - 4) + "부");
+			    }
+			    else if(job_name.substring(job_name.length() - 2).equals("팀장")) {
+			    	jsonObj.addProperty("job_name", job_name.substring(0, job_name.length() - 3));
+			    }
+			    else {
+			    	jsonObj.addProperty("job_name", job_name);
+			    }
+			}
+			else {
+				jsonObj.addProperty("job_name", job_name);
+			}
+			
+			jsonObj.addProperty("employee_id", map.get("employee_id"));
+			jsonObj.addProperty("manager_id", map.get("manager_id"));
+			jsonObj.addProperty("t_manager_id", map.get("t_manager_id"));
+			
+			jsonArr.add(jsonObj);
+		}// end of for
+		
+		return new Gson().toJson(jsonArr);
 	}
 	
 	// 사장 부서장 조직도 
@@ -383,6 +451,35 @@ public class KimkmController {
 		return new Gson().toJson(jsonArr);
 	}
 	
+	
+	// 인사팀 조직도
+	@ResponseBody
+	@GetMapping(value="/chart/dept_org.gw", produces="text/plain;charset=UTF-8")
+	public String dept_org() {
+		
+		List<Map<String, String>> employeeList =  service.employeeList();
+		
+		JsonArray jsonArr = new JsonArray(); // []
+		
+		for(Map<String, String> map : employeeList) {
+			
+			if(map.get("job_name").substring(0, 2).equals("인사")) {
+				JsonObject jsonObj = new JsonObject();
+				
+				jsonObj.addProperty("name", map.get("name"));
+				jsonObj.addProperty("job_name", map.get("job_name"));
+				jsonObj.addProperty("photo", map.get("photo"));
+				jsonObj.addProperty("employee_id", map.get("employee_id"));
+				jsonObj.addProperty("manager_id", map.get("manager_id"));
+				jsonObj.addProperty("t_manager_id", map.get("t_manager_id"));
+				
+				jsonArr.add(jsonObj);
+			}
+			
+		}// end of for
+		
+		return new Gson().toJson(jsonArr);
+	}
 	
 	// 인사팀 조직도
 	@ResponseBody
@@ -539,7 +636,6 @@ public class KimkmController {
 	}
 		
 		
-		
 	// 미발령 조직도
 	@ResponseBody
 	@GetMapping(value="/chart/no_department.gw", produces="text/plain;charset=UTF-8")
@@ -569,76 +665,108 @@ public class KimkmController {
 		return new Gson().toJson(jsonArr);
 	}
 	
+	
+	
+	// 영업팀 조직도
+		@ResponseBody
+		@GetMapping(value="/chart/dept.gw", produces="text/plain;charset=UTF-8")
+		public String dept() {
+			
+			List<Map<String, String>> employeeList =  service.employeeList();
+			
+			JsonArray jsonArr = new JsonArray(); // []
+			
+			for(Map<String, String> map : employeeList) {
+				
+				JsonObject jsonObj = new JsonObject();
+				
+				jsonObj.addProperty("name", map.get("name"));
+				jsonObj.addProperty("job_name", map.get("job_name"));
+				jsonObj.addProperty("photo", map.get("photo"));
+				jsonObj.addProperty("department_id", map.get("department_id"));
+				jsonObj.addProperty("employee_id", map.get("employee_id"));
+				jsonObj.addProperty("manager_id", map.get("manager_id"));
+				jsonObj.addProperty("t_manager_id", map.get("t_manager_id"));
+				
+				jsonArr.add(jsonObj);
+				
+				
+			}// end of for
+			
+		//	System.out.println(jsonArr);
+			
+			return new Gson().toJson(jsonArr);
+		}
+		
+		// receipt_favorites update 하기
+		@ResponseBody
+		@PostMapping(value="/receipt_favorites_update.gw", produces="text/plain;charset=UTF-8")
+		public String receipt_favorites_update(HttpServletRequest request) {
+			
+			String receipt_mail_seq = request.getParameter("receipt_mail_seq");
+			
+			String receipt_favorites = service.select_receipt_favorites(receipt_mail_seq);
+			
+			Map<String, String> paraMap = new HashMap<>();
+			
+			paraMap.put("receipt_mail_seq", receipt_mail_seq);
+			paraMap.put("receipt_favorites", receipt_favorites);
+			//System.out.println(paraMap);
+			
+			int n = service.receipt_favorites_update(paraMap);
+			
+			String receipt_favorites_update = service.select_receipt_favorites(receipt_mail_seq);
+			
+			JsonObject jsonObj = new JsonObject();
+			jsonObj.addProperty("receipt_favorites", receipt_favorites_update);
+			
+			return jsonObj.toString();
+		}
+		
+		
+		// receipt_favorites update 하기
+		@ResponseBody
+		@PostMapping(value="/email_receipt_read_count_update.gw", produces="text/plain;charset=UTF-8")
+		public String email_receipt_read_count_update(HttpServletRequest request) {
+			
+			String receipt_mail_seq = request.getParameter("receipt_mail_seq");
+			
+			int n = service.email_receipt_read_count_update(receipt_mail_seq);
+			
+			String email_receipt_read_count = service.select_email_receipt_read_count(receipt_mail_seq);
+			
+			JsonObject jsonObj = new JsonObject();
+			jsonObj.addProperty("email_receipt_read_count", email_receipt_read_count);
+			
+			return jsonObj.toString();
+		}
+		
+		
+		// receipt_favorites update 하기
+		@ResponseBody
+		@PostMapping(value="/receipt_important_update.gw", produces="text/plain;charset=UTF-8")
+		public String receipt_important_update(HttpServletRequest request) {
+			
+			String receipt_mail_seq = request.getParameter("receipt_mail_seq");
+			
+			String receipt_important = service.select_receipt_important(receipt_mail_seq);
+			
+			Map<String, String> paraMap = new HashMap<>();
+			
+			paraMap.put("receipt_mail_seq", receipt_mail_seq);
+			paraMap.put("receipt_important", receipt_important);
+			//System.out.println(paraMap);
+			
+			int n = service.receipt_important_update(paraMap);
+			
+			String receipt_important_update = service.select_receipt_important(receipt_mail_seq);
+			
+			JsonObject jsonObj = new JsonObject();
+			jsonObj.addProperty("receipt_important", receipt_important_update);
+			
+			return jsonObj.toString();
+		}
 
-	// receipt_favorites update 하기
-	@ResponseBody
-	@PostMapping(value="/receipt_favorites_update.gw", produces="text/plain;charset=UTF-8")
-	public String receipt_favorites_update(HttpServletRequest request) {
-		
-		String receipt_mail_seq = request.getParameter("receipt_mail_seq");
-		
-		String receipt_favorites = service.select_receipt_favorites(receipt_mail_seq);
-		
-		Map<String, String> paraMap = new HashMap<>();
-		
-		paraMap.put("receipt_mail_seq", receipt_mail_seq);
-		paraMap.put("receipt_favorites", receipt_favorites);
-		//System.out.println(paraMap);
-		
-		int n = service.receipt_favorites_update(paraMap);
-		
-		String receipt_favorites_update = service.select_receipt_favorites(receipt_mail_seq);
-		
-		JsonObject jsonObj = new JsonObject();
-		jsonObj.addProperty("receipt_favorites", receipt_favorites_update);
-		
-		return jsonObj.toString();
-	}
-	
-	
-	// receipt_favorites update 하기
-	@ResponseBody
-	@PostMapping(value="/email_receipt_read_count_update.gw", produces="text/plain;charset=UTF-8")
-	public String email_receipt_read_count_update(HttpServletRequest request) {
-		
-		String receipt_mail_seq = request.getParameter("receipt_mail_seq");
-		
-		int n = service.email_receipt_read_count_update(receipt_mail_seq);
-		
-		String email_receipt_read_count = service.select_email_receipt_read_count(receipt_mail_seq);
-		
-		JsonObject jsonObj = new JsonObject();
-		jsonObj.addProperty("email_receipt_read_count", email_receipt_read_count);
-		
-		return jsonObj.toString();
-	}
-	
-	
-	// receipt_favorites update 하기
-	@ResponseBody
-	@PostMapping(value="/receipt_important_update.gw", produces="text/plain;charset=UTF-8")
-	public String receipt_important_update(HttpServletRequest request) {
-		
-		String receipt_mail_seq = request.getParameter("receipt_mail_seq");
-		
-		String receipt_important = service.select_receipt_important(receipt_mail_seq);
-		
-		Map<String, String> paraMap = new HashMap<>();
-		
-		paraMap.put("receipt_mail_seq", receipt_mail_seq);
-		paraMap.put("receipt_important", receipt_important);
-		//System.out.println(paraMap);
-		
-		int n = service.receipt_important_update(paraMap);
-		
-		String receipt_important_update = service.select_receipt_important(receipt_mail_seq);
-		
-		JsonObject jsonObj = new JsonObject();
-		jsonObj.addProperty("receipt_important", receipt_important_update);
-		
-		return jsonObj.toString();
-	}
-	
 	
 	
 	

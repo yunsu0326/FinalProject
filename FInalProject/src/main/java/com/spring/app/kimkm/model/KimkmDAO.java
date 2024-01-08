@@ -3,6 +3,7 @@ package com.spring.app.kimkm.model;
 import java.util.List;
 import java.util.Map;
 
+import com.spring.app.domain.DepartmentVO;
 import com.spring.app.domain.EmployeesVO;
 
 public interface KimkmDAO {
@@ -28,9 +29,6 @@ public interface KimkmDAO {
 	// 비밀번호 변경하기
 	int pwdUpdateEnd(Map<String, String> paraMap);
 
-	// 급여계산 하기
-	Map<String, String> selectSalary(String employee_id);
-
 	// 급여테이블 조회하기
 	List<Map<String, String>> monthSal(String employee_id);
 
@@ -40,9 +38,24 @@ public interface KimkmDAO {
 	// salay 테이블에서 Excel 담을 값 가져오기
 	List<Map<String, String>> salaryList(Map<String, Object> paraMap);
 
+	// department테이블  select하기
+	List<Map<String,String>> selectdept(DepartmentVO deptvo);
+	
 	// 조직도 리스트 가져오기
 	List<Map<String, String>> employeeList();
+	
+	// 월급 테이블 insert 하기위한 값 가져오기
+	List<Map<String, String>> emp_salary_List(String lastMonth);
+	
+	// 월급 테이블 insert 하기
+	int insert_PayslipTemplate(List<Map<String, String>> emp_salary_List);
 
+	// 공지사항 글쓰기를 위한 급여명세서 발급자 정보 select 하기
+	Map<String, String> select_human_resources_manager(String manager);
+
+	// 공지사항 insert 하기
+	int insert_notice_board(Map<String, String> manager_name_empId);
+	
 	// receipt_favorites update하기
 	int receipt_favorites_update(Map<String, String> paraMap);
 
@@ -60,6 +73,10 @@ public interface KimkmDAO {
 
 	// receipt_important update 하기
 	int receipt_important_update(Map<String, String> paraMap);
+
+	
+
+	
 
 
 

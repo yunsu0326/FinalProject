@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.ui.Model;
 
-import com.spring.app.digitalmail.domain.EmailVO;
+import com.spring.app.domain.DepartmentVO;
 import com.spring.app.domain.EmployeesVO;
 
 public interface KimkmService {
@@ -31,9 +31,6 @@ public interface KimkmService {
 	// 비밀번호 변경하기
 	int pwdUpdateEnd(Map<String, String> paraMap);
 
-	// 급여계산 하기
-	Map<String, String> selectSalary(String employee_id);
-
 	// 급여테이블 조회하기
 	List<Map<String, String>> monthSal(String employee_id);
 
@@ -43,8 +40,14 @@ public interface KimkmService {
 	// salary 테이블에서 조건에 만족하는 급여들을 가져와서 Excel 파일로 만들기 
 	void salary_to_Excel(Map<String, Object> paraMap, Model model);
 
+	// department테이블  select하기
+	List<Map<String,String>> selectdept(DepartmentVO deptvo);
+	
 	// 조직도 리스트 가져오기
 	List<Map<String, String>> employeeList();
+	
+	// === Spring Scheduler(스프링 스케줄러)를 사용한 tbl_salary 테이블 insert 와 공지사항 insert === //
+	void PayslipTemplate() throws Exception;
 
 	// receipt_favorites update하기
 	int receipt_favorites_update(Map<String, String> paraMap);
@@ -63,6 +66,9 @@ public interface KimkmService {
 
 	// receipt_important update 하기
 	int receipt_important_update(Map<String, String> paraMap);
+	
+
+	
 
 	
 
