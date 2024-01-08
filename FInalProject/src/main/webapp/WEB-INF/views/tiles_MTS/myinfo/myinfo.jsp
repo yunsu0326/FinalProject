@@ -57,10 +57,14 @@ table#table2 td {
     width: 35%;
 }
 
+tr {
+	height: 66px;
+}
+
 div#photo {
 	border: solid 1px #ddd;
-	width: 150px; 
-	height: 150px; 
+	width: 200px; 
+	height: 200px;
 	vertical-align: top; 
 	text-align: center;
 	border-radius: 8px;
@@ -68,24 +72,52 @@ div#photo {
     box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
+img {
+	width: 200px;
+	height: 200px;
+}
+
 div#top {
 	text-align: center; 
 	display: flex; 
 	align-items: center;
-	margin-top: 5%;
 }
 
 h1 {
-	margin: 2% 0 2% 10%; 
+	margin: 2% 0 2% 9.5%; 
 	margin-right: auto;
 }
 
 button#btn_edit {
 	margin-right: 1%;
+    background-color: rgb(3, 199, 90);
+    color: #fff; /* 텍스트 색상을 흰색으로 설정 */
+    border: 1px solid #4CAF50; /* 테두리를 설정하고 싶으면 추가 */
+    padding: 10px 20px; /* 내부 여백을 조절하여 버튼 크기를 조절 */
+    font-size: 16px; /* 폰트 크기 조절 */
+    cursor: pointer; /* 커서를 포인터로 변경하여 클릭 가능한 것임을 나타냄 */
+    border-radius: 5px; /* 둥근 테두리를 적용하여 더 매끄러운 느낌을 줌 */
+    transition: background-color 0.3s ease; /* 부드러운 색상 변화를 위한 트랜지션 효과 추가 */
+}
+
+button#btn_edit:hover {
+    background-color: #4CAF50; /* 호버 상태에서의 배경 색상 변경 */
 }
 
 button#btn_pwd {
 	margin-right: 10%;
+	background-color: rgb(3, 199, 90);
+    color: #fff; /* 텍스트 색상을 흰색으로 설정 */
+    border: 1px solid #4CAF50; /* 테두리를 설정하고 싶으면 추가 */
+    padding: 10px 20px; /* 내부 여백을 조절하여 버튼 크기를 조절 */
+    font-size: 16px; /* 폰트 크기 조절 */
+    cursor: pointer; /* 커서를 포인터로 변경하여 클릭 가능한 것임을 나타냄 */
+    border-radius: 5px; /* 둥근 테두리를 적용하여 더 매끄러운 느낌을 줌 */
+    transition: background-color 0.3s ease; /* 부드러운 색상 변화를 위한 트랜지션 효과 추가 */
+}
+
+button#btn_pwd:hover {
+    background-color: #4CAF50; /* 호버 상태에서의 배경 색상 변경 */
 }
 
 .modal.show .modal-dialog {
@@ -394,7 +426,7 @@ function goPwdUpdate() {
 	<div style="display: flex; justify-content: center;">
 		
 		<div id="photo">
-			<img src="<%= ctxPath%>/resources/empImg/${requestScope.loginuser.photo}" style="width: 148px; height: 150px;" />
+			<img src="<%= ctxPath%>/resources/empImg/${requestScope.loginuser.photo}" />
 		</div>
 			
 		<table id="table1" class="myinfo_tbl">

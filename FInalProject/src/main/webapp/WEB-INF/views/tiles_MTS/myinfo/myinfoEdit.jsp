@@ -69,13 +69,18 @@ select {
 
 div#photo {
 	border: solid 1px #ddd;
-	width: 150px; 
-	height: 150px; 
+	width: 200px; 
+	height: 200px; 
 	vertical-align: top; 
 	text-align: center;
 	border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+img {
+	width: 200px;
+	height: 200px;
 }
 
 div#top {
@@ -99,13 +104,13 @@ button#btnCancel {
 
 .filebox label {
     display: inline-block;
-    padding: 10px 11px;
     color: #fff;
     vertical-align: middle;
     background-color: #999999;
     cursor: pointer;
     height: 40px;
-    margin-left: 10px;
+    margin-left: 9.5%;
+    width: 10.5%;
 }
 
 .filebox input[type="file"] {
@@ -360,7 +365,7 @@ function btnUpdate() {
 		<div style="display: flex; justify-content: center;">
 		
 			<div id="photo">
-				<img src="<%= ctxPath%>/resources/images/${requestScope.loginuser.photo}" id="previewImg" style="width: 148px; height: 158px;" />
+				<img src="<%= ctxPath%>/resources/images/${requestScope.loginuser.photo}" id="previewImg" />
 			</div>
 				
 			<table id="table1" class="myinfo_tbl">
@@ -391,7 +396,7 @@ function btnUpdate() {
 		</div>
 		
 		<div class="filebox">
-			<label for="attach" style="margin-left: 9%;">사원증 변경하기</label> 
+			<label for="attach">사원증 변경하기</label> 
 			<input type="file" id="attach" class="img_file" name="attach" accept="image/jpeg, image/png">
 		</div>
 		
