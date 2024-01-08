@@ -2,6 +2,7 @@ package com.spring.app.jinyoung.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -271,11 +272,14 @@ public class ApprovalController {
 			String filename = dfvo.getFilename(); // 저장된 파일 이름
 			String originalFilename = dfvo.getOriginalFilename(); // 원본 파일 이름
 			
-			// 첨부파일이 저장되어 있는 WAS 서버의 디스크 경로명을 알아온다.
-			HttpSession session = request.getSession();
-			String root = session.getServletContext().getRealPath("/");
+			// String path = "C:\\NCS\\workspace_spring_framework\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\GW\\resources\\emailfiles";
+            String path = "C:\\git\\FinalProject\\FInalProject\\src\\main\\webapp\\resources\\draft_attach_file";
 			
-			String path = root+"resources"+File.separator+"draft_attach_file";
+			// 첨부파일이 저장되어 있는 WAS 서버의 디스크 경로명을 알아온다.
+		//	HttpSession session = request.getSession();
+		//	String root = session.getServletContext().getRealPath("/");
+			
+		//	String path = root+"resources"+File.separator+"draft_attach_file";
 			
 			boolean flag = false;// file 다운로드 성공, 실패를 알려주는 용도
 			
@@ -613,8 +617,12 @@ public class ApprovalController {
 		// 첨부파일이 있을 시
 		if (mtfRequest.getFiles("fileList").size() > 0) {
 			
+			String root = "C:\\git\\FinalProject\\FInalProject\\src\\main\\webapp";
+            // System.out.println("~~~~ 확인용 webapp 의 절대경로 => " + root);
+            String path = root+"\\resources\\draft_attach_file";
+			
 			// 파일 업로드 경로 지정
-			String path = JYUtil.setFilePath(mtfRequest, "draft_attach_file");
+		//	String path = JYUtil.setFilePath(mtfRequest, "draft_attach_file");
 			
 			// view에서 넘어온 파일들
 			List<MultipartFile> multiFileList = mtfRequest.getFiles("fileList");
@@ -668,6 +676,54 @@ public class ApprovalController {
 
 		return String.valueOf(jsonObj);
 	}
+	
+	
+	// 스마트에디터, 드래그앤드롭을 사용한 다중사진 파일 업로드
+	@PostMapping(value="/image/multiplePhotoUpload.gw")
+	public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) {
+     
+		// WAS의 webapp의 절대경로
+		HttpSession session = request.getSession();
+		String root = session.getServletContext().getRealPath("/");
+		String path = root + "resources"+File.separator+"draft_photo_upload";
+		
+		System.out.println("~~~ 확인용 path => " + path);
+		
+		File dir = new File(path);
+		if(!dir.exists()) {
+			dir.mkdirs();
+		}
+		
+		try {
+			String filename = request.getHeader("file-name"); // 파일명(문자열) - 일반 원본파일명
+	         
+			InputStream is = request.getInputStream(); // is는 네이버 스마트 에디터를 사용하여 사진첨부하기 된 이미지 파일임.
+	         
+			String newFilename = fileManager.doFileUpload(is, filename, path);
+	         
+			int width = fileManager.getImageWidth(path+File.separator+newFilename);
+	         
+			if(width > 600) {
+				width = 600;
+			}
+	          
+			String ctxPath = request.getContextPath(); //  /board
+			
+			String strURL = "";
+			strURL += "&bNewLine=true&sFileName="+newFilename; 
+			strURL += "&sWidth="+width;
+			strURL += "&sFileURL="+ctxPath+"/resources/draft_photo_upload/"+newFilename;
+			
+			// === 웹브라우저 상에 사진 이미지를 쓰기 === //
+			PrintWriter out = response.getWriter();
+			out.print(strURL);
+	         
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	// 기안 임시저장하기
 	@ResponseBody
