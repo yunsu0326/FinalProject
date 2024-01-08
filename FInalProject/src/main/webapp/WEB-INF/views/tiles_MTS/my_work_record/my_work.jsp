@@ -191,7 +191,7 @@ $(document).ready(function(){
 	    // 근무 시간 가져오기
 	    var workTimeNow = now - todayStartTimeVal;
 	  
-	    var workTimeH = Math.floor(workTimeNow/(1000 * 60 * 60));   // 근무 시간
+	    var workTimeH = Math.floor(workTimeNow / (1000 * 60 * 60));  // 근무 시간
 	    
 	    var workTimeM = Math.floor(workTimeNow / (1000 * 60) % 60); // 근무 분
 	    
@@ -205,7 +205,7 @@ $(document).ready(function(){
 	 	if(workTimeNow > 32400000) { // 연장근무인 경우
 	 		var calculateTime = workTimeNow - 32400000;
 
-	 		var calH = Math.floor(calculateTime/(1000 * 60 * 60)); 	 // 연장 시간
+	 		var calH = Math.floor(calculateTime / (1000 * 60 * 60));  // 연장 시간
 		    
 		    var calM = Math.floor(calculateTime / (1000 * 60) % 60); // 연장 분
 		    

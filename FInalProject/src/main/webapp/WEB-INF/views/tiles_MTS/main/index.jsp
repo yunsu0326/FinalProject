@@ -144,6 +144,103 @@ $(document).ready(function(){
             alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
         }
     }); // end of ajax
+    
+    // 출근, 퇴근 신청 [시작]
+    var now = new Date();	
+	var year = now.getFullYear();  // 현재 해당 년도
+	var month = now.getMonth()+1;  // 현재 해당 월
+	var day = now.getDate(); 	   // 현재 해당 일자
+	
+	var hour = now.getHours(); 	   // 현재 해당 시각
+	var minute = now.getMinutes(); // 현재 해당 분
+	var second = now.getSeconds(); // 현재 해당 초
+	
+	// 한 자리 수일 때 앞에 0 붙이기 (함수 활용)
+	hour = padZero(hour);
+	minute = padZero(minute);
+	second = padZero(second);
+	month = padZero(month);
+	day = padZero(day);
+
+	const FullDate = year+"-"+month+"-"+day; 	 // 2023-12-27
+	const FullTime = hour+":"+minute+":"+second; // 16:31:25
+    
+ 	// 출근 버튼 클릭시  근무 테이블에 insert
+    $("button#goToWork").click(function(){
+
+    	$("input[name='work_date']").val(FullDate);
+    	$("input[name='work_start_time']").val(FullTime);
+    	
+    	const frm = document.goToWorkInsert;
+	    frm.method = "post";
+	    frm.action = "<%= ctxPath %>/goToWorkInsert.gw";
+	    frm.submit(); 
+	    
+    }); // end of $("button#goToWork").click(function()--------------------
+    
+ 	// 퇴근 버튼 클릭시  근무 테이블 update
+    $("button#leaveWork").click(function(){
+    	
+    	$("input[name='work_date']").val(FullDate);
+	    $("input:hidden[name='work_end_time']").val(FullTime);
+	    
+		/////////////////////////////////////////////////////
+		// 출근시간 날짜형식으로 변환
+	    var TodayStartTime = $('#todayST').val(); // 로그인 한 사원의 오늘 출근 시간
+	    
+	    var TodayHour = TodayStartTime.substr(0, 2); // 출근 시 구하기
+	    
+	    var TodayMinute = TodayStartTime.substr(3, 2); // 출근 분 구하기
+	    
+	    var TodaySecond = TodayStartTime.substr(6); // 출근 초 구하기
+	    
+	    todayStartTimeVal = new Date();
+	    
+	    todayStartTimeVal.setHours(TodayHour);
+	    todayStartTimeVal.setMinutes(TodayMinute);
+	    todayStartTimeVal.setSeconds(TodaySecond);
+	    
+	    /////////////////////////////////////////////////////
+	    // 근무 시간 가져오기
+	    var workTimeNow = now - todayStartTimeVal;
+	  
+	    var workTimeH = Math.floor(workTimeNow / (1000 * 60 * 60)); // 근무 시간
+	    
+	    var workTimeM = Math.floor(workTimeNow / (1000 * 60) % 60); // 근무 분
+	    
+	    var workTimeC = Math.floor((workTimeNow / 1000) % 60);	    // 근무 초
+	    
+	    var workTimeVal = padZero(workTimeH)+":"+padZero(workTimeM)+":"+padZero(workTimeC);
+	 	///////////////////////////////////////////////////////////////
+	 	// 연장 근무 시간 구하기
+	 	// 9시간의 밀리초는 32400000 - 23611081 = 12345125
+	 	
+	 	if(workTimeNow > 32400000) { // 연장근무인 경우
+	 		var calculateTime = workTimeNow - 32400000;
+
+	 		var calH = Math.floor(calculateTime / (1000 * 60 * 60)); // 연장 시간
+		    
+		    var calM = Math.floor(calculateTime / (1000 * 60) % 60); // 연장 분
+		    
+		    var calC = Math.floor((calculateTime / 1000) % 60); 	 // 연장 초
+	 		
+		    var overTimeVal = padZero(calH)+":"+padZero(calM)+":"+padZero(calC);
+		 	            
+		 	$("input[name='extended_end_time']").val(overTimeVal);
+		 	
+		 	const frm = document.goToWorkUpdateWithExtended; 
+			frm.method = "post";
+		    frm.action = "<%= ctxPath %>/goToWorkUpdateWithExtended.gw";
+			frm.submit();
+	 	}
+	 	else {
+	 		const frm = document.goToWorkUpdateWithExtended; 
+			frm.method = "post";
+		    frm.action = "<%= ctxPath %>/goToWorkUpdate.gw";
+			frm.submit();
+	 	}
+    }); // end of $("button#goToWork").click(function()--------------------
+ 	// 출근, 퇴근 신청 [끝]
 
 }); // end of $(document).ready(function(){})-----------------
 
@@ -302,6 +399,10 @@ function showWeather(){
 	
 }// end of function showWeather()--------------------
 
+// 주어진 값이 10보다 작을 경우 그 앞에 0을 붙여서 두 자리 수로 만드는 함수
+function padZero(value) {
+    return value < 10 ? "0" + value : value;
+}
 
 </script>
 	
@@ -404,6 +505,7 @@ function showWeather(){
                 		<input type="hidden" name="extended_end_time"/>
                 		<input type="hidden" name="fk_employee_id" value="${sessionScope.loginuser.employee_id}"/>
                 	</form>
+                	<input type='hidden' id='todayST' value='${requestScope.myTodayStartTime}'/>
 				</li>
 		      </ul>
 	        </div>

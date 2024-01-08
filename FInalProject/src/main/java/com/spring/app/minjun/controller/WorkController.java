@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.app.common.MyUtil;
 import com.spring.app.domain.EmployeesVO;
 import com.spring.app.domain.WorkVO;
 import com.spring.app.domain.Work_requestVO;
@@ -87,6 +88,8 @@ public class WorkController {
 	// 출근 버튼 클릭시 근무테이블에 insert 하기
 	@PostMapping("/goToWorkInsert.gw")
 	public ModelAndView goToWorkInsert(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+		
+		String goBackURL = MyUtil.getCurrentURL(request);
 		
         String fk_employee_id = request.getParameter("fk_employee_id");
         String work_date = request.getParameter("work_date");
