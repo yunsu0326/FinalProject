@@ -9,33 +9,33 @@
 %>
 
 <style type="text/css">
-   div#container {width: 75%; margin:0 auto; margin-top:100px;}
-   div#div_chart {width: 80%; min-height: 1100px; margin:auto;}
-   a {
-      margin-right: 10px;
-      text-decoration: none !important;
-      color: black;
-      font-size: 13pt;
-   }
-   
-	#Navbar > li > a {
-		color: gray;
-		font-weight: bold;
-		font-size: 17pt;
-	}
-	#Navbar > li > a:hover {
-		color: black;
-	}
-	
-	/* 테이블 스타일 변경 */
-	div.listContainer{
-	    width: 100%;
-	    border-collapse: collapse;
-	    margin-bottom: 30px;
-	    border-radius: 8px;
-	    overflow: hidden;
-	    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.1);
-	}
+div#container {width: 75%; margin:0 auto; margin-top:100px;}
+div#div_chart {width: 80%; min-height: 1100px; margin:auto;}
+a {
+	margin-right: 10px;
+	text-decoration: none !important;
+	color: black;
+	font-size: 13pt;
+}
+
+#Navbar > li > a {
+	color: gray;
+	font-weight: bold;
+	font-size: 17pt;
+}
+#Navbar > li > a:hover {
+	color: black;
+}
+
+/* 테이블 스타일 변경 */
+div.listContainer{
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.1);
+}
 	
 /* 차트 관련 css*/
 .highcharts-figure,
@@ -102,21 +102,6 @@ $(document).ready(function(){
 		url:"<%= ctxPath%>/monthlyVacCnt.gw",
 		dataType:"json",
 		success:function(json){
-			// console.log(JSON.stringify(json));
-			/*
-			[{"nowMonth-11":"1"
-			 ,"nowMonth-10":"2"
-			 ,"nowMonth-9":"1"
-			 ,"nowMonth-8":"1"
-			 ,"nowMonth-7":"0"
-			 ,"nowMonth-6":"3"
-			 ,"nowMonth-5":"1"
-			 ,"nowMonth-4":"4"
-			 ,"nowMonth-3":"1"
-			 ,"nowMonth-2":"2"
-			 ,"nowMonth-1":"11"
-			 ,"nowMonth":"5"}]
-			*/
 			let resultArr = [];
 			
 			for(let i=0; i<json.length; i++) {
@@ -140,7 +125,6 @@ $(document).ready(function(){
                 resultArr.push(obj); // 배열속에 객체 넣은것
 				
 			} // end of for --------------------
-			// console.log(resultArr);
 			/////////////////////////////////////
 			Highcharts.chart('chart_container', {
 
@@ -199,8 +183,6 @@ $(document).ready(function(){
 		 	alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 	  	}
 	});
-	
-
 }); // end of $(document).ready()
 
 
@@ -238,10 +220,6 @@ $(document).ready(function(){
 		   <h2 style="margin: 50px 0;">기간별 휴가 사용 통계</h2>
 		   <div id="chart_container"></div>
 		   <div id="table_container" style="margin: 40px 0 0 0;"></div>
-		
 		</div>
 	</div>
-   
-   
-   
 </div>
