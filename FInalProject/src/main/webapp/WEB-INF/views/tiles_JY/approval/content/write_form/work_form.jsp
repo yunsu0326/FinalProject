@@ -4,11 +4,7 @@
 
 <link rel = "stylesheet" href = "<%=ctxPath%>/resources/css/draft_form_style.css">
 
-<%-- sweet alert --%>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
 <script>
-
 
 //수신처 배열
 const recipientArr = JSON.parse('${recipientArr}');
@@ -47,7 +43,7 @@ $(() => {
 		// 글제목 유효성 검사
 		const draft_subject = $("input#draft_subject").val().trim();
 		if(draft_subject == "") {
-			swal("글제목을 입력하세요!")
+			alert("글제목을 입력하세요!")
 			.then(function (result) {
 				document.getElementById("draft_subject").focus(); //포커싱
 		      })
@@ -59,7 +55,7 @@ $(() => {
 
 	    if( draft_content == ""  || draft_content == null || draft_content == '&nbsp;' || draft_content == '<p>&nbsp;</p>')  {
 			obj.getById["draft_content"].exec("FOCUS"); //포커싱
-			swal("글내용을 입력하세요!")
+			alert("글내용을 입력하세요!")
 			.then(function (result) {
 				obj.getById["draft_content"].exec("FOCUS"); //포커싱
 		      })
@@ -70,7 +66,7 @@ $(() => {
 	    // 결재라인 유효성검사
 	    let aprvLineInfo = aprvTblBody.html();
 	    if (aprvLineInfo.indexOf('tr') == -1) {
-	    	swal("결재라인을 설정하세요!");
+	    	alert("결재라인을 설정하세요!");
     		return;
 	    }
 		
@@ -89,7 +85,7 @@ $(() => {
 	    var draft_content = $("#draft_content").val();
 
 	    if( draft_content == ""  || draft_content == null || draft_content == '&nbsp;' || draft_content == '<p>&nbsp;</p>')  {
-			swal("글내용을 입력하세요!")
+			alert("글내용을 입력하세요!")
 			.then(function (result) {
 				obj.getById["draft_content"].exec("FOCUS"); //포커싱
 		      })
@@ -137,7 +133,6 @@ $(() => {
 		    }
 		    $("span#a").hide();
 		    $(this).addClass('active');
-		    
 		}
 	}
 
@@ -168,8 +163,6 @@ $(() => {
    	 	delete_file_size = $this.parent().children('.digitFileSize').text();
    	 	
    	 	$(this).parent().remove();
-   	 	
-		console.log(fileList);
    	 	
    	 	for(let i = 0; i < fileList.length; i++) {
    	 		if(fileList[i].name = delete_file_name && delete_file_size == fileList[i].size )  {
@@ -259,13 +252,11 @@ const submitDraft = () => {
         cache:false,
         success:function(json){
         	if(json.result == true) {
-    	    	swal("등록 완료", "기안이 상신되었습니다.", "success")
-    	    	.then((value) => {
-	    	    	location.href = "<%=ctxPath%>/approval/personal/sent.gw";
-   	    		});
+    	    	alert("등록 완료\n기안이 상신되었습니다.")
+    	    	location.href = "<%=ctxPath%>/approval/personal/sent.gw";
         	}
         	else
-        		swal("등록 실패", "등록에 실패하였습니다.", "error");
+        		alert("등록 실패\n등록에 실패하였습니다.");
         },
         error: function(request, status, error){
 		alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -290,14 +281,14 @@ const saveTemp = () => {
         cache:false,
         success:function(json){
    	     	if(json.temp_draft_no != "" && json.temp_draft_no !== undefined) {
-   	     		swal("저장 완료", "임시저장 되었습니다.", "success")
+   	     		alert("저장 완료\n임시저장 되었습니다.")
    	     		.then((value) => {
    	 	    		$("input[name='temp_draft_no']").val(json.temp_draft_no); // 임시저장 번호 대입
    	 	    		location.href = "<%=ctxPath%>/approval/personal/saved.gw";
    	     		});
         	}
         	else
-        		swal("저장 실패", "임시저장 실패하였습니다.", "error");
+        		alert("저장 실패\n임시저장 실패하였습니다.");
         },
         error: function(request, status, error){
 		alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -352,7 +343,7 @@ const getApprovalEmpInfo = aprvLine => {
 	const selectedAprvLine = aprvLine.filter(el => el.aprv_line_no == selectedNo);
 	
 	if (selectedAprvLine.length == 0) {
-		swal("선택된 결재라인이 없습니다.");
+		alert("선택된 결재라인이 없습니다.");
 		return;
 	}
 	
@@ -606,7 +597,7 @@ const emptyApprovalLine = () => {
 	
 				<div style="margin: 20px;">
 					<button type="button" class="btn btn-secondary " onclick="javascript:history.back()">취소</button>
-					<button type="button" class="btn btn-primary mr-3" id="writeBtn">확인</button>
+					<button type="button" class="btn mr-3" id="writeBtn">확인</button>
 				</div>
 			</form>
 		</div>

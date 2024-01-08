@@ -10,38 +10,33 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+         	paddig : 20px;
         }
+        .parent {
+		display: grid;
+		grid-template-columns: repeat(5, 1fr);
+		grid-template-rows: repeat(5, 1fr);
+		grid-column-gap: 20px;
+		grid-row-gap: 20px;
+		height:600px;
+		}
+		
+		.div1 { grid-area: 1 / 2 / 4 / 4; }
+		.div2 { grid-area: 4 / 2 / 5 / 4; }
+		.div3 { grid-area: 5 / 2 / 6 / 4; }
+		.div4 { grid-area: 1 / 1 / 2 / 2; }
+		.div5 { grid-area: 2 / 1 / 6 / 2; }
+		.div6 { grid-area: 1 / 4 / 3 / 6; }
+		.div7 { grid-area: 3 / 4 / 5 / 6; }
+		.div8 { grid-area: 5 / 4 / 6 / 6; }
+		
+		.widget-container {
+		    background-color: #ffffff;
+		    padding: 20px;
+		    border-radius: 8px;
+		    box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.1);   
 
-        /* 컨테이너 스타일 */
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(330px, 3fr));
-            gap: 30px;
-            padding: 20px;
-        }
-
-        /* 위젯 컨테이너 스타일 */
-        .widget-container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 8px 12px 0 rgba(0, 0, 0, 0.1);
-            height: 200px; /* 모든 위젯의 높이를 200px로 설정 */
-            
-        }
-
-        /* 위젯 헤더 스타일 */
-        .widget-header {
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        /* 특정 위젯 스타일 */
-        .widget-todo {
-            min-height: 633px; /* todo 위젯의 높이를 최소 633px로 설정 */
-        }
+		}
         
         .highcharts-figure,
 	.highcharts-data-table table {
@@ -136,6 +131,104 @@ $(document).ready(function(){
             alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
         }
     }); // end of ajax
+    
+    
+    // 출근, 퇴근 신청 [시작]
+    var now = new Date();	
+	var year = now.getFullYear();  // 현재 해당 년도
+	var month = now.getMonth()+1;  // 현재 해당 월
+	var day = now.getDate(); 	   // 현재 해당 일자
+	
+	var hour = now.getHours(); 	   // 현재 해당 시각
+	var minute = now.getMinutes(); // 현재 해당 분
+	var second = now.getSeconds(); // 현재 해당 초
+	
+	// 한 자리 수일 때 앞에 0 붙이기 (함수 활용)
+	hour = padZero(hour);
+	minute = padZero(minute);
+	second = padZero(second);
+	month = padZero(month);
+	day = padZero(day);
+
+	const FullDate = year+"-"+month+"-"+day; 	 // 2023-12-27
+	const FullTime = hour+":"+minute+":"+second; // 16:31:25
+    
+ 	// 출근 버튼 클릭시  근무 테이블에 insert
+    $("button#goToWork").click(function(){
+
+    	$("input[name='work_date']").val(FullDate);
+    	$("input[name='work_start_time']").val(FullTime);
+    	
+    	const frm = document.goToWorkInsert;
+	    frm.method = "post";
+	    frm.action = "<%= ctxPath %>/goToWorkInsertIndex.gw";
+	    frm.submit(); 
+	    
+    }); // end of $("button#goToWork").click(function()--------------------
+    
+ 	// 퇴근 버튼 클릭시  근무 테이블 update
+    $("button#leaveWork").click(function(){
+    	
+    	$("input[name='work_date']").val(FullDate);
+	    $("input:hidden[name='work_end_time']").val(FullTime);
+	    
+		/////////////////////////////////////////////////////
+		// 출근시간 날짜형식으로 변환
+	    var TodayStartTime = $('#todayST').val(); // 로그인 한 사원의 오늘 출근 시간
+	    
+	    var TodayHour = TodayStartTime.substr(0, 2); // 출근 시 구하기
+	    
+	    var TodayMinute = TodayStartTime.substr(3, 2); // 출근 분 구하기
+	    
+	    var TodaySecond = TodayStartTime.substr(6); // 출근 초 구하기
+	    
+	    todayStartTimeVal = new Date();
+	    
+	    todayStartTimeVal.setHours(TodayHour);
+	    todayStartTimeVal.setMinutes(TodayMinute);
+	    todayStartTimeVal.setSeconds(TodaySecond);
+	    
+	    /////////////////////////////////////////////////////
+	    // 근무 시간 가져오기
+	    var workTimeNow = now - todayStartTimeVal;
+	  
+	    var workTimeH = Math.floor(workTimeNow / (1000 * 60 * 60)); // 근무 시간
+	    
+	    var workTimeM = Math.floor(workTimeNow / (1000 * 60) % 60); // 근무 분
+	    
+	    var workTimeC = Math.floor((workTimeNow / 1000) % 60);	    // 근무 초
+	    
+	    var workTimeVal = padZero(workTimeH)+":"+padZero(workTimeM)+":"+padZero(workTimeC);
+	 	///////////////////////////////////////////////////////////////
+	 	// 연장 근무 시간 구하기
+	 	// 9시간의 밀리초는 32400000 - 23611081 = 12345125
+	 	
+	 	if(workTimeNow > 32400000) { // 연장근무인 경우
+	 		var calculateTime = workTimeNow - 32400000;
+
+	 		var calH = Math.floor(calculateTime / (1000 * 60 * 60)); // 연장 시간
+		    
+		    var calM = Math.floor(calculateTime / (1000 * 60) % 60); // 연장 분
+		    
+		    var calC = Math.floor((calculateTime / 1000) % 60); 	 // 연장 초
+	 		
+		    var overTimeVal = padZero(calH)+":"+padZero(calM)+":"+padZero(calC);
+		 	            
+		 	$("input[name='extended_end_time']").val(overTimeVal);
+		 	
+		 	const frm = document.goToWorkUpdateWithExtended; 
+			frm.method = "post";
+		    frm.action = "<%= ctxPath %>/goToWorkUpdateWithExtendedIndex.gw";
+			frm.submit();
+	 	}
+	 	else {
+	 		const frm = document.goToWorkUpdateWithExtended; 
+			frm.method = "post";
+		    frm.action = "<%= ctxPath %>/goToWorkUpdateIndex.gw";
+			frm.submit();
+	 	}
+    }); // end of $("button#goToWork").click(function()--------------------
+ 	// 출근, 퇴근 신청 [끝]
 
 }); // end of $(document).ready(function(){})-----------------
 
@@ -294,6 +387,10 @@ function showWeather(){
 	
 }// end of function showWeather()--------------------
 
+// 주어진 값이 10보다 작을 경우 그 앞에 0을 붙여서 두 자리 수로 만드는 함수
+function padZero(value) {
+    return value < 10 ? "0" + value : value;
+}
 
 </script>
 	
@@ -302,11 +399,36 @@ function showWeather(){
     
     
 <body>
-   <div class="container flex">
+   <div class="parent">
+	   <div class="widget-container div4">
+	            <div class="widget-header">프로필</div>
+		            <div >
+				
+					<div id="photo" class="mx-2">
+						<img src="<%= ctxPath%>/resources/images/${requestScope.loginuser.photo}" style="width: 100px; height: 100px; border-radius: 50%;" />
+					</div>
+						
+					<table id="table1" class="myinfo_tbl">
+						<tr>
+							<th width="50%;">성명</th>
+							<td>${requestScope.loginuser.name}</td>
+						</tr>
+						<tr>	
+							<th>이메일</th>
+							<td>${requestScope.loginuser.email}</td>
+						</tr>
+						<tr>
+							<th>입사일자</th>
+							<td>${requestScope.loginuser.hire_date}</td>
+						</tr>
+					</table>
+				
+			</div>
+        </div>
 	    <!-- todo -->
-	    <div class="widget-container widget-todo  my-3">
+	    <div class="widget-container div5">
 	        <div class="widget-header">To-Do</div>
-		        <div class="listContainer">
+		        <div class="listContainer ">
 					<h5 class="mb-3">결재 대기 문서</h5>
 					<h6 class="mb-3">결재해야 할 문서가 <span style="color:#086BDE" id="draftCnt">${requestedDraftCnt}</span>건 있습니다.</h6>
 					
@@ -335,61 +457,99 @@ function showWeather(){
 						<a href="<%= ctxPath%>/schedule/scheduleManagement.gw"><i class="fas fa-angle-double-right"></i> 더보기</a>
 					</div>
 				</div>
-	        <!-- To-Do 컨텐츠 -->
-	        <!-- ... -->
 	    </div>
-	
-	    <!-- 나머지 위젯을 옆으로 배치하기 위한 div 추가 -->
-	    <div class="flex">
-	        <!-- 프로필 조직도 -->
-	        <div class="widget-container widget-profile my-3">
-	            <div class="widget-header">프로필</div>
-	            <div style="display: flex; justify-content: center;">
-			
-			<div id="photo" class="mx-2">
-				<img src="<%= ctxPath%>/resources/images/${requestScope.loginuser.photo}" style="width: 100px; height: 100px; border-radius: 50%;" />
-			</div>
-				
-			<table id="table1" class="myinfo_tbl">
-				<tr>
-					<th width="50%;">성명</th>
-					<td>${requestScope.loginuser.name}</td>
-				</tr>
-				<tr>	
-					<th>이메일</th>
-					<td>${requestScope.loginuser.email}</td>
-				</tr>
-				<tr>
-					<th>입사일자</th>
-					<td>${requestScope.loginuser.hire_date}</td>
-				</tr>
-			</table>
-			
-		</div>
-	        </div>
-	
-	        <!-- 웹메일 -->
-	        <div class="widget-container widget-mail my-3">
-	            <div class="widget-header">웹메일</div>
+	    
+	     	<!-- 일정관리 -->
+	        <div class="widget-container div1 ">
+	            <div class="widget-header">일정관리</div>
 	            <!-- 웹메일 컨텐츠 -->
 	            <!-- ... -->
 	        </div>
 	        
+	        <!-- 일정관리 -->
+	        <div class="widget-container div3 ">
+	            <div class="widget-header">검색</div>
+	            <!-- 웹메일 컨텐츠 -->
+	            <!-- ... -->
+	        </div>
+	         <!-- 출퇴근 -->
+	        <div class="widget-container div6 ">
+	            <div class="widget-header">출퇴근</div>
+	           <ul>
+	            <li class="ml-auto mt-2" style="margin-right: 13%;">
+					<button id="goToWork" class="btn btn-sm btn-success" style="width: 50px;">출근</button>
+                	<button id="leaveWork" class="btn btn-sm btn-danger ml-3" style="width: 50px;">퇴근</button>
+                	
+                	<form name="goToWorkInsert">
+                		<input type="hidden" name="work_date"/>
+                		<input type="hidden" name="work_start_time"/>
+                		<input type="hidden" name="fk_employee_id" value="${sessionScope.loginuser.employee_id}"/>
+                	</form>
+                	
+                	<%-- 연장근무인 경우 보낼 form --%>
+                	<form name="goToWorkUpdateWithExtended">
+                		<input type="hidden" name="work_date"/>
+                		<input type="hidden" name="work_end_time"/>
+                		<input type="hidden" name="extended_end_time"/>
+                		<input type="hidden" name="fk_employee_id" value="${sessionScope.loginuser.employee_id}"/>
+                	</form>
+                	<input type='hidden' id='todayST' value='${requestScope.myTodayStartTime}'/>
+				</li>
+		      </ul>
+	        </div>
+	    	 <!-- 웹메일 -->
+	        <div class="widget-container div7 ">
+	            <div class="widget-header">웹메일</div>
+				<!--이메일 리스트-->
+					<div class="emailList_list">
+						
+						<c:if test="${empty requestScope.emailVOList}">
+				    		<div class="emailRow" style="width: 100%; display: flex;">
+								<span style="display:inline-block; margin: 0 auto;">받은 메일이 없습니다.</span>
+							</div>
+						</c:if>
+						
+						<c:if test="${not empty requestScope.emailVOList}">
+							<c:forEach var="emailVO" items="${requestScope.emailVOList}" varStatus="status">
+								<div class="emailRow">
+																                
+									<!-- 수신자 정보 -->
+									<span class="emailRow_title ml-2">${emailVO.job_name}&nbsp;${emailVO.name}</span>
+									<!-- 수신자 정보 -->
+									
+									<!-- 제목-->
+									<div class="emailRow_message" onclick = "selectOneEmail('${emailVO.send_email_seq}')">
+										<span>${emailVO.email_subject}</span>
+									</div>
+									<!-- 제목 -->
+										
+									<!--전송시간-->
+									<span class="mr-3" onclick = "selectOneEmail('${emailVO.send_email_seq}')">${emailVO.send_time}</span>
+									<!--전송시간-->
+								</div>
+							</c:forEach>
+						</c:if>
+					</div>
+	        </div>
+	        
 	        <!-- 공지사항 -->
-	        <div class="widget-container widget-notice my-3">
+	        <div class="widget-container div2 ">
 	            <div class="widget-header">공지사항</div>
 	            <!-- 공지사항 컨텐츠 -->
 	            <!-- ... -->
 	        </div>
-	    </div>
+	
+	
+	       
+	  
 	    
-	    
+	     <!-- 나머지 위젯을 옆으로 배치하기 위한 div 추가 -->
+	   <div class="div8">
 			<%-- 차트그리기 --%>
 			<figure class="highcharts-figure">
-			    <div id="weather_chart_container" class="widget-container"></div>
-			</figure> 
+			    <div id="weather_chart_container" class=" widget-container"></div>
+			</figure>
+			</div> 
+ </div>
 		
-		
-</div>
-
     

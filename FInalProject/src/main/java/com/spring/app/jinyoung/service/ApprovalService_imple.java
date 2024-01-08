@@ -564,13 +564,13 @@ public class ApprovalService_imple implements ApprovalService {
 	public int saveOfficialApprovalLine(OfficialAprvLineVO oapVO) {
 		return dao.saveOfficialApprovalLine(oapVO);
 	}
-/*	
+	
 	// 환경설정-서명이미지 수정
 	@Override
 	public int updateSignature(Map<String, String> paraMap) {
 		return dao.updateSignature(paraMap);
 	}
-*/
+
 	// 임시저장 문서 조회
 	@Override
 	public Map<String, Object> getTempDraftDetail(DraftVO dvo) {
@@ -598,10 +598,12 @@ public class ApprovalService_imple implements ApprovalService {
 			List<ApprovalVO> externalList = new ArrayList<ApprovalVO>();
 			
 			for(ApprovalVO avo : avoList) {
-				if (avo.getOutside() == 0)
+				if (avo.getOutside() == 0) {
 					internalList.add(avo);
-				else 
+				}
+				else {
 					externalList.add(avo);
+				}
 			}
 			draftMap.put("internalList", internalList);
 			draftMap.put("externalList", externalList);

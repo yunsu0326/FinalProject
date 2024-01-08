@@ -9,7 +9,8 @@
 %>
 
 <style type="text/css">
-   
+   div#container {width: 75%; margin:0 auto; margin-top:100px;}
+   div#div_chart {width: 80%; min-height: 1100px; margin:auto;}
    a {
       margin-right: 10px;
       text-decoration: none !important;
@@ -83,6 +84,8 @@
 input[type="number"] {
     min-width: 50px;
 }
+
+nav.navbar {margin-left: 2%; margin-right: 5%; width: 80%; background-size: cover; background-position: center; background-repeat: no-repeat; height: 70px}
 </style>
 <%-- HighChart 관련 --%>
 <script src="<%= ctxPath%>/resources/Highcharts-10.3.3/code/highcharts.js"></script>
@@ -203,10 +206,9 @@ $(document).ready(function(){
 
 </script>
 
-<div id="container" style="width: 75%; margin:0 auto; margin-top:100px;">
-
+<div id="container">
    <%-- 상단 메뉴바 시작 --%>
-   <nav class="navbar navbar-expand-lg mt-5 mb-4" style=" margin-left: 2%; margin-right: 5%; width: 80%; background-size: cover; background-position: center; background-repeat: no-repeat; height: 70px">
+   <nav class="navbar navbar-expand-lg mt-5 mb-4">
 		<div class="collapse navbar-collapse">
 			<ul class="navbar-nav" id="Navbar">
 				<li class="nav-item">
@@ -226,18 +228,14 @@ $(document).ready(function(){
 				<li>
 					<a class="nav-link ml-5" href="<%= ctxPath %>/vacation_chart.gw">휴가 통계</a>
 				</li>
-				
 			</ul>
 		</div>
 	</nav>
    <%-- 상단 메뉴바 끝 --%>
    
-   
 	<div style="display: flex;">   
-		<div style="width: 80%; min-height: 1100px; margin:auto; ">
-		
+		<div id='div_chart'>
 		   <h2 style="margin: 50px 0;">기간별 휴가 사용 통계</h2>
-		   
 		   <div id="chart_container"></div>
 		   <div id="table_container" style="margin: 40px 0 0 0;"></div>
 		

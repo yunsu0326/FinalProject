@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -124,7 +125,7 @@ public class ApprovalController {
 		Map<String, Object> draftMap = service.getDraftDetail(dvo);
 		dvo = (DraftVO) draftMap.get("dvo");
 		
-		if (!loginuser.getGradelevel().equals("10")) { // 이사실 직원이 아닐 경우
+		if (!loginuser.getGradelevel().equals("10")) { // 사장이 아니고
 			if (Integer.parseInt(loginuser.getFk_department_id()) != dvo.getDraft_department_no()) { // 기안자 부서와 로그인 유저의 부서가 다를 경우
 				List<ApprovalVO> externalList = (List<ApprovalVO>) draftMap.get("externalList");
 				
@@ -180,6 +181,11 @@ public class ApprovalController {
 		mav.addObject("avoList", String.valueOf(avoList));
 		mav.addObject("internalList", String.valueOf(internalList));
 		mav.addObject("externalList", String.valueOf(externalList));
+		
+		System.out.println("avoList => " + avoList);
+		System.out.println("internalList => " + internalList);
+		System.out.println("externalList => " + externalList);
+		
 		return mav;
 	}
 	
@@ -233,6 +239,11 @@ public class ApprovalController {
 		mav.addObject("avoList", String.valueOf(avoList));
 		mav.addObject("internalList", String.valueOf(internalList));
 		mav.addObject("externalList", String.valueOf(externalList));
+		
+		System.out.println("avoList => " + avoList);
+		System.out.println("internalList => " + internalList);
+		System.out.println("externalList => " + externalList);
+		
 		return mav;
 	}
 	
@@ -408,7 +419,7 @@ public class ApprovalController {
 
 	// 팀문서함 페이지요청
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/team.gw")
+	@RequestMapping(value = "/department.gw")
 	public ModelAndView teamDraftList(HttpServletRequest request, ModelAndView mav, Pagination pagination)
 			throws Exception {
 
@@ -436,7 +447,7 @@ public class ApprovalController {
 		mav.addObject("pagebar", pagination.getPagebar(url));
 		mav.addObject("paraMap", paraMap);
 
-		mav.setViewName("approval/team_draft.tiles_JY"); // View
+		mav.setViewName("approval/dept_draft.tiles_JY"); // View
 		return mav;
 	}
 
@@ -540,8 +551,16 @@ public class ApprovalController {
 		if(recipientList.size() > 0) {
 			for (EmployeesVO emp : recipientList) {
 				// 결재자 부서와 로그인한 사용자의 부서가 같지 않으면
-				if (emp.getFk_department_id() != loginuser.getFk_department_id())
+				if (!emp.getFk_department_id().equals(loginuser.getFk_department_id())) {
 					recipientArr = new JSONArray(recipientList);
+				}
+				else {
+					recipientArr = null;
+					
+					System.out.println("recipientArr =>" + String.valueOf(recipientArr).toUpperCase());
+					
+					break;
+				}
 			}
 		}
 		
@@ -698,16 +717,25 @@ public class ApprovalController {
 		List<EmployeesVO> recipientList = service.getRecipientList(fk_draft_type_no);
 		JSONArray recipientArr = new JSONArray();
 		
-		// 공통결재라인이 있을 경우
+		// 수신처가 있을 경우
 		if(recipientList.size() > 0) {
 			for (EmployeesVO emp : recipientList) {
 				// 결재자 부서와 로그인한 사용자의 부서가 같지 않으면
-				if (emp.getFk_department_id() != loginuser.getFk_department_id())
+				if (!emp.getFk_department_id().equals(loginuser.getFk_department_id())) {
 					recipientArr = new JSONArray(recipientList);
+				}
+				else {
+					recipientArr = null;
+					
+					System.out.println("recipientArr =>" + String.valueOf(recipientArr).toUpperCase());
+					
+					break;
+				}
 			}
 		}
 		
 		mav.addObject("recipientArr", String.valueOf(recipientArr));
+		
 		
 		// 임시저장 문서 정보 가져오기
 		Map<String, Object> draftMap = service.getTempDraftDetail(dvo);
@@ -1047,7 +1075,7 @@ public class ApprovalController {
 
 		return "approval/config/signature.tiles_JY";
 	}
-/*	
+	
 	// 환경설정-서명이미지 수정
 	@RequestMapping(value = "/config/signature/update.gw")
 	public ModelAndView updateSignature(ModelAndView mav, MultipartHttpServletRequest mtfRequest) {
@@ -1101,7 +1129,7 @@ public class ApprovalController {
 		
 		return mav;
 	}
-*/	
+	
 	// 관리자메뉴-공통결재라인 설정 페이지요청
 	@RequestMapping(value = "/admin/officialApprovalLine.gw")
 	public ModelAndView getOfficialApprovalLine(ModelAndView mav) {

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- ==== #29. mapper 기본설정 ==== -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<!-- ==== #29. 루트 엘리먼트 & 네임스페이스 설정(프로젝트 전체내에서 유일해야 한다.) ==== -->
 <mapper namespace="work">
 
 	<!-- 특정 사원의 근무내역 가져오기 -->
@@ -146,19 +143,21 @@
 		where work_request_seq = ${work_request_seq}
 	</delete>
 	
-	
 	<!-- 자신의 부서번호에 따른 이름, 직급명 가져오기 -->
 	<resultMap type="HashMap" id="myDeptEmp_Map">
 		<result property="name" 		column="name" 	  		javaType="String" />
 		<result property="job_name" 	column="job_name" 		javaType="String" />
 		<result property="employee_id" 	column="employee_id" 	javaType="String" />
+		<result property="work_start_time" 	column="work_start_time" javaType="String" />
 	</resultMap>
 	<select id="myDeptEmp" parameterType="String" resultMap="myDeptEmp_Map">
-		select name, job_name, employee_id
-		from tbl_employees E
-		JOIN tbl_jobs J
-		ON E.fk_job_id = J.job_id
-		where E.fk_department_id = #{fk_department_id}
+		SELECT DISTINCT E.name, J.job_name, E.employee_id, W.work_start_time, E.gradelevel
+		FROM tbl_employees E
+		JOIN tbl_jobs J ON E.fk_job_id = J.job_id
+		LEFT JOIN tbl_work W ON E.employee_id = W.fk_employee_id
+		WHERE E.fk_department_id = #{selectVal}
+		AND (W.work_date = TO_CHAR(SYSDATE, 'YYYY-MM-DD') OR W.work_date IS NULL)
+		order by E.gradelevel desc
 	</select>
 	
 	<!-- employee_id 에 따른 근무내역 가져오기 -->
@@ -205,16 +204,19 @@
 	
 	<!-- 해당 부서 직급, 이름 가져오기 -->
 	<resultMap type="HashMap" id="deptSelectList_Map">
-		<result property="name" 		column="name" 	  javaType="String" />
-		<result property="job_name" 	column="job_name" javaType="String" />
-		<result property="employee_id" 	column="employee_id" javaType="String" />
+		<result property="name" 			column="name" 	  		 javaType="String" />
+		<result property="job_name" 		column="job_name" 		 javaType="String" />
+		<result property="employee_id" 		column="employee_id" 	 javaType="String" />
+		<result property="work_start_time" 	column="work_start_time" javaType="String" />
 	</resultMap>
 	<select id="deptSelectList" parameterType="HashMap" resultMap="deptSelectList_Map">
-		select name, job_name, employee_id
-		from tbl_employees E
-		JOIN tbl_jobs J
-		ON E.fk_job_id = J.job_id
-		where E.fk_department_id = #{selectVal}
+		SELECT DISTINCT E.name, J.job_name, E.employee_id, W.work_start_time, E.gradelevel
+		FROM tbl_employees E
+		JOIN tbl_jobs J ON E.fk_job_id = J.job_id
+		LEFT JOIN tbl_work W ON E.employee_id = W.fk_employee_id
+		WHERE E.fk_department_id = #{selectVal}
+		AND (W.work_date = TO_CHAR(SYSDATE, 'YYYY-MM-DD') OR W.work_date IS NULL)
+		order by E.gradelevel desc
 	</select>
 	
 	<!-- 해당 부서명 가져오기 -->

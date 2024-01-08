@@ -52,7 +52,7 @@
 <script>
 $(()=>{
 	
-	$('a#approvalLine').css('color','#086BDE');
+	$('a#approvalLine').css('color','#03C75A');
 	$('.configMenu').show();
 	
 	$('.save').hide(); // 저장버튼 감추기
@@ -93,7 +93,7 @@ const getAprvLine = (aprv_line_no) => {
 
 				var html = "<tr>"
 			 			+ "<td class='levelno'>" + (index+1) + "</td>"
-						+ "<td class='department'>" + emp.department_id + "</td>"
+						+ "<td class='department'>" + emp.fk_department_id + "</td>"
 						+ "<td class='position'>" + emp.gradelevel + "</td>"
 						+ "<input type='hidden' name='fk_approval_empno' value='" + emp.employee_id + "'></td>"
 						+ "<td class='name'>" + emp.name + "</td></tr>";
@@ -109,25 +109,16 @@ const getAprvLine = (aprv_line_no) => {
 
 /* 결재라인 삭제하기 */
 const deleteAprvLine = (aprv_line_no) => {
-	swal({
-		  title: "이 결재라인을 삭제하시겠습니까?",
-		  icon: "warning",
-		  buttons: true,
-		  dangerMode: true,
-		})
-		.then((willDelete) => {
-		  if (willDelete) {
-		    // 삭제
-    		const frm = $("#aprvLineFrm"+aprv_line_no)[0];
-			frm.method = "post";
-			frm.action = "<%=ctxPath%>/approval/config/approvalLine/del.gw";
-			frm.submit();
-			
-		  } else {
-		    swal("삭제가 취소되었습니다.");
-		  }
-		});
-}
+	if (confirm("이 결재라인을 삭제하시겠습니까?")) {
+		// 삭제
+		const frm = $("#aprvLineFrm"+aprv_line_no)[0];
+		frm.method = "post";
+		frm.action = "<%=ctxPath%>/approval/config/approvalLine/del.gw";
+		frm.submit();
+	} else {
+		alert("삭제가 취소되었습니다.");
+	}
+};
 
 /* 결재라인 수정하기(결재자 새로 선택하기) */
 const selectApprovalLine = (aprv_line_no) => {
@@ -161,9 +152,9 @@ const receiveMessage = async (e) =>
 
 		var html = "<tr>"
 	 			+ "<td class='levelno'>" + emp.levelno + "</td>"
-				+ "<td class='department'>" + emp.department_id + "</td>"
-				+ "<td class='position'>" + emp.gradelevel + "</td>"
-				+ "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.employee_id + "'></td>"
+				+ "<td class='department'>" + emp.department + "</td>"
+				+ "<td class='position'>" + emp.position + "</td>"
+				+ "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.empno + "'></td>"
 				+ "<td class='name'>" + emp.name + "</td></tr>";
 		
 		body.append(html);
@@ -181,7 +172,7 @@ const saveAprvLine = (aprv_line_no) => {
 	
 	const length = body.find('tr').length;
 	if (length == 0){
-		swal("결재자가 선택되지 않았습니다.");
+		alert("결재자가 선택되지 않았습니다.");
 		return;
 	}
 	
@@ -212,7 +203,7 @@ const saveAprvLine = (aprv_line_no) => {
 		<div class='panel'>
 			<div class='approvalLine mb-4'>
 				<div class='my-4'>
-					<button type="button" class="btn btn-sm" id='editBtn' onclick='selectApprovalLine(${item.aprv_line_no})'>수정</button>
+					<button type="button" style='background-color: #E0F8EB' class="btn btn-sm" id='editBtn' onclick='selectApprovalLine(${item.aprv_line_no})'>수정</button>
 					<button type="button" class="btn btn-sm btn-dark" id='deleteBtn' onclick='deleteAprvLine(${item.aprv_line_no})'>삭제</button>
 					<span class='save save${item.aprv_line_no}' style="margin-left: 150px;">결재라인 수정 후 반드시 저장버튼을 클릭해주세요.</span>
 					<button type="button" class="btn btn-sm ml-2 save save${item.aprv_line_no}" id='saveBtn' onclick='saveAprvLine(${item.aprv_line_no})'>저장</button>

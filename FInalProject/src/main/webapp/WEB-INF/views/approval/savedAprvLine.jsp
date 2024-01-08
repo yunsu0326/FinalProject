@@ -24,8 +24,6 @@
 <script type="text/javascript" src="<%=ctxPath%>/resources/bootstrap-4.6.0-dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="<%=ctxPath%>/resources/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 
-<%-- sweet alert --%>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <%-- ajaxForm --%>
 <script type="text/javascript" src="<%=ctxPath%>/resources/js/jquery.form.min.js"></script>
@@ -48,7 +46,7 @@ ul {
 let aprvLineArray = JSON.parse('${aprvLineArray}');
 
 $(()=>{
-	// zz ㅎㅇ
+	
 	console.log(aprvLineArray);
 	
 	let html = "";

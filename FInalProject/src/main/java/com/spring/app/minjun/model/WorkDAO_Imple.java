@@ -59,8 +59,6 @@ public class WorkDAO_Imple implements WorkDAO {
 		return workRequestList;
 	}
 	
-	
-
 	// 특정 근무신청 삭제하기
 	@Override
 	public int work_request_delete(String work_request_seq) {
@@ -186,11 +184,4 @@ public class WorkDAO_Imple implements WorkDAO {
 		return todayEndTime;
 	}
 	
-
-	
-
-	
-
-	
-
 }

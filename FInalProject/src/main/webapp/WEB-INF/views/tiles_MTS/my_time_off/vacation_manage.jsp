@@ -19,8 +19,18 @@
    }
    
    div.listContainer {
-      font-size: small;
+      width: 93%; 
+      margin: 0 auto; 
+      padding: 20px; 
+      border-radius: 10px;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.1);
    }
+  
+   div#container {width: 75%; margin:0 auto; margin-top:100px;}
    
 	
 	#Navbar > li > a {
@@ -44,15 +54,7 @@
 		font-size: 11pt;
 	}
 	
-	/* 테이블 스타일 변경 */
-	div.listContainer{
-	    width: 100%;
-	    border-collapse: collapse;
-	    margin-bottom: 30px;
-	    border-radius: 8px;
-	    overflow: hidden;
-	    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.1);
-	}
+	span#returnSpan {color: orange; font-size: 9pt; position: relative; top:23px; right:105px;}
 	
 	/* 버튼 스타일링 */
 	input[type="submit"] {
@@ -105,7 +107,19 @@
 	.modal span:hover {
 	    background-color: #f1f1f1;
 	}
-   
+	
+	nav.navbar {
+		margin-left: 2%; 
+		margin-right: 5%; 
+		width: 80%; 
+		background-size: cover; 
+		background-position: center; 
+		background-repeat: no-repeat; 
+		height: 70px
+	}
+	span#spanReturn {color: orange; font-size: 9pt; margin-left: 1%;}
+    tr.table_tr {background-color: #ccff99;}
+    input#vacation_return_reason {border: solid 1px gray;}
 </style>
 
 <script type="text/javascript">
@@ -136,6 +150,9 @@
 				const ArrcheckSeq = new Array();
 				const ArrVacationType = new Array();
 				const ArrdaysDiff = new Array();
+				const ArrDepartment_id = new Array();
+				const ArrName = new Array();
+				const ArrEmail = new Array();
 				
 				const checkNoCnt = $("input:checkbox[name='checkNo']").length;
 				
@@ -155,12 +172,14 @@
 	              		ArrEndDate.push( $("input:hidden[name='vacation_end_date']").eq(i).val() );
 	              		ArrEmployee_id.push( $("input:hidden[name='fk_employee_id']").eq(i).val() );
 	              		ArrVacationType.push( $("input:hidden[name='vacation_type']").eq(i).val() );
+	              		ArrDepartment_id.push( $("input:hidden[name='fk_department_id']").eq(i).val() );
+	              		ArrName.push( $("input:hidden[name='name']").eq(i).val() );
+	              		ArrEmail.push( $("input:hidden[name='email']").eq(i).val() );
 	              		ArrdaysDiff.push(daysDiff);
 	              		
 	               	} // end of if -----
 	               	
 				} // end of for----------------------
-				
 	
 				if(ArrStartDate == "") {
 					alert("결재할 번호를 선택하세요.");
@@ -177,6 +196,9 @@
               		$("input:hidden[name='fk_employee_id']").val(ArrEmployee_id);
               		$("input:hidden[name='vacation_type']").val(ArrVacationType);
               		$("input:hidden[name='daysDiff']").val(ArrdaysDiff);
+              		$("input:hidden[name='fk_department_id']").val(ArrDepartment_id);
+              		$("input:hidden[name='name']").val(ArrName);
+              		$("input:hidden[name='email']").val(ArrEmail);
 					
 					const frm = document.vac_manage_frm; 
 					
@@ -184,9 +206,7 @@
 					frm.action = "<%= ctxPath %>/vacUpdate.gw";
 					frm.submit();
 				}
-				
 			}
-			
 		});
 		
 		// 다중체크박스
@@ -219,8 +239,6 @@
 		       		const vacation_confirm = $(this).find("td#vacation_confirm").text();
 		       		const vacation_type = $(this).find("td#vacation_type").text();
 		       		
-		       		// alert(vacation_seq);
-		       		
 		       		$('#openModal').modal('show', vacation_seq);
 		       		
 					// 값 꽂아주기
@@ -249,8 +267,6 @@
 		    				if(vac_return) {
 		    					const select_result = $("select#approvalStatus").val(); // 결재상태 선택 결과값
 			    	    		const reason = $("input#vacation_return_reason").val(); // 입력한 반려사유 값
-			    	    		
-			    	    		// alert(reason);
 			    	    		
 			    	    		$("input#return_reason").val(reason);
 			        	    	
@@ -300,10 +316,10 @@
 
 </script>
 
-<div id="container" style="width: 75%; margin:0 auto; margin-top:100px;">
+<div id="container">
 
    <%-- 상단 메뉴바 시작 --%>
-   <nav class="navbar navbar-expand-lg mt-5 mb-4" style=" margin-left: 2%; margin-right: 5%; width: 80%; background-size: cover; background-position: center; background-repeat: no-repeat; height: 70px">
+   <nav class="navbar navbar-expand-lg mt-5 mb-4">
 		<div class="collapse navbar-collapse">
 			<ul class="navbar-nav" id="Navbar">
 				<li class="nav-item">
@@ -331,7 +347,7 @@
    
    <%-- 본문 시작 --%>
    <%-- 대기중인 회원 [시작] --%>
-   <div class='listContainer border' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
+   <div class='listContainer border'>
       <h5 class='mb-3 ml-5' style="font-weight: bold;">대기중인 휴가</h5>
       
       <c:if test="${not empty total_count}">
@@ -347,7 +363,7 @@
       <div class="max-form">
       <table class="table ml-4" id="emptbl">
          <thead>
-            <tr class='row table_tr' style="background-color: #ccff99;">
+            <tr class='row table_tr'>
               <c:if test="${not empty requestScope.vacList && sessionScope.loginuser.gradelevel != 10}">
                	<th class='col col-1'><input type="checkbox" id="selectAll" class="mr-2"/>전체선택</th>
               </c:if>
@@ -382,9 +398,12 @@
 		            		<input type="hidden" name="vacation_end_date" value="${vacList.vacation_end_date}"/>
 		            		<input type="hidden" name="fk_employee_id" value="${vacList.fk_employee_id}"/>
 		            		<input type="hidden" name="vacation_type" value="${vacList.vacation_type}"/>
+		            		<input type="hidden" name="fk_department_id" value="${vacList.fk_department_id}"/>
+		            		<input type="hidden" name="name" value="${vacList.name}"/>
+		            		<input type="hidden" name="email" value="${vacList.email}"/>
 		            		<input type="hidden" name="daysDiff" class="daysDiffClass" />
 		        		</div>
-		        	</td>
+		        	</td> 
 		        	<td class='col col-1' id="name">${vacList.name}</td>
 		            <td class='col col-1' id="employee_id">${vacList.fk_employee_id}</td>
 		            
@@ -443,7 +462,7 @@
       </div>
       <c:if test="${sessionScope.loginuser.gradelevel != 10}">
 	      <input type="submit" id="approved" name="approved" value="승인" class="ml-4"/>
-	      <span style="color: orange; font-size: 9pt; margin-left: 1%;" id="return_info">반려를 하시려면 해당 회원을 누르세요</span>
+	      <span id='spanReturn' style="" id="return_info">반려를 하시려면 해당 회원을 누르세요</span>
 		  <input type="hidden" id="str_checkNo" name="str_checkNo" />
 	  </c:if>
       </form>
@@ -453,12 +472,12 @@
    <br><br>
    
    <!-- 휴가 반려된 회원 [시작] -->
-   <div class='listContainer border' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
+   <div class='listContainer border'>
       <h5 class='mb-3 ml-5' style="font-weight: bold;">반려됨</h5>
       <div class="max-form">
       <table class="table ml-5">
          <thead>
-            <tr class='row' class="table_tr" style="background-color: #ccff99;">
+            <tr class='row table_tr'>
                	<th class='col col-1'>no</th>
 	        	<th class='col col-1'>이름</th>
 	            <th class='col col-1'>사원번호</th>
@@ -540,12 +559,12 @@
    <br><br>
    
    <!-- 휴가 승인된 회원 [시작] -->
-   <div class='listContainer border mb-5' style='width: 93%; margin: 0 auto; padding: 20px; border-radius: 10px;'>
+   <div class='listContainer border mb-5'>
       <h5 class='mb-3 ml-5' style="font-weight: bold;">승인됨</h5>
       <div class="max-form">
       <table class="table ml-5">
          <thead>
-            <tr class='row' class="table_tr" style="background-color: #ccff99;">
+            <tr class='row table_tr'>
                	<th class='col col-1'>no</th>
 	        	<th class='col col-1'>이름</th>
 	            <th class='col col-1'>사원번호</th>
@@ -633,7 +652,7 @@
       <!-- Modal header -->
       <div class="modal-header">
         <h4 class="modal-title">휴가반려</h4>
-        <span style="color: orange; font-size: 9pt; position: relative; top:23px; right:105px;" >휴가 반려 사유를 입력하세요</span>
+        <span id='returnSpan'>휴가 반려 사유를 입력하세요</span>
         <button type="button" class="close modal_close" data-dismiss="modal">&times;</button>
       </div>
       
@@ -641,38 +660,38 @@
       <div class="modal-body">
           <form name="modal_frm">
           <table style="width: 100%;" class="table table-bordered">
-              <tr style="text-align: left;">
-               	  <td style="width: 20%;">이름</td>
+              <tr>
+               	  <td style="width: 30%;">이름</td>
 	        	  <td id="frm_name"></td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>사원번호</td>
 	        	  <td id="frm_employee_id"></td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>신청휴가종류</td>
 	        	  <td id="frm_vacation_type"></td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>사유</td>
-	        	  <td><input type="text" style="border:solid 1px gray;" id="vacation_return_reason" name="vacation_return_reason" /></td>
+	        	  <td><input type="text" id="vacation_return_reason" name="vacation_return_reason" /></td>
               </tr>
               
-              <tr style="text-align: left;">
+              <tr>
                	  <td>시작일</td>
 	        	  <td id="frm_vacation_start_date"></td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>종료일</td>
 	        	  <td id="frm_vacation_end_date"></td>
               </tr>
-              <tr style="text-align: left;">
+              <tr>
                	  <td>결재상태</td>
 	        	  <td id="frm_vacation_confirm"></td>
               </tr>
               <tr>
-                 <td style="text-align: left;">결재자</td>
-                 <td style="text-align: left;">${sessionScope.loginuser.name}</td>
+                 <td>결재자</td>
+                 <td>${sessionScope.loginuser.name}</td>
               </tr>
            </table>
            

@@ -92,6 +92,12 @@
 
 <script>   
 document.addEventListener('DOMContentLoaded', function () {
+    const sidebar = document.querySelector('.sidebar');
+    const toggleBtn = document.querySelector('.toggle-btn');
+
+    // 페이지 로딩 시 사이드바를 숨김
+    sidebar.classList.add('hidden');
+
     const subMenus = document.querySelectorAll('.nav-down > a');
     subMenus.forEach(function (subMenu) {
         subMenu.addEventListener('click', function (event) {
@@ -106,9 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    const sidebar = document.querySelector('.sidebar');
-    const toggleBtn = document.querySelector('.toggle-btn');
-    
     toggleBtn.addEventListener('click', function() {
         sidebar.classList.toggle('hidden');
     });
@@ -120,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
 
 function showPopup() {
     var chatWindowName = "chatRoom";

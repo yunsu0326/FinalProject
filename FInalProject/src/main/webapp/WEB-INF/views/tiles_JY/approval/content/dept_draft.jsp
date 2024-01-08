@@ -8,7 +8,7 @@
 <script>
 $(()=>{
 	
-	$('a#teamList').css('color','#086BDE');
+	$('a#teamList').css('color','#03C75A');
 	
 	// 검색창에서 엔터시 검색하기 함수 실행
 	$("#searchWord").bind("keydown", (e) => {
@@ -38,7 +38,7 @@ const goSearch = () => {
 	
 	const frm = document.searchFrm;
 	frm.method = "get";
-	frm.action = "<%=ctxPath%>/approval/team.on";
+	frm.action = "<%=ctxPath%>/approval/department.gw";
 	frm.submit();
 }
 
@@ -54,14 +54,14 @@ const excelDownLoad = () => {
 	frm.listName.value = '팀문서함';
 	
 	frm.method="get";
-	frm.action="<%=ctxPath%>/approval/excel/downloadExcelFile.on";
+	frm.action="<%=ctxPath%>/approval/excel/downloadExcelFile.gw";
 	frm.submit();
 	
 }
 </script>
 
 <div style='margin: 1% 0 5% 1%'>
-	<h4>팀 문서함</h4>
+	<h4>부서 문서함</h4>
 </div>
 
 <div id='list' class='m-4'>
@@ -71,7 +71,6 @@ const excelDownLoad = () => {
 				<%-- 검색 구분 --%>
 				<select id="searchType" name="searchType" class="mr-1" style="padding: 3px">
 					<option value="draft_no">문서번호</option>
-					<option value="draft_type">종류</option>
 					<option value="draft_subject">제목</option>
 					<option value="draft_content">내용</option>
 					<option value="draft_emp_name">기안자</option>
@@ -123,7 +122,7 @@ const excelDownLoad = () => {
 				<th class='col'>문서번호</th>
 				<th class='col col-4'>제목</th>
 				<!-- 대표이사의 경우 기안부서 컬럼 추가 -->
-				<c:if test="${loginuser.fk_bumun_no == '1'}">
+				<c:if test="${loginuser.fk_department_id == '1'}">
 					<th class='col'>기안부서</th>
 				</c:if>
 				<th class='col'>기안자</th>
@@ -140,22 +139,22 @@ const excelDownLoad = () => {
                             <td class='col'>${draft.draft_type}</td>
                             <td class='col'>${draft.draft_no}</td>
                             <td class='col col-4'>
-                            <a href='<%=ctxPath%>/approval/draftDetail.on?draft_no=${draft.draft_no}&fk_draft_type_no=${draft.fk_draft_type_no}'>
+                            <a href='<%=ctxPath%>/approval/draftDetail.gw?draft_no=${draft.draft_no}&fk_draft_type_no=${draft.fk_draft_type_no}'>
                        		<c:if test="${draft.urgent_status == 1}">
 							<span class="badge badge-pill badge-danger">긴급</span>
                             </c:if>
                             ${draft.draft_subject}</a></td>
 							<!-- 대표이사의 경우 기안부서 컬럼 추가 -->
-							<c:if test="${loginuser.fk_bumun_no == '1'}">
+							<c:if test="${loginuser.fk_department_id == '1'}">
 								<td class='col'>${draft.draft_department}</td>
 							</c:if>
 							<td class='col'>${draft.draft_emp_name}</td>
                             <td class='col col-1'>
-                            	<c:if test="${draft.draft_status == '완료'}">
-	                            	<span class="badge badge-secondary">${draft.draft_status}</span>
+                            	<c:if test="${draft.draft_status == '1'}">
+	                            	<span class="badge badge-secondary">완료</span>
                             	</c:if>
-                            	<c:if test="${draft.draft_status == '반려'}">
-                            		<span class="badge badge-danger">${draft.draft_status}</span>
+                            	<c:if test="${draft.draft_status == '2'}">
+                            		<span class="badge badge-danger">반려</span>
                             	</c:if>
                             </td>
                         </tr>

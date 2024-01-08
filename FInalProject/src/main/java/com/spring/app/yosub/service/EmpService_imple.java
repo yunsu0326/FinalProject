@@ -162,6 +162,20 @@ public class EmpService_imple implements EmpService {
 		}
 		
 
+		@Override
+		public List<Map<String, String>> get_team_info(String team_id) {
+			
+			List<Map<String, String>> get_team_info = dao.get_team_info(team_id);
+			
+			return get_team_info;
+		}
+
+
+		@Override
+		public int department_del(String department_id) {
+			int	n = dao.department_del(department_id);
+			return 	n;
+		}
 
 
 	

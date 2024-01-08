@@ -34,7 +34,7 @@ public interface VacationService {
 	
 	// 회원들의 신청된 휴가 중 반려된 회원 가져오기
 	List<Vacation_manageVO> vacReturnList(String employee_id);
-	
+	 
 	// 회원들의 신청된 휴가 중 승인된 회원 가져오기
 	List<Vacation_manageVO> vacApprovedList(String employee_id);
 
@@ -68,21 +68,4 @@ public interface VacationService {
 	// 차트그리기 (ajax) 월별 휴가사용 수
 	List<Map<String, String>> monthlyVacCnt();
 
-
-	
-
-	
-
-
-
-	
-	
-	
-
-
-
-
-	
-
-	
 }
