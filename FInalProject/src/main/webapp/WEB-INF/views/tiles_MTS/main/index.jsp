@@ -173,7 +173,7 @@ $(document).ready(function(){
     	
     	const frm = document.goToWorkInsert;
 	    frm.method = "post";
-	    frm.action = "<%= ctxPath %>/goToWorkInsert.gw";
+	    frm.action = "<%= ctxPath %>/goToWorkInsertIndex.gw";
 	    frm.submit(); 
 	    
     }); // end of $("button#goToWork").click(function()--------------------
@@ -230,13 +230,13 @@ $(document).ready(function(){
 		 	
 		 	const frm = document.goToWorkUpdateWithExtended; 
 			frm.method = "post";
-		    frm.action = "<%= ctxPath %>/goToWorkUpdateWithExtended.gw";
+		    frm.action = "<%= ctxPath %>/goToWorkUpdateWithExtendedIndex.gw";
 			frm.submit();
 	 	}
 	 	else {
 	 		const frm = document.goToWorkUpdateWithExtended; 
 			frm.method = "post";
-		    frm.action = "<%= ctxPath %>/goToWorkUpdate.gw";
+		    frm.action = "<%= ctxPath %>/goToWorkUpdateIndex.gw";
 			frm.submit();
 	 	}
     }); // end of $("button#goToWork").click(function()--------------------
