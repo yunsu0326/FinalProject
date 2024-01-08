@@ -339,7 +339,13 @@ function day_kor(day){
     			<c:forEach varStatus="status" var="myDeptEmpList" items="${requestScope.myDeptEmpList}">
     				<tr class="empList" id="empListDisplay">
     					<td>${myDeptEmpList.job_name}</td>
-    					<td>${myDeptEmpList.name}
+    					<td style='align-items: center; display: flex;'>${myDeptEmpList.name}
+    						<c:if test="${myDeptEmpList.work_start_time != null}">
+    							<span class='material-icons-outlined ml-4' style='color:green;'>check_circle_outline</span>
+    						</c:if>
+    						<c:if test="${myDeptEmpList.work_start_time == null}">
+    							<span class='material-icons-outlined ml-4'>highlight_off</span>
+    						</c:if>
     						<input type="hidden" name="employee_id" value="${myDeptEmpList.employee_id}" />
     					</td>
     				</tr>

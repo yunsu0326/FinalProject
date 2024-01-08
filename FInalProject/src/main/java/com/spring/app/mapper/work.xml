@@ -148,13 +148,16 @@
 		<result property="name" 		column="name" 	  		javaType="String" />
 		<result property="job_name" 	column="job_name" 		javaType="String" />
 		<result property="employee_id" 	column="employee_id" 	javaType="String" />
+		<result property="work_start_time" 	column="work_start_time" javaType="String" />
 	</resultMap>
 	<select id="myDeptEmp" parameterType="String" resultMap="myDeptEmp_Map">
-		select name, job_name, employee_id
-		from tbl_employees E
-		JOIN tbl_jobs J
-		ON E.fk_job_id = J.job_id
-		where E.fk_department_id = #{fk_department_id}
+		SELECT DISTINCT E.name, J.job_name, E.employee_id, W.work_start_time, E.gradelevel
+		FROM tbl_employees E
+		JOIN tbl_jobs J ON E.fk_job_id = J.job_id
+		LEFT JOIN tbl_work W ON E.employee_id = W.fk_employee_id
+		WHERE E.fk_department_id = #{selectVal}
+		AND (W.work_date = TO_CHAR(SYSDATE, 'YYYY-MM-DD') OR W.work_date IS NULL)
+		order by E.gradelevel desc
 	</select>
 	
 	<!-- employee_id 에 따른 근무내역 가져오기 -->
@@ -207,14 +210,13 @@
 		<result property="work_start_time" 	column="work_start_time" javaType="String" />
 	</resultMap>
 	<select id="deptSelectList" parameterType="HashMap" resultMap="deptSelectList_Map">
-		select name, job_name, employee_id, work_start_time
-		from tbl_employees E
-		JOIN tbl_jobs J
-		ON E.fk_job_id = J.job_id
-		left JOIN tbl_work W
-		ON E.employee_id = W.fk_employee_id
-		where E.fk_department_id = #{selectVal}
-		and nvl(work_date, to_char(sysdate, 'yyyy-mm-dd')) = to_char(sysdate, 'yyyy-mm-dd')
+		SELECT DISTINCT E.name, J.job_name, E.employee_id, W.work_start_time, E.gradelevel
+		FROM tbl_employees E
+		JOIN tbl_jobs J ON E.fk_job_id = J.job_id
+		LEFT JOIN tbl_work W ON E.employee_id = W.fk_employee_id
+		WHERE E.fk_department_id = #{selectVal}
+		AND (W.work_date = TO_CHAR(SYSDATE, 'YYYY-MM-DD') OR W.work_date IS NULL)
+		order by E.gradelevel desc
 	</select>
 	
 	<!-- 해당 부서명 가져오기 -->
