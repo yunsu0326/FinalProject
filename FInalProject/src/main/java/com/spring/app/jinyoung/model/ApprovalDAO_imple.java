@@ -335,13 +335,13 @@ public class ApprovalDAO_imple implements ApprovalDAO {
 	public int saveOfficialApprovalLine(OfficialAprvLineVO oapVO) {
 		return sqlsession.update("approval.saveOfficialApprovalLine", oapVO);
 	}
-/*
+
 	// 환경설정-서명이미지 수정
 	@Override
 	public int updateSignature(Map<String, String> paraMap) {
 		return sqlsession.update("approval.updateSignature", paraMap);
 	}
-*/
+
 	// 임시저장 시퀀스 얻어오기
 	@Override
 	public String getTempDraftNo() {
