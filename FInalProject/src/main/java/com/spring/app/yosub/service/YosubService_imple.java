@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.app.digitalmail.domain.EmailVO;
 import com.spring.app.domain.Calendar_schedule_VO;
 import com.spring.app.domain.EmployeesVO;
 // import com.spring.app.common.AES256;
@@ -35,11 +36,16 @@ public class YosubService_imple implements YosubService {
 		System.out.println("loginuser.getEmployee_id()"+loginuser.getEmployee_id());
 		
 		paraMap.put("empno", loginuser.getEmployee_id());
+		paraMap.put("email", loginuser.getEmail());
 		
 		// 전체 글 개수 구하기
 		int requestedDraftCnt = dao.getRequestedDraftCnt(paraMap);
 		// System.out.println("requestedDraftCnt"+requestedDraftCnt);
 		
+		List<EmailVO> emailVOList = null;
+		emailVOList = dao.SelectMyEmail_withPaging(paraMap);
+		
+		mav.addObject("emailVOList", emailVOList);
 		mav.addObject("requestedDraftCnt", requestedDraftCnt);
 		
 		mav.setViewName("main/index.tiles_MTS");

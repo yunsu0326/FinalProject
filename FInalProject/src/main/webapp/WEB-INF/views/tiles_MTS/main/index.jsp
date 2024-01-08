@@ -132,18 +132,6 @@ $(document).ready(function(){
         }
     }); // end of ajax
     
-    $.ajax({
-        url: "<%= ctxPath%>/gw.gw",
-        type: "get",
-        dataType: "json",
-        success: function (json) {
-        	// console.log(JSON.stringify(json));
-        	
-        },
-        error: function (request, status, error) {
-            alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
-        }
-    }); // end of ajax
     
     // 출근, 퇴근 신청 [시작]
     var now = new Date();	
@@ -524,15 +512,7 @@ function padZero(value) {
 						<c:if test="${not empty requestScope.emailVOList}">
 							<c:forEach var="emailVO" items="${requestScope.emailVOList}" varStatus="status">
 								<div class="emailRow">
-										<!-- 읽음 여부 정보 -->
-									<c:if test="${emailVO.email_receipt_read_count==0}">
-					                	<span class="material-icons-outlined ml-2">mark_email_unread</span>
-					                </c:if>
-					                <c:if test="${emailVO.email_receipt_read_count==1}">
-					                	<span class="material-icons-outlined ml-2" style="color: red;">drafts</span>
-					                </c:if>		
-							        <!-- 읽음 여부 정보 -->
-							                
+																                
 									<!-- 수신자 정보 -->
 									<span class="emailRow_title ml-2">${emailVO.job_name}&nbsp;${emailVO.name}</span>
 									<!-- 수신자 정보 -->
