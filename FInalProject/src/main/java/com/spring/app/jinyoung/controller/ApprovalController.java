@@ -272,14 +272,11 @@ public class ApprovalController {
 			String filename = dfvo.getFilename(); // 저장된 파일 이름
 			String originalFilename = dfvo.getOriginalFilename(); // 원본 파일 이름
 			
-			// String path = "C:\\NCS\\workspace_spring_framework\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\GW\\resources\\emailfiles";
-            String path = "C:\\git\\FinalProject\\FInalProject\\src\\main\\webapp\\resources\\draft_attach_file";
-			
 			// 첨부파일이 저장되어 있는 WAS 서버의 디스크 경로명을 알아온다.
-		//	HttpSession session = request.getSession();
-		//	String root = session.getServletContext().getRealPath("/");
+			HttpSession session = request.getSession();
+			String root = session.getServletContext().getRealPath("/");
 			
-		//	String path = root+"resources"+File.separator+"draft_attach_file";
+			String path = root+"resources"+File.separator+"draft_attach_file";
 			
 			boolean flag = false;// file 다운로드 성공, 실패를 알려주는 용도
 			
@@ -617,12 +614,8 @@ public class ApprovalController {
 		// 첨부파일이 있을 시
 		if (mtfRequest.getFiles("fileList").size() > 0) {
 			
-			String root = "C:\\git\\FinalProject\\FInalProject\\src\\main\\webapp";
-            // System.out.println("~~~~ 확인용 webapp 의 절대경로 => " + root);
-            String path = root+"\\resources\\draft_attach_file";
-			
 			// 파일 업로드 경로 지정
-		//	String path = JYUtil.setFilePath(mtfRequest, "draft_attach_file");
+			String path = JYUtil.setFilePath(mtfRequest, "draft_attach_file");
 			
 			// view에서 넘어온 파일들
 			List<MultipartFile> multiFileList = mtfRequest.getFiles("fileList");
@@ -679,7 +672,7 @@ public class ApprovalController {
 	
 	
 	// 스마트에디터, 드래그앤드롭을 사용한 다중사진 파일 업로드
-	@PostMapping(value="/image/multiplePhotoUpload.gw")
+	@RequestMapping(value="/image/multiplePhotoUpload.gw")
 	public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) {
      
 		// WAS의 webapp의 절대경로
