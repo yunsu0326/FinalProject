@@ -4,7 +4,7 @@
 
 <style>
 #updateBtn {
-	background-color: #E3F2FD;
+	background-color: #E0F8EB;
 	width: 90%;
 	margin: auto;
 	font-size: small;
@@ -33,7 +33,7 @@ img {
 
 <script>
 $(()=>{
-	$('a#signature').css('color','#086BDE');
+	$('a#signature').css('color','#03C75A');
 	$('.configMenu').show();
 	
 	// 저장버튼 감추기
@@ -49,7 +49,7 @@ const updateSign = () => {
 	
 	const frm = document.signatureFrm;
 	frm.method = "post";
-	frm.action = "<%=ctxPath%>/approval/config/signature/update.on";
+	frm.action = "<%=ctxPath%>/approval/config/signature/update.gw";
 	frm.submit();
 }
 

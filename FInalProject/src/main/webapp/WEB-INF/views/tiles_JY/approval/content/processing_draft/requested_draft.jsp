@@ -9,7 +9,7 @@
 $(()=>{
 	
 	$('.processingMenu').show();
-	$('a#requestedList').css('color','#086BDE');
+	$('a#requestedList').css('color','#03C75A');
 	
 	// 검색창에서 엔터시 검색하기 함수 실행
 	$("#searchWord").bind("keydown", (e) => {
@@ -67,7 +67,7 @@ const excelDownLoad = () => {
 	
 	<h5 class='mb-3'>결재 대기 문서</h5>
 	<c:if test="${not empty draftList}">
-	<h6 class='mb-3'>결재해야 할 문서가 <span style='color:#086BDE'>${fn:length(draftList)}</span>건 있습니다.</h6>
+	<h6 class='mb-3'>결재해야 할 문서가 <span style='color:#03C75A'>${fn:length(draftList)}</span>건 있습니다.</h6>
 	</c:if>
 	<c:if test="${empty draftList}">
 	<h6 class='mb-3'>결재해야 할 문서가 없습니다.</h6>

@@ -364,7 +364,7 @@ const cancelDraft = () => {
 					<table class='commentTable'>
 					<c:if test="${not empty draftMap.dvo.draft_comment}">
 						<tr>
-							<%-- <c:if test="${empty draftMap.dvo.empimg}">
+							<c:if test="${empty draftMap.dvo.empimg}">
 								<td class='profile' rowspan='2'>
 									<div class="profile_css" id="profile_bg" style="display: inline-block;">
 										${fn:substring(draftMap.dvo.draft_emp_name,0,1)}
@@ -372,8 +372,8 @@ const cancelDraft = () => {
 								</td>
 							</c:if>
 							<c:if test="${not empty draftMap.dvo.empimg}">
-								<td class='profile' rowspan='2'><img style='border-radius: 50%; display: inline-block' src='<%=ctxPath%>/resources/images/profile/${draftMap.dvo.empimg}' width="100" height="100"/></td>
-							</c:if> --%>
+								<td class='profile' rowspan='2'><img style='border-radius: 50%; display: inline-block' src='<%=ctxPath%>/resources/images/empImg/${draftMap.dvo.empimg}' width="100" height="100"/></td>
+							</c:if>
 							<td style='text-align:left'><h6>${draftMap.dvo.draft_emp_name}&nbsp;${draftMap.dvo.position}</h6></td>
 							<td id='date'><span style='color: #b3b3b3'>${draftMap.dvo.draft_date}</span></td>
 						</tr>
@@ -406,7 +406,7 @@ const cancelDraft = () => {
 									</td>
 								</c:if>
 								<c:if test="${not empty avo.empimg}">
-									<td class='profile' rowspan='2'><img style='border-radius: 50%; display: inline-block' src='<%=ctxPath%>/resources/images/profile/${avo.empimg}' width="100" height="100"/></td>
+									<td class='profile' rowspan='2'><img style='border-radius: 50%; display: inline-block' src='<%=ctxPath%>/resources/images/empImg/${avo.empimg}' width="100" height="100"/></td>
 								</c:if>
 								<td><h6>${avo.name}&nbsp;${avo.position}</h6></td>
 								<td id='date'><span style='color: #b3b3b3'>${avo.approval_date}</span></td>
@@ -427,7 +427,7 @@ const cancelDraft = () => {
 					<form id="approvalFrm">
 						<table class='commentTable mt-4' id='myComment'>
 							<tr>
-								<td id='profile' rowspan='2'><img style='border-radius: 50%; display: inline-block' src='<%=ctxPath%>/resources/images/profile/${loginuser.photo}' width="100" /></td>
+								<td id='profile' rowspan='2'><img style='border-radius: 50%; display: inline-block' src='<%=ctxPath%>/resources/images/empImg/${loginuser.photo}' width="100" /></td>
 								<td rowspan='2'><input type='text' id='approval_comment' name='approval_comment' placeholder='결재의견을 입력해주세요(선택)' style='width: 70%'/></td>
 							</tr>
 						</table>

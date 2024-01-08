@@ -24,9 +24,6 @@
 <script type="text/javascript" src="<%=ctxPath%>/resources/bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="<%=ctxPath%>/resources/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 
-<%-- sweet alert --%>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
 <%-- ajaxForm --%>
 <script type="text/javascript" src="<%=ctxPath%>/resources/js/jquery.form.min.js"></script>
 
@@ -55,7 +52,7 @@ div#empContainer, #aprvContainer {
 }
 
 .table th {
-	background-color: #E3F2FD;
+	background-color: #E0F8EB;
 	vertical-align: middle;
 	text-align: center;
 }
@@ -80,6 +77,11 @@ div#empContainer, #aprvContainer {
 .active {
   display: block;
 }
+
+.listTr {
+  text-align: center;
+}
+
 </style>
 
 <script>
@@ -125,8 +127,8 @@ $(()=>{
 			// 결재자는 4명까지만 추가 가능
 			const body = $('#tblBody');
 			const cnt = body.children('tr').length;
-			if (cnt > 3) {
-				swal ( "오류" ,  "결재자는 최대 4명까지 추가 가능합니다." ,  "error" );
+			if (cnt > 2) {
+				alert("결재자는 최대 3명까지 추가 가능합니다.");
 				target.prop('checked', false); // 체크 해제
 				return;
 			}
@@ -209,7 +211,7 @@ const selectAprvMember = (selectedEmpNo) => {
 	const body = $('#tblBody');
 	const cnt = body.children('tr').length;
 	
- 	var html = "<tr id='" + emp.employee_id + "'>"
+ 	var html = "<tr class='listTr' id='" + emp.employee_id + "'>"
  			+ "<td class='levelno'></td>"
 			+ "<td class='department'>" + emp.fk_department_id + "</td>"
 			+ "<td class='position'>" + emp.grade + "</td>"
@@ -247,7 +249,7 @@ const submitAprvLine = () => {
 	
 	// 순서가 틀리면 리턴
 	if (!isRightOrder) {
-		swal ( "오류" ,  "결재 순서가 잘못되었습니다." ,  "error" );
+		alert("결재 순서가 잘못되었습니다.");
 		return;
 	}
 	
@@ -256,7 +258,7 @@ const submitAprvLine = () => {
 	
 	// 순서가 틀리면 리턴
 	if (isDuplicated) {
-		swal ( "오류" ,  "같은 직급의 결재자가 있습니다." ,  "error" );
+		alert("같은 직급의 결재자가 있습니다.");
 		return;
 	}
 		
@@ -333,7 +335,7 @@ const checkDuplication = (positionArr) => {
 	</div>
 	<div>
 		<button type='button' class='btn btn-secondary' onclick='self.close()'>취소</button>
-		<button type='button' class='btn btn-primary' onclick='submitAprvLine()'>확인</button>
+		<button type='button' class='btn' style='background-color: #03C75A; color: white;' onclick='submitAprvLine()'>확인</button>
 	</div>
 </div>
 </body>

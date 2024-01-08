@@ -89,6 +89,8 @@ public class WorkController {
 	@PostMapping("/goToWorkInsert.gw")
 	public ModelAndView goToWorkInsert(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		
+		String goBackURL = MyUtil.getCurrentURL(request);
+		
         String fk_employee_id = request.getParameter("fk_employee_id");
         String work_date = request.getParameter("work_date");
         String work_start_time = request.getParameter("work_start_time");

@@ -45,7 +45,7 @@
 }
 
 .table th {
-	background-color: #E3F2FD;
+	background-color: #E0F8EB;
 	vertical-align: middle;
 	text-align: center;
 }
@@ -63,7 +63,7 @@ input {
 </style>
 <script>
 $(()=>{
-	$('a#approvalLine').css('color','#086BDE');
+	$('a#approvalLine').css('color','#03C75A');
 	$('.configMenu').show();
 	
 });
@@ -150,7 +150,7 @@ const saveAprvLine = () => {
 			</div>
 			<div style='float:right; margin-bottom: 10px'>
 				<button type="button" class="btn btn-sm btn-light" id='selectBtn' onclick="selectApprovalLine(${loginuser.employee_id})">결재자 선택하기</button>
-				<button type="button" class="btn btn-sm ml-2" id='saveBtn' onclick='saveAprvLine()'>저장</button>
+				<button style='background-color: #03C75A;' type="button" class="btn btn-sm ml-2" id='saveBtn' onclick='saveAprvLine()'>저장</button>
 			</div>
 		</div>
 		<input type='hidden' name='fk_empno' value='${loginuser.employee_id}'/>
