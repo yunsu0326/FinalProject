@@ -160,18 +160,22 @@ public class KimkmController {
 		String photo = request.getParameter("photo");
 		
 		if(attach != null) {
-		   HttpSession session = mrequest.getSession();
-		   String root = session.getServletContext().getRealPath("/");
-		   // System.out.println("확인용 webapp 의 절대 경로 : "+ root);
-		   // 확인용 webapp 의 절대 경로 : /Users/sub/workspace_spring_framework/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/board/
-		  
-		   String path = root + "resources" + File.separator + "empImg";
-		   
-		   // System.out.println("확인용 path : "+ path);
-		   // 확인용 path : /Users/sub/workspace_spring_framework/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/board/resources/files
-		   
-		   String newFileName = "";
-	         
+			
+			HttpSession session = mrequest.getSession();
+		 //	String root = session.getServletContext().getRealPath("/");
+		 //	System.out.println("확인용 webapp 의 절대 경로 : "+ root);
+		 //	확인용 webapp 의 절대 경로 : /Users/sub/workspace_spring_framework/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/board/
+		 //	String path = root + "resources" + File.separator + "empImg";
+		 //	System.out.println("확인용 path : "+ path);
+		 //	확인용 path : /Users/sub/workspace_spring_framework/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/board/resources/files
+			
+			String root = "C:\\git\\FinalProject\\FInalProject\\src\\main\\webapp\\";
+		 //	System.out.println("~~~~ 확인용 webapp 의 절대경로 => " + root);
+			String path = root + "resources" + File.separator + "empImg";
+		 //	System.out.println(path);
+			
+			String newFileName = "";
+			 
 			byte[] bytes = null;
 
 			try {
