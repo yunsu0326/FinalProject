@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.app.common.MyUtil;
 import com.spring.app.domain.EmployeesVO;
 import com.spring.app.domain.WorkVO;
 import com.spring.app.domain.Work_requestVO;
@@ -84,7 +85,7 @@ public class WorkController {
 		  return jsonArr.toString();
 	} 
 	
-	// 출근 버튼 클릭시 근무테이블에 insert 하기
+	// 근무 단에서 출근 버튼 클릭시 근무테이블에 insert 하기
 	@PostMapping("/goToWorkInsert.gw")
 	public ModelAndView goToWorkInsert(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		
@@ -119,8 +120,43 @@ public class WorkController {
 		return mav;
 	}
 	
+	// Index 단에서 출근 버튼 클릭시 근무테이블에 insert 하기
+	@PostMapping("/goToWorkInsertIndex.gw")
+	public ModelAndView goToWorkInsertIndex(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+		
+        String fk_employee_id = request.getParameter("fk_employee_id");
+        String work_date = request.getParameter("work_date");
+        String work_start_time = request.getParameter("work_start_time");
+        
+        Map<String, String> paraMap = new HashMap<>();
+        
+        paraMap.put("fk_employee_id", fk_employee_id);
+        paraMap.put("work_date", work_date);
+        paraMap.put("work_start_time", work_start_time);
+		
+        try {
+        	int n = service.goToWorkInsert(paraMap);
+    		
+    		if(n==1) {
+    			mav.addObject("message", "출근이 정상처리되었습니다.");
+    			mav.addObject("loc", request.getContextPath()+"/index.gw");
+    			mav.setViewName("msg");
+    		}
+    		else {
+    			mav.addObject("message", "출근처리가 실패하였습니다.");
+    			mav.addObject("loc", request.getContextPath()+"/index.gw");
+    			mav.setViewName("msg");
+    		}
+        } catch(Exception e) {
+        	mav.addObject("message", "출,퇴근은 하루에 한번만 가능합니다.");
+			mav.addObject("loc", request.getContextPath()+"/index.gw");
+			mav.setViewName("msg");
+        }
+		return mav;
+	}
 	
-	// 퇴근 버튼 클릭시 근무테이블에 update 하기
+	
+	// 근무단에서 퇴근 버튼 클릭시 근무테이블에 update 하기
 	// 연장근무 인 경우
 	@PostMapping("/goToWorkUpdateWithExtended.gw")
 	public ModelAndView goToWorkUpdateWithExtended(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
@@ -185,8 +221,73 @@ public class WorkController {
 		return mav;
 	}
 	
+	// Index 단에서 퇴근 버튼 클릭시 근무테이블에 update 하기
+	// 연장근무 인 경우
+	@PostMapping("/goToWorkUpdateWithExtendedIndex.gw")
+	public ModelAndView goToWorkUpdateWithExtendedIndex(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+		
+		String fk_employee_id = request.getParameter("fk_employee_id");
+		String work_date = request.getParameter("work_date");
+		String extended_end_time = request.getParameter("extended_end_time");
+		
+		Map<String, String> paraMap = new HashMap<>();
+        
+        paraMap.put("fk_employee_id", fk_employee_id);
+        paraMap.put("work_date", work_date);
+        paraMap.put("extended_end_time", extended_end_time);
+		
+        // 오늘날짜의 출근시간 얻어오기
+        String todayStartTime = service.todayStartTime(paraMap);
+        
+        // 오늘날짜의 퇴근시간 얻어오기
+        String todayEndTime = service.todayEndTime(fk_employee_id);
+        
+        if(todayStartTime == null) { // 오늘 출근을 하지 않고 퇴근을 눌렀을 시
+        	mav.addObject("message", "출근 기록이 없습니다.");
+			mav.addObject("loc", request.getContextPath()+"/index.gw");
+			mav.setViewName("msg");
+        }
+        else {
+            String work_end_time = request.getParameter("work_end_time");
+            
+            mav.addObject("todayStartTime", todayStartTime);
+            
+            paraMap.put("todayStartTime", todayStartTime);
+            paraMap.put("work_end_time", work_end_time);
+           
+            if(todayEndTime == null) {
+            	// 근무테이블에 퇴근시간 update 하기
+                try {
+                	int n = service.goToWorkUpdateWithExtended(paraMap);
+            		
+            		if(n==1) {
+            			mav.addObject("message", "퇴근이 정상처리되었습니다.");
+            			mav.addObject("loc", request.getContextPath()+"/index.gw");
+            			mav.setViewName("msg");
+            		}
+            		else {
+            			mav.addObject("message", "퇴근처리가 실패하였습니다.");
+            			mav.addObject("loc", request.getContextPath()+"/index.gw");
+            			mav.setViewName("msg");
+            		}
+                } catch(Exception e) {
+                	e.printStackTrace();
+                	mav.addObject("message", "출,퇴근은 하루에 한번만 가능합니다.");
+        			mav.addObject("loc", request.getContextPath()+"/index.gw");
+        			mav.setViewName("msg");
+                }
+            }
+            else {
+            	mav.addObject("message", "출,퇴근은 하루에 한번만 가능합니다.");
+    			mav.addObject("loc", request.getContextPath()+"/index.gw");
+    			mav.setViewName("msg");
+            }
+        }
+		return mav;
+	}
 	
-	// 퇴근 버튼 클릭시 근무테이블에 update 하기
+	
+	// 근무 단에서 퇴근 버튼 클릭시 근무테이블에 update 하기
 	// 연장근무가 아닌 경우
 	@PostMapping("/goToWorkUpdate.gw")
 	public ModelAndView goToWorkUpdate(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
@@ -230,6 +331,56 @@ public class WorkController {
         else { // 오늘 퇴근한 기록이 있다면
         	mav.addObject("message", "출,퇴근은 하루에 한번만 가능합니다.");
 			mav.addObject("loc", request.getContextPath()+"/my_work.gw");
+			mav.setViewName("msg");
+        }
+		return mav;
+	}
+	
+	
+	// index 단에서 퇴근 버튼 클릭시 근무테이블에 update 하기
+	// 연장근무가 아닌 경우
+	@PostMapping("/goToWorkUpdateIndex.gw")
+	public ModelAndView goToWorkUpdateIndex(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+		
+		String fk_employee_id = request.getParameter("fk_employee_id");
+		String work_date = request.getParameter("work_date");
+		
+		Map<String, String> paraMap = new HashMap<>();
+        
+        paraMap.put("fk_employee_id", fk_employee_id);
+        paraMap.put("work_date", work_date);
+		
+        // 오늘날짜의 출근시간 얻어오기
+        String todayStartTime = service.todayStartTime(paraMap);
+        String work_end_time = request.getParameter("work_end_time");
+        
+        mav.addObject("todayStartTime", todayStartTime);
+        
+        paraMap.put("todayStartTime", todayStartTime);
+        paraMap.put("work_end_time", work_end_time);
+        
+        // 오늘날짜의 퇴근시간 얻어오기
+        String todayEndTime = service.todayEndTime(fk_employee_id);
+        
+        if(todayEndTime == null) { // 오늘 퇴근한 기록이 없다면
+        	// 근무테이블에 퇴근시간 update 하기
+            
+        	int n = service.goToWorkUpdate(paraMap);
+    		
+    		if(n==1) {
+    			mav.addObject("message", "퇴근이 정상처리되었습니다.");
+    			mav.addObject("loc", request.getContextPath()+"/index.gw");
+    			mav.setViewName("msg");
+    		}
+    		else {
+    			mav.addObject("message", "퇴근처리가 실패하였습니다.");
+    			mav.addObject("loc", request.getContextPath()+"/index.gw");
+    			mav.setViewName("msg");
+    		}
+        }
+        else { // 오늘 퇴근한 기록이 있다면
+        	mav.addObject("message", "출,퇴근은 하루에 한번만 가능합니다.");
+			mav.addObject("loc", request.getContextPath()+"/index.gw");
 			mav.setViewName("msg");
         }
 		return mav;
