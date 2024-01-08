@@ -233,5 +233,64 @@
 		ON E.fk_job_id = J.job_id
 	</select>
 	
+	<!-- receipt_favorites 값 가져오기 -->
+	<select id="select_receipt_favorites" parameterType="String" resultType="String">
+		select receipt_favorites
+		from tbl_receipt_email
+		where receipt_mail_seq = #{receipt_mail_seq}
+	</select>
+	
+	<!-- email_receipt_read_count update 하기 -->
+	<update id="receipt_favorites_update" parameterType="HashMap">
+	    update tbl_receipt_email set receipt_favorites =
+	        <choose>
+	            <when test='receipt_favorites == "0"'>
+	                1
+	            </when>
+	            <when test='receipt_favorites == "1"'>
+	                0
+	            </when>
+	           
+	        </choose>
+	    where receipt_mail_seq = #{receipt_mail_seq}
+	</update>
+	
+	<!-- email_receipt_read_count update 하기 -->
+	<update id="email_receipt_read_count_update" parameterType="String">
+	    update tbl_receipt_email set email_receipt_read_count = 1
+	    where receipt_mail_seq = #{receipt_mail_seq}
+	</update>
+	
+	<!-- email_receipt_read_count 값 가져오기 -->
+	<select id="select_email_receipt_read_count" parameterType="String" resultType="String">
+		select email_receipt_read_count
+		from tbl_receipt_email
+		where receipt_mail_seq = #{receipt_mail_seq}
+	</select>
+	
+	<!-- receipt_important 값 가져오기 -->
+	<select id="select_receipt_important" parameterType="String" resultType="String">
+		select receipt_important
+		from tbl_receipt_email
+		where receipt_mail_seq = #{receipt_mail_seq}
+	</select>
+	
+	<!-- receipt_important update 하기 -->
+	<update id="receipt_important_update" parameterType="HashMap">
+	    update tbl_receipt_email set receipt_important =
+	        <choose>
+	            <when test='receipt_important == "0"'>
+	                1
+	            </when>
+	            <when test='receipt_important == "1"'>
+	                0
+	            </when>
+	           
+	        </choose>
+	    where receipt_mail_seq = #{receipt_mail_seq}
+	</update>
+	
+	
+	
 
 </mapper>
