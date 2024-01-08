@@ -272,9 +272,8 @@
 	<select id="scheduleselect" resultType="com.spring.app.domain.Calendar_schedule_VO" parameterType="HashMap">
 		select scheduleno, startdate, enddate, subject, color, place, joinuser, content, fk_smcatgono, fk_lgcatgono, fk_department_id, fk_employee_id 
 		from tbl_calendar_schedule
-		where fk_employee_id = #{fk_employee_id} OR
-		fk_department_id = #{fk_department_id} OR
-		fk_lgcatgono = 2 AND
+		where (fk_employee_id = #{fk_employee_id} OR
+		fk_department_id = #{fk_department_id}) AND
 		(sysdate between startdate and enddate) OR
 		(fk_lgcatgono != 2 AND lower(joinuser) like '%'|| lower(#{fk_email}) ||'%')
 		order by scheduleno asc
