@@ -131,6 +131,19 @@ $(document).ready(function(){
             alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
         }
     }); // end of ajax
+    
+    $.ajax({
+        url: "<%= ctxPath%>/gw.gw",
+        type: "get",
+        dataType: "json",
+        success: function (json) {
+        	// console.log(JSON.stringify(json));
+        	
+        },
+        error: function (request, status, error) {
+            alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
+        }
+    }); // end of ajax
 
 }); // end of $(document).ready(function(){})-----------------
 
@@ -373,14 +386,68 @@ function showWeather(){
 	         <!-- 출퇴근 -->
 	        <div class="widget-container div6 ">
 	            <div class="widget-header">출퇴근</div>
-	            <!-- 웹메일 컨텐츠 -->
-	            <!-- ... -->
+	           <ul>
+	            <li class="ml-auto mt-2" style="margin-right: 13%;">
+					<button id="goToWork" class="btn btn-sm btn-success" style="width: 50px;">출근</button>
+                	<button id="leaveWork" class="btn btn-sm btn-danger ml-3" style="width: 50px;">퇴근</button>
+                	
+                	<form name="goToWorkInsert">
+                		<input type="hidden" name="work_date"/>
+                		<input type="hidden" name="work_start_time"/>
+                		<input type="hidden" name="fk_employee_id" value="${sessionScope.loginuser.employee_id}"/>
+                	</form>
+                	
+                	<%-- 연장근무인 경우 보낼 form --%>
+                	<form name="goToWorkUpdateWithExtended">
+                		<input type="hidden" name="work_date"/>
+                		<input type="hidden" name="work_end_time"/>
+                		<input type="hidden" name="extended_end_time"/>
+                		<input type="hidden" name="fk_employee_id" value="${sessionScope.loginuser.employee_id}"/>
+                	</form>
+				</li>
+		      </ul>
 	        </div>
 	    	 <!-- 웹메일 -->
 	        <div class="widget-container div7 ">
 	            <div class="widget-header">웹메일</div>
-	            <!-- 웹메일 컨텐츠 -->
-	            <!-- ... -->
+				<!--이메일 리스트-->
+					<div class="emailList_list">
+						
+						<c:if test="${empty requestScope.emailVOList}">
+				    		<div class="emailRow" style="width: 100%; display: flex;">
+								<span style="display:inline-block; margin: 0 auto;">받은 메일이 없습니다.</span>
+							</div>
+						</c:if>
+						
+						<c:if test="${not empty requestScope.emailVOList}">
+							<c:forEach var="emailVO" items="${requestScope.emailVOList}" varStatus="status">
+								<div class="emailRow">
+										<!-- 읽음 여부 정보 -->
+									<c:if test="${emailVO.email_receipt_read_count==0}">
+					                	<span class="material-icons-outlined ml-2">mark_email_unread</span>
+					                </c:if>
+					                <c:if test="${emailVO.email_receipt_read_count==1}">
+					                	<span class="material-icons-outlined ml-2" style="color: red;">drafts</span>
+					                </c:if>		
+							        <!-- 읽음 여부 정보 -->
+							                
+									<!-- 수신자 정보 -->
+									<span class="emailRow_title ml-2">${emailVO.job_name}&nbsp;${emailVO.name}</span>
+									<!-- 수신자 정보 -->
+									
+									<!-- 제목-->
+									<div class="emailRow_message" onclick = "selectOneEmail('${emailVO.send_email_seq}')">
+										<span>${emailVO.email_subject}</span>
+									</div>
+									<!-- 제목 -->
+										
+									<!--전송시간-->
+									<span class="mr-3" onclick = "selectOneEmail('${emailVO.send_email_seq}')">${emailVO.send_time}</span>
+									<!--전송시간-->
+								</div>
+							</c:forEach>
+						</c:if>
+					</div>
 	        </div>
 	        
 	        <!-- 공지사항 -->
