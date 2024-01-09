@@ -7,7 +7,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.domain.CommentVO;
 import com.spring.app.domain.EmployeesVO;
+import com.spring.app.domain.NoticeboardFileVO;
 import com.spring.app.domain.NoticeboardVO;
+import com.spring.app.domain.BoardFileVO;
 import com.spring.app.domain.BoardVO;
 
 public interface SaehanDAO {
@@ -25,7 +27,7 @@ public interface SaehanDAO {
 	int getGroupnoMax();
 	
 	// 글쓰기(파일첨부가 없는 글쓰기)
-	int add(BoardVO boardvo);
+	int add_nofile(BoardVO boardvo);
 	
 	// 글쓰기(파일첨부가 있는 글쓰기)
 	int add_withFile(BoardVO boardvo);
@@ -87,8 +89,6 @@ public interface SaehanDAO {
 	//공지사항 글쓰기(파일첨부가 없는 공지사항 글쓰기) 
 	int notice_add(NoticeboardVO boardvo);
 
-	//공지사항 글쓰기(파일첨부가 있는 공지사항 글쓰기) 
-	int notice_add_withFile(NoticeboardVO boardvo);
 
 	//공지사항 조회수 증가는 없고 단순히  공지사항 1개만 조회를 해주는 것
 	NoticeboardVO getNoticeView(Map<String, String> paraMap);
@@ -112,11 +112,91 @@ public interface SaehanDAO {
 	List<String> notice_wordSearchShow(Map<String, String> paraMap);
 
 	//공지사항 첨부파일 삭제하기
-	int notice_delete_file(Map<String, String> paraMap);
+	int notice_delete_file(String fileno);
 
 	//공지사항 첨부파일 수정하기
 	int notice_edit_withFile(NoticeboardVO boardvo);
 
+	//int add_withMultiFilet(BoardVO boardvo);
+
+	
+	String getfreeBoardSeq();
+
+	int insertFiles(List<BoardFileVO> fileList);
+
+	int addEnd(BoardVO boardvo);
+
+	//파일 조회하기
+	List<BoardFileVO> getView_files(String seq);
+
+	BoardFileVO getEach_view_files(String fileno);
+
+	int del_attach(Map<String, String> paraMap);
+
+	int freeboard_edit(BoardVO boardvo);
+
+	int deleteFile(String fileno);
+
+	//파일 삭제하면 글테이블의 filename 유무 0으로 만들기  (1은 파일 존재 , 0은 파일존재 하지 않음)
+	int getfreeboard_filename_clear(Map<String, String> paraMap);
+
+	//파일 삭제하면 글테이블의 filename 유무 1으로 만들기  (1은 파일 존재 , 0은 파일존재 하지 않음)
+	int getfreeboard_filename_add(Map<String, String> paraMap);
+
+	String getNoitceBoardSeq();
+
+	//첨부파일 있는 공지사항 글쓰기
+	int notice_insertFiles(List<NoticeboardFileVO> fileList);
+	
+	//공지사항 없는 공지사항 글쓰기
+	int nofile_notice_add(NoticeboardVO boardvo);
+
+	//공지사항 첨부파일 가져오기
+	List<NoticeboardFileVO> getView_notice_files(String seq);
+
+	//공지사항 첨부파일 삭제하기
+	int notice_del_attach(Map<String, String> paraMap);
+
+	//공지사항 글인데 첨부파일 없는거 삭제하기
+	int notice_nofile_del(Map<String, String> paraMap);
+
+	//공지사항에 첨부파일 하나만 가져오기
+	NoticeboardFileVO getNotice_Each_view_files(String fileno);
+
+	int Noticeboard_edit(NoticeboardVO boardvo);
+
+	int notice_delete_file(Map<String, String> paraMap);
+	
+	// 공지사항 첨부 파일 유무 확인 
+	String noticeboard_update_attachfile(String fk_seq);
+
+	//공지사항 글 파일유무를 0으로 만들기
+	int getnoticeboard_filename_clear(Map<String, String> paraMap);
+
+	//공지사항 글 파일유무를 1로 만들기
+	int getnoticeboard_filename_add(Map<String, String> paraMap);
+
+	// 자유게시판 첨부 파일 유무 확인 
+	String freeboard_update_attachfile(String fk_seq);
+
+
+
+
+
+
+
+
+
+
+
+
+	/*
+	//글번호 가져오기
+	int getTake_seq(Map<String, String> paraMap);
+
+
+	int add_withMultiFilet(String seq);
+	*/
 
 
 

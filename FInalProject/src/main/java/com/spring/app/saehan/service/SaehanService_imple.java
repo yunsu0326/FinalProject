@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.domain.CommentVO;
+import com.spring.app.domain.NoticeboardFileVO;
 import com.spring.app.domain.NoticeboardVO;
 import com.spring.app.common.AES256;
 import com.spring.app.common.FileManager;
+import com.spring.app.domain.BoardFileVO;
 import com.spring.app.domain.BoardVO;
 import com.spring.app.saehan.model.SaehanDAO;
 
@@ -59,7 +61,7 @@ public class SaehanService_imple implements SaehanService{
 	
 	//글쓰기(파일첨부가 없는 글쓰기) 
 	@Override
-	public int add(BoardVO boardvo) {
+	public int add_nofile(BoardVO boardvo) {
 	// === 원글쓰기인지, 답변글쓰기인지 구분하기 시작 === //
 		if("".equals(boardvo.getFk_seq())) {
 			// 원글쓰기인 경우
@@ -67,7 +69,7 @@ public class SaehanService_imple implements SaehanService{
 			boardvo.setGroupno(String.valueOf(groupno));
 		}	
 	// === 원글쓰기인지, 답변글쓰기인지 구분하기 끝 === //
-		int n = dao.add(boardvo);
+		int n = dao.add_nofile(boardvo);
 		return n;
 	}
 	
@@ -82,6 +84,7 @@ public class SaehanService_imple implements SaehanService{
 			boardvo.setGroupno(String.valueOf(groupno));
 		}
 		// === 원글쓰기인지, 답변글쓰기인지 구분하기 끝 === //
+		
 		int n = dao.add_withFile(boardvo); // 첨부파일이 있는 경우 
 		return n;
 	}
@@ -132,21 +135,6 @@ public class SaehanService_imple implements SaehanService{
 	public int del(Map<String, String> paraMap) {
 		
 		int n = dao.del(paraMap);
-		
-		//파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 시작  //
-		if(n==1) {
-			String path = paraMap.get("path");
-			String fileName = paraMap.get("fileName");
-			
-			if(fileName != null && !"".equals(fileName) ) {
-				try {
-					fileManager.doFileDelete(fileName, path);
-				}catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		// === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 끝  === // 
 		
 		return n;
 	}
@@ -305,7 +293,7 @@ public class SaehanService_imple implements SaehanService{
 		return boardList;
 	}
 	
-	//공지사항 글쓰기(파일첨부가 없는 공지사항글쓰기) 
+	//공지사항 글쓰기(파일첨부가 있는 공지사항글쓰기) 
 	@Override
 	public int notice_add(NoticeboardVO boardvo) {
 		int n = dao.notice_add(boardvo);
@@ -313,13 +301,6 @@ public class SaehanService_imple implements SaehanService{
 	}
 	
 
-	//글쓰기(파일첨부가 있는 글쓰기) 
-	@Override
-	public int notice_add_withFile(NoticeboardVO boardvo) {
-		int n = dao.notice_add_withFile(boardvo); // 첨부파일이 있는 경우 
-		return n;
-	}
-	
 	//공지사항 글을 읽었을 때 조회수가 1 늘게끔 만들기
 	@Override
 	public NoticeboardVO getNoticeView(Map<String, String> paraMap) {
@@ -413,9 +394,387 @@ public class SaehanService_imple implements SaehanService{
 		int n = dao.notice_edit_withFile(boardvo); // 첨부파일이 있는 경우 
 		return n;
 	}
+	/*
+	@Override
+	public int getTake_seq(Map<String, String> paraMap) {
+		int chabun = dao.getTake_seq(paraMap); // 글1개 조회하기
+		return chabun;
+	}
+	
+	@Override
+	public int add_withMultiFile(BoardVO boardvo) {
+	
+		int n = dao.add_withMultiFilet(boardvo);
+		
+		return n;
+	}
+	
+	@Override
+	public int add_withMultiFile(BoardVO boardvo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+*/
+
+	   
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
+		public boolean addEnd(Map<String, Object> paraMap){
+			
+			boolean result = false;		
+			
+			BoardVO boardvo = (BoardVO)paraMap.get("boardvo");
+			
+			// 글번호 알아오기
+			// String seq = ndao.getNoticeSeq();
+			
+			if("".equals(boardvo.getFk_seq())) {
+				// 원글쓰기인경우
+				// groupno 컬럼의 값은 groupno 컬럼의 최대값(max)+1 로 해야한다.
+				int groupno = dao.getGroupnoMax() + 1;
+				
+				boardvo.setGroupno(String.valueOf(groupno));
+			}
+			
+			// 글 작성하기
+			int n1 = dao.addEnd(boardvo);
+			// System.out.println("service 69 n1: "+n1);
+			
+			result = (n1 == 1)? true: false;
+					
+			// 글 작성 실패 시 리턴
+			if (!result)
+				return false;
+			
+			// 글번호 알아오기
+			String seq = dao.getfreeBoardSeq();
+			 		
+			// 첨부 파일 리스트
+			List<BoardFileVO> fileList = (List<BoardFileVO>) paraMap.get("fileList");
+			
+			// 첨부파일이 있다면
+			if (fileList != null && fileList.size() > 0) {
+				for (BoardFileVO nfvo : fileList) {
+					nfvo.setFk_seq(seq); // 글번호 set
+				}
+				
+				// 첨부 파일 insert
+				int n2 = dao.insertFiles(fileList);
+				
+				result = (n2 == fileList.size())? true : false;
+				
+				// 첨부 파일 테이블 insert가 실패했으면 리턴
+				if (!result)
+					return false;
+			}
+			
+			 return result;
+	}
 
 	
+		// 첨부파일 목록 조회(글 상세 조회)
+		@Override
+		public List<BoardFileVO> getView_files(String seq) {
+			return dao.getView_files(seq);
+		}
 
+		@Override
+		public BoardFileVO getEach_view_files(String fileno) {
+			return dao.getEach_view_files(fileno);
+		}
+
+		@Override
+		public int del_attach(Map<String, String> paraMap) {
+			int n = dao.del_attach(paraMap); 
+			
+			
+			//파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 시작  //
+			if(n==1) {
+				String path = paraMap.get("path");
+				String fileName = paraMap.get("fileName");
+				
+				if(fileName != null && !"".equals(fileName) ) {
+					try {
+						fileManager.doFileDelete(fileName, path);
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			// === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 끝  === // 
+			
+			return n;
+		}
+
+		
+
+		// 자유게시판 글 수정하기
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean freeboard_edit(Map<String, Object> paraMap) {
+			int n = 0;
+			boolean result = false;
+			
+			BoardVO boardvo= (BoardVO)paraMap.get("boardvo");
+			
+			// 글 수정하기
+			n = dao.freeboard_edit(boardvo);
+			// System.out.println("service 162 n : "+n);
+			
+			result = (n == 1)? true: false;
+			
+			// 글 작성 실패 시 리턴
+			if (!result)
+				return false;
+			
+			// 첨부 파일 리스트
+			List<BoardFileVO> fileList = (List<BoardFileVO>) paraMap.get("fileList");
+			
+			// 첨부파일이 있다면
+			if (fileList != null && fileList.size() > 0) {
+				for (BoardFileVO nvo : fileList) {
+					nvo.setFk_seq(boardvo.getSeq()); // 글번호 set
+				}
+				
+				// 첨부 파일 update
+				n = dao.insertFiles(fileList);
+				//System.out.println("service 181 n : "+n);
+				result = (n == fileList.size())? true : false;
+				
+				// 첨부 파일 테이블 update가 실패했으면 리턴
+				if (!result)
+					return result;
+			}
+			
+			 return result;
+		}
+
+		@Override
+		public boolean deleteFile(String fileno, String path) {
+			// 파일번호로 파일 정보 조회
+			BoardFileVO nvo = dao.getEach_view_files(fileno);
+			
+			// 테이블에서 파일 삭제
+			int n = dao.deleteFile(fileno);
+			
+			if (n==1) {
+				// 서버에서 파일 삭제
+				try {
+					fileManager.doFileDelete(nvo.getFileName(), path);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				//int n2 = dao.getfreeboard_filename_clear(paraMap);
+			}
+			
+			return (n==1)? true: false;
+		}
+
+		//파일 삭제하면 글테이블의 filename 유무 0으로 만들기  (1은 파일 존재 , 0은 파일존재 하지 않음)
+		@Override
+		public int getfreeboard_filename_clear(Map<String, String> paraMap) {
+			int n = dao.getfreeboard_filename_clear(paraMap);
+			return n;
+		}
+
+		//파일 삭제하면 글테이블의 filename 유무 1로 만들기  (1은 파일 존재 , 0은 파일존재 하지 않음)
+		@Override
+		public int getfreeboard_filename_add(Map<String, String> paraMap) {
+			int n = dao.getfreeboard_filename_add(paraMap);
+			return n;
+		}
+
+		//첨부파일이 있는 공지사항 글쓰기
+		@SuppressWarnings("unchecked")
+		@Override
+		@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
+		public boolean notice_addEnd(Map<String, Object> paraMap) {
+			
+			boolean result = false;		
+			
+			NoticeboardVO boardvo = (NoticeboardVO)paraMap.get("boardvo");
+
+			// 글 작성하기
+			int n1 = dao.notice_add(boardvo); 
+			// System.out.println("service 69 n1: "+n1);
+			result = (n1 == 1)? true: false;
+					
+			// 글 작성 실패 시 리턴
+			if (!result)
+				return false;
+			
+			// 글번호 알아오기
+			String seq = dao.getNoitceBoardSeq();
+			 		
+			// 첨부 파일 리스트
+			List<NoticeboardFileVO> fileList = (List<NoticeboardFileVO>) paraMap.get("fileList");
+			
+			// 첨부파일이 있다면
+			if (fileList != null && fileList.size() > 0) {
+				for (NoticeboardFileVO nfvo : fileList) {
+					nfvo.setFk_seq(seq); // 글번호 set
+				}
+				
+				// 첨부 파일 insert
+				int n2 = dao.notice_insertFiles(fileList);
+				
+				result = (n2 == fileList.size())? true : false;
+				
+				// 첨부 파일 테이블 insert가 실패했으면 리턴
+				if (!result)
+					return false;
+			}
+			
+			 return result;
+		}
+
+		@Override
+		public int nofile_notice_add(NoticeboardVO boardvo) {
+			int n = dao.nofile_notice_add(boardvo);
+			return n;
+		}
+
+		//공지사항 첨부파일 목록 가져오기 
+		@Override
+		public List<NoticeboardFileVO> getView_notice_files(String seq) {
+			return dao.getView_notice_files(seq);
+		}
+
+		//공지사항 첨부파일 삭제하기 
+		@Override
+		public int notice_del_attach(Map<String, String> paraMap) {
+			int n = dao.notice_del_attach(paraMap); 
+			
+			
+			//파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 시작  //
+			if(n==1) {
+				String path = paraMap.get("path");
+				String fileName = paraMap.get("fileName");
+				
+				if(fileName != null && !"".equals(fileName) ) {
+					try {
+						fileManager.doFileDelete(fileName, path);
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			// === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 끝  === // 
+			
+			return n;
+		}
+
+		//공지사항 글 삭제하기
+		@Override
+		public int notice_nofile_del(Map<String, String> paraMap) {
+			
+			int n = dao.notice_nofile_del(paraMap);
+			
+			return n;
+		}
+
+		@Override
+		public NoticeboardFileVO getNotice_Each_view_files(String fileno) {
+			return dao.getNotice_Each_view_files(fileno);
+		}
+
+		
+		//공지사항 게시판 글 수정하기
+		@SuppressWarnings("unchecked")
+		@Override
+		public boolean notice_board_edit(Map<String, Object> paraMap) {
+			int n = 0;
+			boolean result = false;
+			
+			NoticeboardVO boardvo= (NoticeboardVO)paraMap.get("boardvo");
+			
+			// 글 수정하기
+			n = dao.Noticeboard_edit(boardvo);
+			// System.out.println("service 162 n : "+n);
+			
+			result = (n == 1)? true: false;
+			
+			// 글 작성 실패 시 리턴
+			if (!result)
+				return false;
+			
+			// 첨부 파일 리스트
+			List<NoticeboardFileVO> fileList = (List<NoticeboardFileVO>) paraMap.get("fileList");
+			
+			// 첨부파일이 있다면
+			if (fileList != null && fileList.size() > 0) {
+				for (NoticeboardFileVO nvo : fileList) {
+					nvo.setFk_seq(boardvo.getSeq()); // 글번호 set
+				}
+				
+				// 첨부 파일 update
+				n = dao.notice_insertFiles(fileList);
+				//System.out.println("service 181 n : "+n);
+				result = (n == fileList.size())? true : false;
+				
+				// 첨부 파일 테이블 update가 실패했으면 리턴
+				if (!result)
+					return result;
+			}
+			
+			 return result;
+		}
+
+		//공지사항 첨부파일 삭제하기
+		@Override
+		public boolean notice_delete_file(String fileno, String path) {
+			// 파일번호로 파일 정보 조회
+			NoticeboardFileVO nvo = dao.getNotice_Each_view_files(fileno);
+			
+			// 테이블에서 파일 삭제
+			int n = dao.notice_delete_file(fileno);
+			
+			if (n==1) {
+				// 서버에서 파일 삭제
+				try {
+					fileManager.doFileDelete(nvo.getFileName(), path);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				//int n2 = dao.getfreeboard_filename_clear(paraMap);
+			}
+			
+			return (n==1)? true: false;
+		}
+		
+		// 공지사항 첨부 파일 유무 검정
+		@Override
+		public String noticeboard_update_attachfile(String fk_seq) {
+			String attachfile = dao.noticeboard_update_attachfile(fk_seq);
+			return attachfile;
+		}
+
+		//공지사항 글 파일유무를 0으로 만들기
+		@Override
+		public int getnoticeboard_filename_clear(Map<String, String> paraMap) {
+			int n = dao.getnoticeboard_filename_clear(paraMap);
+			return n;
+		}
+
+		//공지사항 글 파일유무를 1로 만들기
+		@Override
+		public int getnoticeboard_filename_add(Map<String, String> paraMap) {
+			int n = dao.getnoticeboard_filename_add(paraMap);
+			return n;
+		}
+
+		@Override
+		public String freeboard_update_attachfile(String fk_seq) {
+			String attachfile = dao.freeboard_update_attachfile(fk_seq);
+			return attachfile;
+		}		
+
+
+		
+	
+	
+	
 	
 	
 
