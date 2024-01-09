@@ -52,6 +52,10 @@ table#table2{
 	margin: 3% auto 0;
 }
 
+tr {
+	height: 53px;
+}
+
 table#table2 td.input_size {
 	padding-left: 2%;
 	text-align: left;
@@ -90,26 +94,44 @@ div#top {
 }
 
 h1 {
-	margin: 2% 0 2% 10%; 
+	margin: 2% 0 2% 9.5%; 
 	margin-right: auto;
 }
 
 button#btnUpdate {
 	margin-right: 1%;
+	background-color: rgb(3, 199, 90);
+    color: #fff; 
+    border: 1px solid #4CAF50; 
+    padding: 10px 20px; 
+    font-size: 16px;
+    cursor: pointer; 
+    border-radius: 5px; 
+    transition: background-color 0.3s ease;
 }
 
 button#btnCancel {
 	margin-right: 10%;
+	background-color: rgb(255, 0, 0);
+    color: #fff; 
+    border: 1px solid #4CAF50; 
+    padding: 10px 20px; 
+    font-size: 16px;
+    cursor: pointer; 
+    border-radius: 5px; 
+    transition: background-color 0.3s ease;
 }
 
 .filebox label {
     display: inline-block;
     color: #fff;
     vertical-align: middle;
+    text-align: center;
     background-color: #999999;
     cursor: pointer;
     height: 40px;
-    margin-left: 9.5%;
+    margin: 1% 0 0 9.5%;
+    padding-top: 9px;
     width: 10.5%;
 }
 
@@ -365,7 +387,7 @@ function btnUpdate() {
 		<div style="display: flex; justify-content: center;">
 		
 			<div id="photo">
-				<img src="<%= ctxPath%>/resources/images/${requestScope.loginuser.photo}" id="previewImg" />
+				<img src="<%= ctxPath%>/resources/empImg/${requestScope.loginuser.photo}" id="previewImg" />
 			</div>
 				
 			<table id="table1" class="myinfo_tbl">

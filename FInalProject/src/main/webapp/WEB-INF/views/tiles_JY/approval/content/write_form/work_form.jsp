@@ -44,9 +44,7 @@ $(() => {
 		const draft_subject = $("input#draft_subject").val().trim();
 		if(draft_subject == "") {
 			alert("글제목을 입력하세요!")
-			.then(function (result) {
-				document.getElementById("draft_subject").focus(); //포커싱
-		      })
+			document.getElementById("draft_subject").focus(); //포커싱
 			return;
 		}
 		
@@ -56,9 +54,7 @@ $(() => {
 	    if( draft_content == ""  || draft_content == null || draft_content == '&nbsp;' || draft_content == '<p>&nbsp;</p>')  {
 			obj.getById["draft_content"].exec("FOCUS"); //포커싱
 			alert("글내용을 입력하세요!")
-			.then(function (result) {
-				obj.getById["draft_content"].exec("FOCUS"); //포커싱
-		      })
+			obj.getById["draft_content"].exec("FOCUS"); //포커싱
 			return;
 	         
 	    }
@@ -86,9 +82,7 @@ $(() => {
 
 	    if( draft_content == ""  || draft_content == null || draft_content == '&nbsp;' || draft_content == '<p>&nbsp;</p>')  {
 			alert("글내용을 입력하세요!")
-			.then(function (result) {
-				obj.getById["draft_content"].exec("FOCUS"); //포커싱
-		      })
+			obj.getById["draft_content"].exec("FOCUS"); //포커싱
 			return;
 	    }
 		
@@ -99,7 +93,6 @@ $(() => {
 	/* 파일 드래그 & 드롭 */
 	// 파일 드롭 영역
 	const $drop = document.querySelector(".dropBox");
-	const fileList = $(".fileList").toArray();
 	
 	// 드래그한 파일 객체가 해당 영역에 놓였을 때
 	$drop.ondrop = function(e) {
@@ -110,6 +103,7 @@ $(() => {
 		const files = Array.from(e.dataTransfer.files);
 		
 		if(files != null && files != undefined){
+		    let tag = "";
 		    
 		    for(i=0; i<files.length; i++){
 		        let f = files[i];
@@ -120,16 +114,14 @@ $(() => {
 		        let fileName = f.name;
 		        let fileSize = f.size / 1024 / 1024;
 		        fileSize = fileSize < 1 ? fileSize.toFixed(3) : fileSize.toFixed(1);
-		        
 		     	// 파일 정보 표시하기
 		     //   tag += 
-			    $(".dropBox").append("<div class='fileList'>" +
-	                    "<span class='fileName'>" + fileName + "</span>&nbsp;&nbsp;&nbsp;" +
-	                    "<span class='fileSize'>" + fileSize +" MB</span>" +
-	                    "<span class='digitFileSize' style='display:none;'>" + f.size + "</span>" +
-	                    "<span class='removeFile btn small' name='removeFile'>삭제</span>" +
-	                "</div>");
-			    
+		                $(".dropBox").append("<div class='fileList'>" +
+		                    "<span class='fileName'>" + fileName + "</span>" +
+		                    "<span class='fileSize'>" + fileSize +" MB</span>" +
+		                    "<span class='digitFileSize' style='display:none'>" + f.size + "</span>" +
+		                    "<span class='removeFile btn small' name='removeFile'>삭제</span>" +
+		                "</div>");
 		    }
 		    $("span#a").hide();
 		    $(this).addClass('active');
@@ -172,12 +164,11 @@ $(() => {
    	 		  }
    	 	}
    	 	
+		if(fileList.length == 0) {
+			$drop.classList.remove("active");
+	 		$("span#a").show();
+		}
    	 	
-   	 	if(fileList.length == 0) {
-   	 		$drop.classList.remove("active");
-   	 		$("span#a").show();
-   	 	}
-   	 
 	});
 	
 	// 임시저장 제목, 내용 표시하기
@@ -206,14 +197,14 @@ const checkUrgent = () => {
 	
 }
 
-// 첨부파일 가져오기
+//첨부파일 가져오기
 const getFiles = formData => {
 
-    if(fileList.length > 0){
-        fileList.forEach(function(f){
-            formData.append("fileList", f);
-        });
-    }
+	if(fileList.length > 0){
+	    fileList.forEach(function(f){
+	        formData.append("fileList", f);
+	    });
+	}
 }
 
 /* 폼 제출하기 */
@@ -241,27 +232,27 @@ const submitDraft = () => {
 		});
 	}
 	
-    $.ajax({
-        url : "<%=ctxPath%>/approval/addDraft.gw",
-        data : formData,
-        type:'POST',
-        enctype:'multipart/form-data',
-        processData:false,
-        contentType:false,
-        dataType:'json',
-        cache:false,
-        success:function(json){
-        	if(json.result == true) {
-    	    	alert("등록 완료\n기안이 상신되었습니다.")
-    	    	location.href = "<%=ctxPath%>/approval/personal/sent.gw";
-        	}
-        	else
-        		alert("등록 실패\n등록에 실패하였습니다.");
-        },
-        error: function(request, status, error){
-		alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-		}
-    });
+	$.ajax({
+	     url : "<%=ctxPath%>/approval/addDraft.gw",
+	     data : formData,
+	     type:'POST',
+	     enctype:'multipart/form-data',
+	     processData:false,
+	     contentType:false,
+	     dataType:'json',
+	     cache:false,
+	     success:function(json){
+	     	if(json.result == true) {
+	 	    	alert("등록 완료\n기안이 상신되었습니다.")
+   	    	location.href = "<%=ctxPath%>/approval/personal/sent.gw";
+	     	}
+	     	else
+	     		alert("등록 실패\n등록에 실패하였습니다.");
+	     },
+	     error: function(request, status, error){
+			alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			}
+	 });
 	
 }
 
@@ -282,13 +273,11 @@ const saveTemp = () => {
         success:function(json){
    	     	if(json.temp_draft_no != "" && json.temp_draft_no !== undefined) {
    	     		alert("저장 완료\n임시저장 되었습니다.")
-   	     		.then((value) => {
-   	 	    		$("input[name='temp_draft_no']").val(json.temp_draft_no); // 임시저장 번호 대입
-   	 	    		location.href = "<%=ctxPath%>/approval/personal/saved.gw";
-   	     		});
-        	}
-        	else
-        		alert("저장 실패\n임시저장 실패하였습니다.");
+ 	    		$("input[name='temp_draft_no']").val(json.temp_draft_no); // 임시저장 번호 대입
+ 	    		location.href = "<%=ctxPath%>/approval/personal/saved.gw";
+       		} else {
+       			alert("저장 실패\n임시저장 실패하였습니다.");
+       		}
         },
         error: function(request, status, error){
 		alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);

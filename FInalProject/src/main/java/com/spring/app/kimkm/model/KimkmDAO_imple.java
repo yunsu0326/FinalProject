@@ -56,6 +56,13 @@ public class KimkmDAO_imple implements KimkmDAO {
 		Map<String, String> dept_team = sqlsession.selectOne("kimkm.selectDeptTeam", employee_id);
 		return dept_team;
 	}
+	
+	// 남은 휴가일수 알아오기
+	@Override
+	public Map<String, String> selectVacation(String employee_id) {
+		Map<String, String> vacation = sqlsession.selectOne("kimkm.selectVacation", employee_id);
+		return vacation;
+	}
 
 	
 	// 회원가입시 기본 정보 읽어오기
@@ -86,6 +93,13 @@ public class KimkmDAO_imple implements KimkmDAO {
 		return salaryStatement;
 	}
 
+	// 급여명세서 직인 이미지 가져오기
+	@Override
+	public String selectSignimg() {
+		String signimg = sqlsession.selectOne("kimkm.selectSignimg");
+		return signimg;
+	}
+		
 	// salay 테이블에서 Excel 담을 값 가져오기
 	@Override
 	public List<Map<String, String>> salaryList(Map<String, Object> paraMap) {
@@ -180,6 +194,11 @@ public class KimkmDAO_imple implements KimkmDAO {
 		int n = sqlsession.update("kimkm.receipt_important_update", paraMap);
 		return n;
 	}
+
+	
+	
+
+	
 	
 	
 	

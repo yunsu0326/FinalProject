@@ -79,6 +79,14 @@ public class KimkmService_imple implements KimkmService {
 		Map<String, String> dept_team = dao.selectDeptTeam(employee_id);
 		return dept_team;
 	}
+	
+	
+	// 남은 휴가일수 알아오기
+	@Override
+	public Map<String, String> selectVacation(String employee_id) {
+		Map<String, String> vacation = dao.selectVacation(employee_id);
+		return vacation;
+	}
 
 	
 	// 회원가입시 기본 정보 읽어오기
@@ -107,6 +115,13 @@ public class KimkmService_imple implements KimkmService {
 	public Map<String, String> salaryStatement(Map<String, String> paraMap) {
 		Map<String, String> salaryStatement = dao.salaryStatement(paraMap);
 		return salaryStatement;
+	}
+	
+	// 급여명세서 직인 이미지 가져오기
+	@Override
+	public String selectSignimg() {
+		String signimg = dao.selectSignimg();
+		return signimg;
 	}
 
 	// salary 테이블에서 조건에 만족하는 급여들을 가져와서 Excel 파일로 만들기 
@@ -665,6 +680,10 @@ public class KimkmService_imple implements KimkmService {
 		int n = dao.receipt_important_update(paraMap);
 		return n;
 	}
+
+	
+
+	
 
 	
 
