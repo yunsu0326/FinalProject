@@ -99,7 +99,7 @@
 					<span style="display:block; font-size:30px; margin:0 auto;">그룹웨어 회사[직인]</span>
 					
 					<c:if test="${requestScope.paraMap.category =='전자도장'}">
-						<img style="position:absolute; width:100px; height:100px; margin-top:-25px; left: 55%;" src="<%=ctxPath%>/resources/images/법인도장.png"/>
+						<img style="position:absolute; width:100px; height:100px; margin-top:-25px; left: 55%;" src="<%=ctxPath%>/resources/img/법인도장.png"/>
 					</c:if>
 					
 				</div>
