@@ -373,11 +373,11 @@
 	        	<th class='col col-1'>이름</th>
 	            <th class='col col-1'>사원번호</th>
 	            <th class='col col-2'>신청 휴가 종류</th>
-	            <th class='col'>사유</th>
-	            <th class='col col-1'>신청일</th>
-	            <th class='col col-1'>시작일</th>
-	            <th class='col col-1'>종료일</th>
-	            <th class='col col-1'>결재상태</th>
+	            <th class='col col-2'>사유</th>
+	            <th class='col'>신청일</th>
+	            <th class='col'>시작일</th>
+	            <th class='col'>종료일</th>
+	            <th class='col'>결재상태</th>
             </tr>
          </thead>
          
@@ -431,19 +431,19 @@
 						</c:when>
 					</c:choose>
 		            
-		            <td class='col'>${vacList.vacation_reason}</td>
-		            <td class='col col-1'>${vacList.vacation_reg_date}</td>
-		            <td class='col col-1' id="vacation_start_date">${vacList.vacation_start_date}</td>
-		            <td class='col col-1' id="vacation_end_date">${vacList.vacation_end_date}</td>
+		            <td class='col col-2'>${vacList.vacation_reason}</td>
+		            <td class='col'>${vacList.vacation_reg_date}</td>
+		            <td class='col' id="vacation_start_date">${vacList.vacation_start_date}</td>
+		            <td class='col' id="vacation_end_date">${vacList.vacation_end_date}</td>
 		            <c:choose>
 		            	<c:when test="${vacList.vacation_confirm == '1'}">
-		            		<td class='col col-1 ml-3' id="vacation_confirm">대기</td>
+		            		<td class='col ml-3' id="vacation_confirm">대기</td>
 		            	</c:when>
 		            	<c:when test="${vacList.vacation_confirm == '2'}">
-		            		<td class='col col-1 ml-3' id="vacation_confirm">승인</td>
+		            		<td class='col ml-3' id="vacation_confirm">승인</td>
 		            	</c:when>
 		            	<c:when test="${vacList.vacation_confirm == '3'}">
-		            		<td class='col col-1 ml-3' id="vacation_confirm">반려</td>
+		            		<td class='col ml-3' id="vacation_confirm">반려</td>
 		            	</c:when>
 		            </c:choose>
 		        </tr>
@@ -483,10 +483,10 @@
 	            <th class='col col-1'>사원번호</th>
 	            <th class='col col-2'>신청 휴가 종류</th>
 	            <th class='col col-2'>사유</th>
-	            <th class='col col-1'>신청일</th>
-	            <th class='col col-1'>시작일</th>
-	            <th class='col col-1'>종료일</th>
-	            <th class='col col-1'>결재상태</th>
+	            <th class='col'>신청일</th>
+	            <th class='col'>시작일</th>
+	            <th class='col'>종료일</th>
+	            <th class='col'>결재상태</th>
             </tr>
          </thead>
          <tbody>
@@ -527,18 +527,18 @@
 					</c:choose>
 		            
 		            <td class='col col-2'>${vacReturnList.vacation_reason}</td>
-		            <td class='col col-1'>${vacReturnList.vacation_end_date}</td>
-		            <td class='col col-1'>${vacReturnList.vacation_start_date}</td>
-		            <td class='col col-1'>${vacReturnList.vacation_end_date}</td>
+		            <td class='col'>${vacReturnList.vacation_end_date}</td>
+		            <td class='col'>${vacReturnList.vacation_start_date}</td>
+		            <td class='col'>${vacReturnList.vacation_end_date}</td>
 		            <c:choose>
 		            	<c:when test="${vacReturnList.vacation_confirm == '1'}">
-		            		<td class='col col-1 ml-3'>대기</td>
+		            		<td class='col ml-3'>대기</td>
 		            	</c:when>
 		            	<c:when test="${vacReturnList.vacation_confirm == '2'}">
-		            		<td class='col col-1 ml-3'>승인</td>
+		            		<td class='col ml-3'>승인</td>
 		            	</c:when>
 		            	<c:when test="${vacReturnList.vacation_confirm == '3'}">
-		            		<td class='col col-1 ml-3'>반려</td>
+		            		<td class='col ml-3'>반려</td>
 		            	</c:when>
 		            </c:choose>
 		        </tr>
@@ -570,10 +570,10 @@
 	            <th class='col col-1'>사원번호</th>
 	            <th class='col col-2'>신청 휴가 종류</th>
 	            <th class='col col-2'>사유</th>
-	            <th class='col col-1'>신청일</th>
-	            <th class='col col-1'>시작일</th>
-	            <th class='col col-1'>종료일</th>
-	            <th class='col col-1'>결재상태</th>
+	            <th class='col'>신청일</th>
+	            <th class='col'>시작일</th>
+	            <th class='col'>종료일</th>
+	            <th class='col'>결재상태</th>
             </tr>
          </thead>
          <tbody>
@@ -614,18 +614,18 @@
 					</c:choose>
 		            
 		            <td class='col col-2'>${vacApprovedList.vacation_reason}</td>
-		            <td class='col col-1'>${vacApprovedList.vacation_reg_date}</td>
-		            <td class='col col-1'>${vacApprovedList.vacation_start_date}</td>
-		            <td class='col col-1'>${vacApprovedList.vacation_end_date}</td>
+		            <td class='col'>${vacApprovedList.vacation_reg_date}</td>
+		            <td class='col'>${vacApprovedList.vacation_start_date}</td>
+		            <td class='col'>${vacApprovedList.vacation_end_date}</td>
 		            <c:choose>
 		            	<c:when test="${vacApprovedList.vacation_confirm == '1'}">
-		            		<td class='col col-1 ml-3'>대기</td>
+		            		<td class='col ml-3'>대기</td>
 		            	</c:when>
 		            	<c:when test="${vacApprovedList.vacation_confirm == '2'}">
-		            		<td class='col col-1 ml-3'>승인</td>
+		            		<td class='col ml-3'>승인</td>
 		            	</c:when>
 		            	<c:when test="${vacApprovedList.vacation_confirm == '3'}">
-		            		<td class='col col-1 ml-3'>반려</td>
+		            		<td class='col ml-3'>반려</td>
 		            	</c:when>
 		            </c:choose>
 		        </tr>

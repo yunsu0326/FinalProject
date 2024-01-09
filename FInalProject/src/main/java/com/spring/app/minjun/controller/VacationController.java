@@ -164,7 +164,6 @@ public class VacationController {
         	// 회원들의 신청된 휴가 중 대기중인 회원 가져오기
             List<Vacation_manageVO> vacList = service.vacList(employee_id);
             
-            
             // 대기중인 휴가 갯수 알아오기
         	String total_count = service.total_count(employee_id);
         	
@@ -398,15 +397,5 @@ public class VacationController {
 		
 		return new Gson().toJson(jsonArr);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 }

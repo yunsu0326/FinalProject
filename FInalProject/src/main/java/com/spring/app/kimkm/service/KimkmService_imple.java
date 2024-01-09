@@ -1,5 +1,7 @@
 package com.spring.app.kimkm.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -18,11 +20,13 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 // import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.spring.app.common.AES256;
+import com.spring.app.domain.DepartmentVO;
 import com.spring.app.domain.EmployeesVO;
 import com.spring.app.kimkm.model.KimkmDAO;
 
@@ -75,6 +79,14 @@ public class KimkmService_imple implements KimkmService {
 		Map<String, String> dept_team = dao.selectDeptTeam(employee_id);
 		return dept_team;
 	}
+	
+	
+	// 남은 휴가일수 알아오기
+	@Override
+	public Map<String, String> selectVacation(String employee_id) {
+		Map<String, String> vacation = dao.selectVacation(employee_id);
+		return vacation;
+	}
 
 	
 	// 회원가입시 기본 정보 읽어오기
@@ -91,13 +103,6 @@ public class KimkmService_imple implements KimkmService {
 		return n;
 	}
 
-	// 급여계산 하기
-	@Override
-	public Map<String, String> selectSalary(String employee_id) {
-		Map<String, String> salary = dao.selectSalary(employee_id);
-		return salary;
-	}
-
 	// 급여테이블 조회하기
 	@Override
 	public List<Map<String, String>> monthSal(String employee_id) {
@@ -110,6 +115,13 @@ public class KimkmService_imple implements KimkmService {
 	public Map<String, String> salaryStatement(Map<String, String> paraMap) {
 		Map<String, String> salaryStatement = dao.salaryStatement(paraMap);
 		return salaryStatement;
+	}
+	
+	// 급여명세서 직인 이미지 가져오기
+	@Override
+	public String selectSignimg() {
+		String signimg = dao.selectSignimg();
+		return signimg;
 	}
 
 	// salary 테이블에서 조건에 만족하는 급여들을 가져와서 Excel 파일로 만들기 
@@ -485,32 +497,32 @@ public class KimkmService_imple implements KimkmService {
 		        	
 		        	// 데이터 부서명 표시
 		        	bodyCell = bodyRow.createCell(4);
-		        	bodyCell.setCellValue("-");
+		        	bodyCell.setCellValue(salaryMap.get("position_allowance"));
 		        	bodyCell.setCellStyle(b_bodyStyle);
 		        	
 		        	// 데이터 부서명 표시
 		        	bodyCell = bodyRow.createCell(5);
-		        	bodyCell.setCellValue("-");
+		        	bodyCell.setCellValue(salaryMap.get("extra_work_allowance"));
 		        	bodyCell.setCellStyle(b_bodyStyle);
 		        	
 		        	// 데이터 부서명 표시
 		        	bodyCell = bodyRow.createCell(6);
-		        	bodyCell.setCellValue("-");
+		        	bodyCell.setCellValue("");
 		        	bodyCell.setCellStyle(b_bodyStyle);
 		        	
 		        	// 데이터 부서명 표시
 		        	bodyCell = bodyRow.createCell(7);
-		        	bodyCell.setCellValue("-");
+		        	bodyCell.setCellValue(salaryMap.get("bonus"));
 		        	bodyCell.setCellStyle(b_bodyStyle);
 		        	
 		        	// 데이터 부서명 표시
 		        	bodyCell = bodyRow.createCell(8);
-		        	bodyCell.setCellValue("-");
+		        	bodyCell.setCellValue(salaryMap.get("p_sum"));
 		        	bodyCell.setCellStyle(y_bodyStyle);
 		        	
 		        	// 데이터 부서명 표시
 		        	bodyCell = bodyRow.createCell(9);
-		        	bodyCell.setCellValue("-");
+		        	bodyCell.setCellValue(salaryMap.get("meal_allowance"));
 		        	bodyCell.setCellStyle(b_bodyStyle);
 		        	
 		        	// 데이터 부서명 표시
@@ -530,25 +542,25 @@ public class KimkmService_imple implements KimkmService {
 		        	
 		        	// 데이터 입사일자 표시
 		        	bodyCell = bodyRow.createCell(13);
-		        	bodyCell.setCellValue(Integer.parseInt(salaryMap.get("ksal"))); 
+		        	bodyCell.setCellValue(Integer.parseInt(salaryMap.get("national_pension"))); 
 		        	bodyCell.setCellStyle(moneyStyle);
 		        	bodyCell.setCellStyle(b_bodyStyle);
 		        	
 		        	// 데이터 월급 표시
 		        	bodyCell = bodyRow.createCell(14);
-		        	bodyCell.setCellValue(Integer.parseInt(salaryMap.get("ysal")));
+		        	bodyCell.setCellValue(Integer.parseInt(salaryMap.get("long_term_care_pee")));
 		        	bodyCell.setCellStyle(moneyStyle); // 천단위 쉼표, 금액
 		        	bodyCell.setCellStyle(b_bodyStyle);
 		        	
 		        	// 데이터 성별 표시
 		        	bodyCell = bodyRow.createCell(15);
-		        	bodyCell.setCellValue(Integer.parseInt(salaryMap.get("hsal"))); 
+		        	bodyCell.setCellValue(Integer.parseInt(salaryMap.get("health_insurance"))); 
 		        	bodyCell.setCellStyle(moneyStyle);
 		        	bodyCell.setCellStyle(b_bodyStyle);
 		        	
 		        	// 데이터 나이 표시
 		        	bodyCell = bodyRow.createCell(16);
-		        	bodyCell.setCellValue(Integer.parseInt(salaryMap.get("bsal")));
+		        	bodyCell.setCellValue(Integer.parseInt(salaryMap.get("employment_insurance")));
 		        	bodyCell.setCellStyle(moneyStyle);
 		        	bodyCell.setCellStyle(b_bodyStyle);
 		        	
@@ -560,7 +572,7 @@ public class KimkmService_imple implements KimkmService {
 		        	
 		        	// 데이터 나이 표시
 		        	bodyCell = bodyRow.createCell(18);
-		        	bodyCell.setCellValue(Integer.parseInt(salaryMap.get("total")));
+		        	bodyCell.setCellValue(Double.parseDouble(salaryMap.get("total")));
 		        	bodyCell.setCellStyle(moneyStyle);
 		        	bodyCell.setCellStyle(p_bodyStyle);
 		        }// end of for------------------------------
@@ -576,6 +588,13 @@ public class KimkmService_imple implements KimkmService {
         // 예를 들어, columnIndex가 0이면 "월", 1이면 "성명" 등을 반환할 수 있음
         return "Header" + columnIndex;
     }
+	
+	// department테이블  select하기
+	@Override
+	public List<Map<String,String>> selectdept(DepartmentVO deptvo) {
+		List<Map<String,String>> deptList = dao.selectdept(deptvo);
+		return deptList;
+	}
 
 	// 조직도 리스트 가져오기
 	@Override
@@ -583,6 +602,92 @@ public class KimkmService_imple implements KimkmService {
 		List<Map<String, String>> employeeList = dao.employeeList();
 		return employeeList;
 	}
+
+	// === Spring Scheduler(스프링 스케줄러)를 사용한 tbl_salary 테이블 insert 와 공지사항 insert === //
+	// 매월 16일 12시에 insert 해준다.
+	@Override
+ 	@Scheduled(cron="0 0 12 16 * *")
+	public void PayslipTemplate() throws Exception {
+		
+		Calendar currentDate = Calendar.getInstance(); // 현재날짜와 시간을 얻어온다.
+		currentDate.add(Calendar.MONTH, -1);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+		String lastMonth = dateFormat.format(currentDate.getTime());
+		
+		System.out.println(lastMonth);
+		List<Map<String, String>> emp_salary_List = dao.emp_salary_List(lastMonth);
+		System.out.println(emp_salary_List);
+		int n = dao.insert_PayslipTemplate(emp_salary_List);
+		
+		String manager = "인사 부서장";
+		
+		Map<String, String> manager_name_empId = dao.select_human_resources_manager(manager);
+		
+		String subject = "급여 명세서가 발급 되었습니다."; 
+		String content = "급여 명세서가 발급 되었습니다. 급여탭에서 본인의 급여명세서를 확인하세요"; 
+		String pw = "1234";
+		
+		manager_name_empId.put("SUBJECT", subject); 
+		manager_name_empId.put("CONTENT", content); 
+		manager_name_empId.put("PW", pw);
+		
+		if(n >0) { 
+			int n2 = dao.insert_notice_board(manager_name_empId); 
+		}
+	 
+	
+	}
+	
+	
+	// receipt_favorites update하기
+	@Override
+	public int receipt_favorites_update(Map<String, String> paraMap) {
+		int n = dao.receipt_favorites_update(paraMap);
+		return n;
+	}
+
+	// receipt_favorites 값 가져오기
+	@Override
+	public String select_receipt_favorites(String receipt_mail_seq) {
+		String receipt_favorites = dao.select_receipt_favorites(receipt_mail_seq);
+		return receipt_favorites;
+	}
+	
+	// email_receipt_read_count update 하기
+	@Override
+	public int email_receipt_read_count_update(String receipt_mail_seq) {
+		int n = dao.email_receipt_read_count_update(receipt_mail_seq);
+		return n;
+	}
+
+	// email_receipt_read_count 값 가져오기
+	@Override
+	public String select_email_receipt_read_count(String receipt_mail_seq) {
+		String email_receipt_read_count = dao.select_email_receipt_read_count(receipt_mail_seq);
+		return email_receipt_read_count;
+	}
+
+	// receipt_important 값 가져오기
+	@Override
+	public String select_receipt_important(String receipt_mail_seq) {
+		String receipt_important = dao.select_receipt_important(receipt_mail_seq);
+		return receipt_important;
+	}
+
+	// receipt_important update 하기
+	@Override
+	public int receipt_important_update(Map<String, String> paraMap) {
+		int n = dao.receipt_important_update(paraMap);
+		return n;
+	}
+
+	
+
+	
+
+	
+
+	
 
 	
 

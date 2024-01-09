@@ -3,6 +3,7 @@ package com.spring.app.kimkm.model;
 import java.util.List;
 import java.util.Map;
 
+import com.spring.app.domain.DepartmentVO;
 import com.spring.app.domain.EmployeesVO;
 
 public interface KimkmDAO {
@@ -21,6 +22,9 @@ public interface KimkmDAO {
 
 	// 부서이름 팀명 알아오기
 	Map<String, String> selectDeptTeam(String employee_id);
+	
+	// 남은 휴가일수 알아오기
+	Map<String, String> selectVacation(String employee_id);
 
 	// 회원가입시 기본 정보 읽어오기
 	Map<String, String> selectRegister(String email);
@@ -28,20 +32,59 @@ public interface KimkmDAO {
 	// 비밀번호 변경하기
 	int pwdUpdateEnd(Map<String, String> paraMap);
 
-	// 급여계산 하기
-	Map<String, String> selectSalary(String employee_id);
-
 	// 급여테이블 조회하기
 	List<Map<String, String>> monthSal(String employee_id);
 
 	// 급여명세서 테이블 가져오기
 	Map<String, String> salaryStatement(Map<String, String> paraMap);
+	
+	// 급여명세서 직인 이미지 가져오기
+	String selectSignimg();
 
 	// salay 테이블에서 Excel 담을 값 가져오기
 	List<Map<String, String>> salaryList(Map<String, Object> paraMap);
 
+	// department테이블  select하기
+	List<Map<String,String>> selectdept(DepartmentVO deptvo);
+	
 	// 조직도 리스트 가져오기
 	List<Map<String, String>> employeeList();
+	
+	// 월급 테이블 insert 하기위한 값 가져오기
+	List<Map<String, String>> emp_salary_List(String lastMonth);
+	
+	// 월급 테이블 insert 하기
+	int insert_PayslipTemplate(List<Map<String, String>> emp_salary_List);
+
+	// 공지사항 글쓰기를 위한 급여명세서 발급자 정보 select 하기
+	Map<String, String> select_human_resources_manager(String manager);
+
+	// 공지사항 insert 하기
+	int insert_notice_board(Map<String, String> manager_name_empId);
+	
+	// receipt_favorites update하기
+	int receipt_favorites_update(Map<String, String> paraMap);
+
+	// receipt_favorites 값 가져오기
+	String select_receipt_favorites(String receipt_mail_seq);
+	
+	// email_receipt_read_count update 하기
+	int email_receipt_read_count_update(String receipt_mail_seq);
+
+	// email_receipt_read_count 값 가져오기
+	String select_email_receipt_read_count(String receipt_mail_seq);
+
+	// receipt_important 값 가져오기
+	String select_receipt_important(String receipt_mail_seq);
+
+	// receipt_important update 하기
+	int receipt_important_update(Map<String, String> paraMap);
+
+	
+
+	
+
+	
 
 	
 

@@ -302,7 +302,7 @@
 	  <div class='maxHight'>
       <table class="table ml-5">
          <thead>
-            <tr class='row' class="table_tr">
+            <tr class='row table_tr'>
                	<th class='col col-1'>no</th>
 	        	<th class='col col-1'>이름</th>
 	            <th class='col col-2'>신청휴가종류</th>
@@ -427,6 +427,7 @@
 						</c:when>
 					</c:choose>
 			            <td class='col'>${List.vacation_reason}</td>
+			            <td class='col'>${List.vacation_reg_date}</td>
 			            <td class='col'>${List.vacation_start_date}</td>
 			            <td class='col'>${List.vacation_end_date}</td>
 			            <c:choose>

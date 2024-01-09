@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.spring.app.domain.DepartmentVO;
 import com.spring.app.domain.EmployeesVO;
 
 
@@ -55,6 +56,13 @@ public class KimkmDAO_imple implements KimkmDAO {
 		Map<String, String> dept_team = sqlsession.selectOne("kimkm.selectDeptTeam", employee_id);
 		return dept_team;
 	}
+	
+	// 남은 휴가일수 알아오기
+	@Override
+	public Map<String, String> selectVacation(String employee_id) {
+		Map<String, String> vacation = sqlsession.selectOne("kimkm.selectVacation", employee_id);
+		return vacation;
+	}
 
 	
 	// 회원가입시 기본 정보 읽어오기
@@ -71,13 +79,6 @@ public class KimkmDAO_imple implements KimkmDAO {
 		return n;
 	}
 
-	// 급여계산 하기
-	@Override
-	public Map<String, String> selectSalary(String employee_id) {
-		Map<String, String> salary = sqlsession.selectOne("kimkm.selectSalary", employee_id);
-		return salary;
-	}
-
 	// 급여 조회하기
 	@Override
 	public List<Map<String, String>> monthSal(String employee_id) {
@@ -92,19 +93,115 @@ public class KimkmDAO_imple implements KimkmDAO {
 		return salaryStatement;
 	}
 
+	// 급여명세서 직인 이미지 가져오기
+	@Override
+	public String selectSignimg() {
+		String signimg = sqlsession.selectOne("kimkm.selectSignimg");
+		return signimg;
+	}
+		
 	// salay 테이블에서 Excel 담을 값 가져오기
 	@Override
 	public List<Map<String, String>> salaryList(Map<String, Object> paraMap) {
 		List<Map<String, String>> salaryList = sqlsession.selectList("kimkm.salaryList", paraMap);
 		return salaryList;
 	}
+	
+	// department테이블  select하기
+	@Override
+	public List<Map<String,String>> selectdept(DepartmentVO deptvo) {
+		List<Map<String,String>> deptList = sqlsession.selectList("kimkm.selectdept", deptvo);
+		return deptList;
+	}
 
+	// 조직도 리스트 가져오기
 	@Override
 	public List<Map<String, String>> employeeList() {
 		List<Map<String, String>> employeeList = sqlsession.selectList("kimkm.employeeList");
 		return employeeList;
 	}
+	
+	// 월급 테이블 insert 하기위한 값 가져오기
+	@Override
+	public List<Map<String, String>> emp_salary_List(String lastMonth) {
+		List<Map<String, String>> emp_salary_List = sqlsession.selectList("kimkm.emp_salary_List", lastMonth);
+		return emp_salary_List;
+	}
 
+	// 월급 테이블 insert 하기
+	@Override
+	public int insert_PayslipTemplate(List<Map<String, String>> emp_salary_List) {
+		int n = sqlsession.insert("kimkm.insert_PayslipTemplate", emp_salary_List);
+		return n;
+	}
+	
+	// 공지사항 글쓰기를 위한 급여명세서 발급자 정보 select 하기
+	@Override
+	public Map<String, String> select_human_resources_manager(String manager) {
+		Map<String, String> manager_name_empId = sqlsession.selectOne("kimkm.select_human_resources_manager", manager);
+		return manager_name_empId;
+	}
+	
+	// 공지사항 insert 하기
+	@Override
+	public int insert_notice_board(Map<String, String> manager_name_empId) {
+		int n = sqlsession.insert("kimkm.insert_notice_board", manager_name_empId);
+		return n;
+	}
+	
+
+	// receipt_favorites update하기
+	@Override
+	public int receipt_favorites_update(Map<String, String> paraMap) {
+		int n = sqlsession.update("kimkm.receipt_favorites_update", paraMap);
+		return n;
+	}
+
+	
+	// receipt_favorites 값 가져오기
+	@Override
+	public String select_receipt_favorites(String receipt_mail_seq) {
+		String receipt_favorites = sqlsession.selectOne("kimkm.select_receipt_favorites", receipt_mail_seq);
+		return receipt_favorites;
+	}
+
+
+	// email_receipt_read_count update 하기
+	@Override
+	public int email_receipt_read_count_update(String receipt_mail_seq) {
+		int n = sqlsession.update("kimkm.email_receipt_read_count_update", receipt_mail_seq);
+		return n;
+	}
+
+	
+	// email_receipt_read_count 값 가져오기
+	@Override
+	public String select_email_receipt_read_count(String receipt_mail_seq) {
+		String email_receipt_read_count = sqlsession.selectOne("kimkm.select_email_receipt_read_count", receipt_mail_seq);
+		return email_receipt_read_count;
+	}
+
+	// receipt_important 값 가져오기
+	@Override
+	public String select_receipt_important(String receipt_mail_seq) {
+		String receipt_important = sqlsession.selectOne("kimkm.select_receipt_important", receipt_mail_seq);
+		return receipt_important;
+	}
+
+	// receipt_important update 하기
+	@Override
+	public int receipt_important_update(Map<String, String> paraMap) {
+		int n = sqlsession.update("kimkm.receipt_important_update", paraMap);
+		return n;
+	}
+
+	
+	
+
+	
+	
+	
+	
 	
 	
 

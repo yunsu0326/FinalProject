@@ -80,6 +80,7 @@
 	div#rightDiv {width: 18%; margin-right: 13%; margin-left: auto;}
 	input#workDate {height: 30px; border: solid 1px gray;}
 	div#choiceMonth{display: flex; margin-left: 40%;}
+	div#max_container {min-height: 840px;}
 	
 </style>
 
@@ -190,13 +191,9 @@ $(document).ready(function(){
 	    /////////////////////////////////////////////////////
 	    // 근무 시간 가져오기
 	    var workTimeNow = now - todayStartTimeVal;
-	  
-	    var workTimeH = Math.floor(workTimeNow/(1000 * 60 * 60));   // 근무 시간
-	    
+	    var workTimeH = Math.floor(workTimeNow / (1000 * 60 * 60));  // 근무 시간
 	    var workTimeM = Math.floor(workTimeNow / (1000 * 60) % 60); // 근무 분
-	    
 	    var workTimeC = Math.floor((workTimeNow / 1000) % 60);	    // 근무 초
-	    
 	    var workTimeVal = padZero(workTimeH)+":"+padZero(workTimeM)+":"+padZero(workTimeC);
 	 	///////////////////////////////////////////////////////////////
 	 	// 연장 근무 시간 구하기
@@ -204,11 +201,8 @@ $(document).ready(function(){
 	 	
 	 	if(workTimeNow > 32400000) { // 연장근무인 경우
 	 		var calculateTime = workTimeNow - 32400000;
-
-	 		var calH = Math.floor(calculateTime/(1000 * 60 * 60)); 	 // 연장 시간
-		    
+	 		var calH = Math.floor(calculateTime / (1000 * 60 * 60));  // 연장 시간
 		    var calM = Math.floor(calculateTime / (1000 * 60) % 60); // 연장 분
-		    
 		    var calC = Math.floor((calculateTime / 1000) % 60); 	 // 연장 초
 	 		
 		    var overTimeVal = padZero(calH)+":"+padZero(calM)+":"+padZero(calC);
@@ -341,7 +335,7 @@ function getMyWorkList() {
 		dataType:"JSON",
 		success:function(json){
 			let html = "";
-			
+		
 			html += "<div id='week1' class='widths' style='width: 60%; margin-left: 20%;'>"+
 						"<div onclick='toggle(\"week1\")' class='weeks'>"+
 						"<span class='fas fa-angle-down' style='font-size: 10pt;'></span>"+
@@ -360,7 +354,6 @@ function getMyWorkList() {
 								"</tr>"+
 							"</thead>"+
 							"<tbody>";
-							
 			if(json.length > 0) {
 				$.each(json, function(index, item) {
 					
@@ -479,6 +472,7 @@ function getMyWorkList() {
 							"<tbody>";
 					} // end of if(index == 19)
 					
+					
 				});
 								
 				html += "</tbody></table></div></div>";
@@ -493,6 +487,15 @@ function getMyWorkList() {
 					
 				const today = new Date();
 				weekOpen(today);
+			}
+			else {
+				html += "<tr class='row border'>"+
+							"<td class='col'>데이터가 없습니다</td>"+
+						"</tr>";
+				
+				html += "</tbody></table></div></div>";
+				
+				$("#weeksPlace").html(html);
 			}
 		},
 	  	error: function(request, status, error){
@@ -512,11 +515,9 @@ function workRequestModal(){
 //오늘이 이번달의 몇번째 주인지 구하기	
 function weekNumOfMonth(date){
 	var week_kor = ["1", "2", "3", "4", "5"];
-	var thursday_num = 5;	// 첫째주의 기준은 목요일(4)이다. (https://info.singident.com/60)
-	// console.log(date);
+	var thursday_num = 5;	// 첫째주의 기준은 목요일(4)이다. 
 
 	var firstDate = new Date(date.getFullYear(), date.getMonth()+ 1);
-	// console.log(firstDate.getDay());
 	var firstDayOfWeek = firstDate.getDay();
 
 	var firstThursday = 1 + thursday_num - firstDayOfWeek;	// 첫째주 목요일
@@ -538,7 +539,6 @@ function weekNumOfMonth(date){
 // 1~5주차 따로 열기(토글)
 function weekOpen(date){
 	const weekNo = weekNumOfMonth(date);
-	// alert(weekNo);	
 	
 	const now = new Date();	
 	
@@ -596,7 +596,6 @@ function todayDate() {
 }
 
 // 출퇴근 관련 함수 [시작]
-
 // 출근 버튼 클릭시 클릭한 시간을 표시하는 함수
 function recordStartTime() {
     var startTimeElement = $("input#substring_start_time").val();
@@ -618,6 +617,7 @@ function recordEndTime() {
     var formattedTime = padZero(hours) + ":" + padZero(minutes) + ":" + padZero(seconds);
     endTimeElement.textContent = formattedTime;
 }
+//출퇴근 관련 함수 [끝]
 
 // 문자열 형식의 시간을 밀리초로 변환하는 함수
 function parseTime(timeString) {
@@ -634,11 +634,10 @@ function parseTime(timeString) {
 function padZero(value) {
     return value < 10 ? "0" + value : value;
 }
-//출퇴근 관련 함수 [끝]
 </script>
 
-<div id="container">
-	
+<div id='max_container'>
+  <div id='container'>
     <%-- 상단 메뉴바 시작 --%>
     <nav class="navbar navbar-expand-lg mt-5 mb-4">
 		<div class="collapse navbar-collapse">
@@ -681,8 +680,7 @@ function padZero(value) {
 		</div>
 	</nav>
 </div>
-   <%-- 상단 메뉴바 끝 --%>
-
+<%-- 상단 메뉴바 끝 --%>
 
 <%-- 본문 내용 [시작] --%>
 <div class="container text-center">
@@ -714,12 +712,10 @@ function padZero(value) {
 </div>
 <%-- 본문 내용 [끝] --%>
 
-
 <%-- 토글 [시작] --%>
 <div id="weeksPlace">
 </div>
 <%-- 토글 [끝] --%>
-
 
 <%-- 모달창 --%>
 <div class="modal fade" id="openModal" role="dialog" data-backdrop="static">
@@ -792,4 +788,5 @@ function padZero(value) {
       </div>
     </div>
   </div>
+ </div>
 </div>
