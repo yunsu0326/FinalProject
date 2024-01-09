@@ -17,9 +17,8 @@ public class BoardVO {
 	private String previoussubject;  // 이전글제목
 	private String nextseq;          // 다음글번호
 	private String nextsubject;      // 다음글제목	
-	private String fileName;    // WAS(톰캣)에 저장될 파일명(20230101.png) 
-	private String orgFilename; // 진짜 파일명(강아지.png)  // 사용자가 파일을 업로드 하거나 파일을 다운로드 할때 사용되어지는 파일명  
-	private String fileSize;    // 파일크기 
+	private String attachfile;    // WAS(톰캣)에 저장될 파일명(20230101.png) 
+	private String rno;
 	
 	// === 댓글형 게시판을 위한 commentCount 필드 추가하기 
 	private String commentCount;     // 댓글수 
@@ -52,6 +51,13 @@ public class BoardVO {
 	private MultipartFile attach;
 	//form 태그에서 type="file" 인 파일을 받아서 저장되는 필드이다. 
     
+	public String getRno() {
+		return rno;
+	}
+	
+	public void setRno(String rno) {
+		this.rno = rno;
+	}
 	
 	
 	public String getSeq() {
@@ -163,31 +169,20 @@ public class BoardVO {
 	public void setAttach(MultipartFile attach) {
 		this.attach = attach;
 	}
-	public String getFileName() {
-		return fileName;
+	public String getAttachfile() {
+		return attachfile;
 	}
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setAttachfile(String attachfile) {
+		this.attachfile = attachfile;
 	}
-	public String getOrgFilename() {
-		return orgFilename;
-	}
-	public void setOrgFilename(String orgFilename) {
-		this.orgFilename = orgFilename;
-	}
-	public String getFileSize() {
-		return fileSize;
-	}
-	public void setFileSize(String fileSize) {
-		this.fileSize = fileSize;
-	}
+
 	
 	public BoardVO() {}
 
 	public BoardVO(String seq, String email, String name, String subject, String content, String pw,
 			String readCount, String regDate, String status, String previousseq, String previoussubject, String nextseq,
 			String nextsubject, String commentCount, String groupno, String fk_seq, String depthno, String fk_email,
-			MultipartFile attach, String fileName, String orgFilename, String fileSize) {
+			MultipartFile attach, String attachfile,String rno) {
 		
 		this.seq = seq;
 		this.fk_email = fk_email;
@@ -207,12 +202,9 @@ public class BoardVO {
 		this.fk_seq = fk_seq;
 		this.depthno = depthno;
 		this.attach = attach;
-		this.fileName = fileName;
-		this.orgFilename = orgFilename;
-		this.fileSize = fileSize;
+		this.attachfile = attachfile;
+		this.rno = rno;
 	}
-	
-	
 	
 	
 }

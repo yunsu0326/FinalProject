@@ -20,7 +20,7 @@ $(document).ready(function(){
 			  // 폼(form)을 전송(submit)
 			const frm = document.admin_delFrm;
 			frm.method = "post";
-			frm.action = "<%= ctxPath%>/notice_del_End.gw";
+			frm.action = "<%= ctxPath%>/notice_delEnd.gw";
 			frm.submit();
 		}
 	});
@@ -46,7 +46,7 @@ $(document).ready(function(){
 			  // 폼(form)을 전송(submit)
 			const frm = document.delFrm;
 			frm.method = "post";
-			frm.action = "<%= ctxPath%>/notice_del_End.gw";
+			frm.action = "<%= ctxPath%>/notice_delEnd.gw";
 			frm.submit();
 		}
 	}); // end of $("button#btnDelete").click(function(){-------------

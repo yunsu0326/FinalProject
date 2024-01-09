@@ -9,7 +9,11 @@
 
 <style type="text/css">
     
-    
+    div#displayList{
+	position:relative;
+	left:349px;
+	}
+	
 	#mycontent > div > div > a{
 	position:relative;
 	bottom:60px;
@@ -217,6 +221,12 @@
     #mycontent > div > div > form > select{
 	height:30px;
 	}    
+	
+	#mycontent > div > div > form > input[type=text]:nth-child(2){
+	margin-left:10px;
+	}
+    
+    
     
 </style>
 
@@ -305,6 +315,12 @@
 			$("div#displayList").hide();
 			goSearch();
 		});
+	  
+     $(document).on("click", "table#myTable tr#empinfo", function (e) {
+   		 var seqq = $(this).find('input').val();
+   		 goView(seqq);
+   	 });
+    	
 
     });// end of $(document).ready(function(){})-----------
 
@@ -347,7 +363,7 @@
 <div style="margin: auto; padding-left: 3%;">
 <h2 style="margin-bottom: 30px;">글목록 </h2> 
 	
-	<table style="width: 1400px" class="table table-bordered">
+	<table style="width: 1400px" class="table table-bordered" id="myTable">
 		<thead>   
 		    <tr>
 				<th style="width: 70px;  text-align: center;">글번호</th>
@@ -360,18 +376,21 @@
 
 		<tbody>
 		    <c:if test="${not empty requestScope.boardList}">
-		       <c:forEach var="boardvo" items="${requestScope.boardList}"> 
-		          <tr>
-		             <td align="center">${boardvo.seq}</td>
-		             <td align="left">
+		       <c:forEach varStatus="status" var="boardvo" items="${requestScope.boardList}"> 
+		          <tr class='sahan${boardvo.status}' style="border: solid 1px red;" id="empinfo"> <%-- 여기 민준이가 함 --%>
+		          
+		             <td>${boardvo.rno}</td>
+		             <td>
 		                <%-- === 댓글쓰기 및 답변형 및 파일첨부가 있는 게시판 시작 === --%>
 		                     <%-- 첨부파일이 없는 경우 시작 --%>
-		                       <c:if test="${empty boardvo.fileName}">
+		                 
+		                     	<c:if test="${boardvo.attachfile == 0}">
+		                     	<input type='hidden' value='${boardvo.seq}' />
 					              <%-- === 댓글쓰기 및 답변형 게시판 시작 === --%>
 					               <%-- 답변글이 아닌 원글인 경우 시작 --%>
 					                  <c:if test="${boardvo.depthno == 0}">
 						                  <c:if test="${boardvo.commentCount > 0}">
-						                      <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}<span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span></span> 
+						                      <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}<span style="vertical-align: super; position:relative; top:5px;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span></span> 
 						                  </c:if>
 						                  <c:if test="${boardvo.commentCount == 0}">
 						                	  <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>
@@ -382,7 +401,7 @@
 					                <%-- 답변글인 경우 시작 --%>
 					                  <c:if test="${boardvo.depthno > 0}">
 						                  <c:if test="${boardvo.commentCount > 0}">
-						                      <span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">┗Re&nbsp;</span>${boardvo.subject}<span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span></span> 
+						                      <span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">┗Re&nbsp;</span>${boardvo.subject}<span style="vertical-align: super; position:relative; top:5px;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span></span> 
 						                  </c:if>
 						                  <c:if test="${boardvo.commentCount == 0}">
 						                      <span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">┗Re&nbsp;</span>${boardvo.subject}</span>
@@ -394,14 +413,14 @@
 					           </c:if>  
 		                     <%-- 첨부파일이 없는 경우 끝 --%>
 		                     
-		                     
 		                     <%-- 첨부파일이 있는 경우 시작 --%>
-		                     	<c:if test="${not empty boardvo.fileName}">
+		                     	<c:if test="${boardvo.attachfile == 1}">
+		                     	<input type='hidden' value='${boardvo.seq}' />
 		                     	    <%-- === 댓글쓰기 및 답변형 게시판 시작 === --%>
 					                 <%-- 답변글이 아닌 원글인 경우 시작 --%>
 					                 <c:if test="${boardvo.depthno == 0}">
 						                 <c:if test="${boardvo.commentCount > 0}">
-						                     <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}<span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span></span>&nbsp;<img src="<%= ctxPath%>/resources/images/disk.gif" />  
+						                     <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}<span style="vertical-align: super; position:relative; top:5px;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span></span>&nbsp;<img src="<%= ctxPath%>/resources/images/disk.gif" />  
 						                </c:if>
 						                <c:if test="${boardvo.commentCount == 0}">
 						                	 <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>&nbsp;<img src="<%= ctxPath%>/resources/images/disk.gif" />
@@ -412,7 +431,7 @@
 					                <%-- 답변글인 경우 시작 --%>
 					                  <c:if test="${boardvo.depthno > 0}">
 						                  <c:if test="${boardvo.commentCount > 0}">
-						                      <span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">┗Re&nbsp;</span>${boardvo.subject}<span style="vertical-align: super;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span></span>&nbsp;<img src="<%= ctxPath%>/resources/images/disk.gif" />  
+						                      <span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">┗Re&nbsp;</span>${boardvo.subject}<span style="vertical-align: super; position:relative; top:5px;">[<span style="color: red; font-size: 9pt; font-style: italic; font-weight: bold;">${boardvo.commentCount}</span>]</span></span>&nbsp;<img src="<%= ctxPath%>/resources/images/disk.gif" />  
 						                  </c:if>
 						                  <c:if test="${boardvo.commentCount == 0}">
 						                      <span class="subject" onclick="goView('${boardvo.seq}')"><span style="color: red; font-style: italic; padding-left: ${boardvo.depthno * 20}px;">┗Re&nbsp;</span>${boardvo.subject}</span>&nbsp;<img src="<%= ctxPath%>/resources/images/disk.gif" /> 
@@ -433,7 +452,7 @@
 			</c:if>
 		    
 			<c:if test="${empty requestScope.boardList}">
-				<tr>
+				<tr id="empinfo">
 					<td colspan="5">데이터가 없습니다</td>
 				</tr>
 			</c:if>
