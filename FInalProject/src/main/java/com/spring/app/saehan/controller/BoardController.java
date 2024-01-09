@@ -180,7 +180,7 @@ public class BoardController {
 		String goBackURL = MyUtil.getCurrentURL(request);
 
 		mav.addObject("goBackURL", goBackURL);
-		mav.setViewName("main/freeboard.tiles_MTS");
+		mav.setViewName("mshboard/freeboard.tiles_MTS");
 
 		return mav;
 
@@ -236,7 +236,7 @@ public class BoardController {
 		mav.addObject("depthno", depthno);
 		// === 답변글쓰기가 추가된 경우 끝 === //
 
-		mav.setViewName("main/add.tiles_MTS");
+		mav.setViewName("mshboard/add.tiles_MTS");
 
 		return mav;
 	}// end of public ModelAndView requiredLogin_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) { ------------
@@ -681,7 +681,7 @@ public class BoardController {
 			return mav;
 		}
 
-		mav.setViewName("main/view.tiles_MTS");
+		mav.setViewName("mshboard/view.tiles_MTS");
 		return mav;
 	}//end of public ModelAndView editAfter_notice_view(ModelAndView mav, NoticeboardVO boardvo, HttpServletRequest request) {
 	
@@ -920,7 +920,7 @@ public class BoardController {
 			return mav;
 		}
 
-		mav.setViewName("main/view.tiles_MTS");
+		mav.setViewName("mshboard/view.tiles_MTS");
 		return mav;
 	}// end of public ModelAndView view(ModelAndView mav, HttpServletRequest request) {-------------
 
@@ -1481,7 +1481,7 @@ public class BoardController {
 	@GetMapping("/noticeadd.gw")
 	public ModelAndView notice_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 
-		mav.setViewName("main/noticeadd.tiles_MTS");
+		mav.setViewName("mshboard/noticeadd.tiles_MTS");
 		
 		return mav;
 	}// end of public ModelAndView notice_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) { ------------
@@ -1684,7 +1684,7 @@ public class BoardController {
 			return mav;
 		}
 
-		mav.setViewName("main/notice_view.tiles_MTS");
+		mav.setViewName("mshboard/notice_view.tiles_MTS");
 		return mav;
 	}// end of public ModelAndView view(ModelAndView mav, HttpServletRequest request) {-------------
 
@@ -2219,7 +2219,7 @@ public class BoardController {
 				return mav;
 			}
 
-			mav.setViewName("main/notice_view.tiles_MTS");
+			mav.setViewName("mshboard/notice_view.tiles_MTS");
 			return mav;
 		}//end of public ModelAndView editAfter_notice_view(ModelAndView mav, NoticeboardVO boardvo, HttpServletRequest request) {
 		
