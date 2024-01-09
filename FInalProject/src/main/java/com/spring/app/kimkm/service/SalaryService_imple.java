@@ -25,84 +25,17 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import com.spring.app.common.AES256;
-import com.spring.app.domain.DepartmentVO;
-import com.spring.app.domain.EmployeesVO;
-import com.spring.app.kimkm.model.KimkmDAO;
-
+import com.spring.app.kimkm.model.SalaryDAO;
 
 // ==== #31. Service 선언 ====
 // 트랜잭션 처리를 담당하는 곳, 업무를 처리하는 곳, 비지니스(Business)단 
 // @Component
 @Service
-public class KimkmService_imple implements KimkmService {
+public class SalaryService_imple implements SalaryService {
 
 	@Autowired
-	private KimkmDAO dao;
+	private SalaryDAO dao;
 	
-	@Autowired
- 	private AES256 aES256;
-
-	// 회원가입
-	@Override
-	public int add_register(EmployeesVO evo) {
-		int n = dao.add_register(evo);
-		return n;
-	}
-	
-	// 회원가입시 휴가 테이블 insert 하기
-	@Override
-	public int insert_vacation(String employee_id) {
-		int n = dao.insert_vacation(employee_id);
-		return n;
-	}
-	
-	// 내 정보 수정하기
-	@Override
-	public int myinfoEditEnd(EmployeesVO evo) {
-		int n = dao.myinfoEditEnd(evo);
-		return n;
-	}
-
-	
-	// 성별 생년월일 알아오기
-	@Override
-	public Map<String, String> selectGenderBirthday(String employee_id) {
-		Map<String, String> gender_birthday = dao.selectGenderBirthday(employee_id);
-		return gender_birthday;
-	}
-
-	
-	// 부서이름 팀명 알아오기
-	@Override
-	public Map<String, String> selectDeptTeam(String employee_id) {
-		Map<String, String> dept_team = dao.selectDeptTeam(employee_id);
-		return dept_team;
-	}
-	
-	
-	// 남은 휴가일수 알아오기
-	@Override
-	public Map<String, String> selectVacation(String employee_id) {
-		Map<String, String> vacation = dao.selectVacation(employee_id);
-		return vacation;
-	}
-
-	
-	// 회원가입시 기본 정보 읽어오기
-	@Override
-	public Map<String, String> selectRegister(String email) {
-		Map<String, String> register = dao.selectRegister(email);
-		return register;
-	}
-
-	// 비밀번호 변경하기
-	@Override
-	public int pwdUpdateEnd(Map<String, String> paraMap) {
-		int n = dao.pwdUpdateEnd(paraMap);
-		return n;
-	}
-
 	// 급여테이블 조회하기
 	@Override
 	public List<Map<String, String>> monthSal(String employee_id) {
@@ -115,13 +48,6 @@ public class KimkmService_imple implements KimkmService {
 	public Map<String, String> salaryStatement(Map<String, String> paraMap) {
 		Map<String, String> salaryStatement = dao.salaryStatement(paraMap);
 		return salaryStatement;
-	}
-	
-	// 급여명세서 직인 이미지 가져오기
-	@Override
-	public String selectSignimg() {
-		String signimg = dao.selectSignimg();
-		return signimg;
 	}
 
 	// salary 테이블에서 조건에 만족하는 급여들을 가져와서 Excel 파일로 만들기 
@@ -589,20 +515,6 @@ public class KimkmService_imple implements KimkmService {
         return "Header" + columnIndex;
     }
 	
-	// department테이블  select하기
-	@Override
-	public List<Map<String,String>> selectdept(DepartmentVO deptvo) {
-		List<Map<String,String>> deptList = dao.selectdept(deptvo);
-		return deptList;
-	}
-
-	// 조직도 리스트 가져오기
-	@Override
-	public List<Map<String, String>> employeeList() {
-		List<Map<String, String>> employeeList = dao.employeeList();
-		return employeeList;
-	}
-
 	// === Spring Scheduler(스프링 스케줄러)를 사용한 tbl_salary 테이블 insert 와 공지사항 insert === //
 	// 매월 16일 12시에 insert 해준다.
 	@Override
@@ -634,71 +546,7 @@ public class KimkmService_imple implements KimkmService {
 		if(n >0) { 
 			int n2 = dao.insert_notice_board(manager_name_empId); 
 		}
-	 
-	
 	}
 	
-	
-	// receipt_favorites update하기
-	@Override
-	public int receipt_favorites_update(Map<String, String> paraMap) {
-		int n = dao.receipt_favorites_update(paraMap);
-		return n;
-	}
-
-	// receipt_favorites 값 가져오기
-	@Override
-	public String select_receipt_favorites(String receipt_mail_seq) {
-		String receipt_favorites = dao.select_receipt_favorites(receipt_mail_seq);
-		return receipt_favorites;
-	}
-	
-	// email_receipt_read_count update 하기
-	@Override
-	public int email_receipt_read_count_update(String receipt_mail_seq) {
-		int n = dao.email_receipt_read_count_update(receipt_mail_seq);
-		return n;
-	}
-
-	// email_receipt_read_count 값 가져오기
-	@Override
-	public String select_email_receipt_read_count(String receipt_mail_seq) {
-		String email_receipt_read_count = dao.select_email_receipt_read_count(receipt_mail_seq);
-		return email_receipt_read_count;
-	}
-
-	// receipt_important 값 가져오기
-	@Override
-	public String select_receipt_important(String receipt_mail_seq) {
-		String receipt_important = dao.select_receipt_important(receipt_mail_seq);
-		return receipt_important;
-	}
-
-	// receipt_important update 하기
-	@Override
-	public int receipt_important_update(Map<String, String> paraMap) {
-		int n = dao.receipt_important_update(paraMap);
-		return n;
-	}
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-	
-
-
-
-	
-
 	
 }
