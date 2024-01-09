@@ -137,9 +137,9 @@ public class Pagination {
 
 		// === [맨처음][이전] 만들기 === //
 		if (pageNo != 1) {
-			pageBar += "<li class='page-item'><a class='page-link' href='" + url + "?searchType="
+			pageBar += "<li class='page-item'><a style='background-color: #03C75A;' class='page-link' href='" + url + "?searchType="
 					+ searchType + "&searchWord=" + searchWord + "&currentPage=1" + "&pageSize=" + pageSize + queryString + "'><i class='fas fa-angle-double-left'></i></a></li>";
-			pageBar += "<li class='page-item'><a class='page-link' href='" + url + "?searchType="
+			pageBar += "<li class='page-item'><a style='background-color: #03C75A;' class='page-link' href='" + url + "?searchType="
 					+ searchType + "&searchWord=" + searchWord + "&currentPage=" + (pageNo - 1) + "&pageSize=" + pageSize + queryString
 					+ "'><i class='fas fa-angle-left'></i></i></a></li>";
 		}
@@ -147,9 +147,9 @@ public class Pagination {
 		while (!(loop > blockSize || pageNo > totalPage)) {
 
 			if (pageNo == currentPage) {
-				pageBar += "<li class='page-item active'><a class='page-link' href=#>" + pageNo + "</a></li>";
+				pageBar += "<li class='page-item active'><a style='background-color: #03C75A;' class='page-link' href=#>" + pageNo + "</a></li>";
 			} else {
-				pageBar += "<li class='page-item'><a class='page-link' href='" + url
+				pageBar += "<li class='page-item'><a style='background-color: #E0F8EB;' class='page-link' href='" + url
 						+ "?searchType=" + searchType + "&searchWord=" + searchWord + "&currentPage=" + pageNo + "&pageSize=" + pageSize + queryString
 						+ "'>" + pageNo + "</a></li>";
 			}
@@ -160,9 +160,9 @@ public class Pagination {
 
 		// === [다음][마지막] 만들기 === //
 		if (pageNo <= totalPage) {
-			pageBar += "<li class='page-item'><a class='page-link' href='" + url + "?searchType="
+			pageBar += "<li class='page-item'><a style='background-color: #03C75A;' class='page-link' href='" + url + "?searchType="
 					+ searchType + "&searchWord=" + searchWord + "&currentPage=" + pageNo + "&pageSize=" + pageSize + queryString + "'><i class='fas fa-angle-right'></i></a></li>";
-			pageBar += "<li class='page-item'><a class='page-link' href='" + url + "?searchType="
+			pageBar += "<li class='page-item'><a style='background-color: #03C75A;' class='page-link' href='" + url + "?searchType="
 					+ searchType + "&searchWord=" + searchWord + "&currentPage=" + totalPage + "&pageSize=" + pageSize + queryString + "'><i class='fas fa-angle-double-right'></i></a></li>";
 		}
 
