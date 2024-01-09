@@ -44,6 +44,11 @@ table#table2 {
 	margin: 3% auto 0;
 }
 
+table#table3 {
+	width: 82.3%; 
+	margin: 0 auto;
+}
+
 table#table1 td {
     border: solid 1px #ddd;
     padding: 8px;
@@ -57,8 +62,13 @@ table#table2 td {
     width: 35%;
 }
 
+table#table3 td {
+	border: solid 1px #ddd;
+    text-align: center;
+}
+
 tr {
-	height: 66px;
+	height: 53px;
 }
 
 div#photo {
@@ -88,16 +98,21 @@ h1 {
 	margin-right: auto;
 }
 
+h3 {
+	margin: 2% 0 1% 9%; 
+	margin-right: auto;
+}
+
 button#btn_edit {
 	margin-right: 1%;
     background-color: rgb(3, 199, 90);
-    color: #fff; /* 텍스트 색상을 흰색으로 설정 */
-    border: 1px solid #4CAF50; /* 테두리를 설정하고 싶으면 추가 */
-    padding: 10px 20px; /* 내부 여백을 조절하여 버튼 크기를 조절 */
-    font-size: 16px; /* 폰트 크기 조절 */
-    cursor: pointer; /* 커서를 포인터로 변경하여 클릭 가능한 것임을 나타냄 */
-    border-radius: 5px; /* 둥근 테두리를 적용하여 더 매끄러운 느낌을 줌 */
-    transition: background-color 0.3s ease; /* 부드러운 색상 변화를 위한 트랜지션 효과 추가 */
+    color: #fff; 
+    border: 1px solid #4CAF50; 
+    padding: 10px 20px; 
+    font-size: 16px;
+    cursor: pointer; 
+    border-radius: 5px; 
+    transition: background-color 0.3s ease;
 }
 
 button#btn_edit:hover {
@@ -107,13 +122,13 @@ button#btn_edit:hover {
 button#btn_pwd {
 	margin-right: 10%;
 	background-color: rgb(3, 199, 90);
-    color: #fff; /* 텍스트 색상을 흰색으로 설정 */
-    border: 1px solid #4CAF50; /* 테두리를 설정하고 싶으면 추가 */
-    padding: 10px 20px; /* 내부 여백을 조절하여 버튼 크기를 조절 */
-    font-size: 16px; /* 폰트 크기 조절 */
-    cursor: pointer; /* 커서를 포인터로 변경하여 클릭 가능한 것임을 나타냄 */
-    border-radius: 5px; /* 둥근 테두리를 적용하여 더 매끄러운 느낌을 줌 */
-    transition: background-color 0.3s ease; /* 부드러운 색상 변화를 위한 트랜지션 효과 추가 */
+    color: #fff; 
+    border: 1px solid #4CAF50; 
+    padding: 10px 20px; 
+    font-size: 16px;
+    cursor: pointer; 
+    border-radius: 5px; 
+    transition: background-color 0.3s ease;
 }
 
 button#btn_pwd:hover {
@@ -492,6 +507,32 @@ function goPwdUpdate() {
 			<td>${requestScope.loginuser.bank_name}</td>
 			<th>계좌번호</th>
 			<td>${requestScope.loginuser.bank_code}</td>
+		</tr>
+		
+	</table>
+	
+    <h3>잔여 휴가량</h3>
+	
+	<table id="table3" class="myinfo_tbl">
+
+		<tr>
+			<th>연차</th>
+			<th>가족돌봄</th>
+			<th>군소집훈련</th>
+			<th>난임치료</th>
+			<th>배우자출산</th>
+			<th>결혼</th>
+			<th>포상</th>
+		</tr>
+		
+		<tr>
+			<td>${requestScope.vacation.ANNUAL}</td>
+			<td>${requestScope.vacation.FAMILY_CARE}</td>
+			<td>${requestScope.vacation.RESERVE_FORCES}</td>
+			<td>${requestScope.vacation.INFERTILITY_TREATMENT}</td>
+			<td>${requestScope.vacation.CHILDBIRTH}</td>
+			<td>${requestScope.vacation.MARRIAGE}</td>
+			<td>${requestScope.vacation.REWARD}</td>
 		</tr>
 		
 	</table>

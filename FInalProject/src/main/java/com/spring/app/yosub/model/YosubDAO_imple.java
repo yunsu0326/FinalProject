@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.spring.app.digitalmail.domain.EmailVO;
 import com.spring.app.domain.Calendar_schedule_VO;
+import com.spring.app.domain.DraftVO;
 import com.spring.app.domain.EmployeesVO;
 
 //==== #32. Repository(DAO) 선언 ====
@@ -63,6 +64,16 @@ public class YosubDAO_imple implements YosubDAO {
 		List<EmailVO> emailVOList = sqlsession.selectList("yosub.SelectMyEmail_withPaging",paraMap);
 		
 		return emailVOList;
+	}
+
+	@Override
+	public List<DraftVO> getMyDraftProcessing(String empno) {
+		return sqlsession.selectList("approval.getMyDraftProcessing", empno);
+	}
+
+	@Override
+	public List<DraftVO> getMyDraftProcessed(String empno) {
+		return sqlsession.selectList("approval.getMyDraftProcessed", empno);
 	}
 
 

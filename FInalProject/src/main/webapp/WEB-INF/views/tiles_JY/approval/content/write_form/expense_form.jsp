@@ -59,10 +59,8 @@ $(() => {
 		// 글제목 유효성 검사
 		const draft_subject = $("input#draft_subject").val().trim();
 		if(draft_subject == "") {
-			alert("글제목을 입력하세요!")
-			.then(function (result) {
-				document.getElementById("draft_subject").focus(); //포커싱
-		      })
+			alert("글제목을 입력하세요!");
+			document.getElementById("draft_subject").focus(); //포커싱
 			return;
 		}
 		
@@ -70,10 +68,8 @@ $(() => {
 	    var draft_content = $("#draft_content").val();
 
 	    if( draft_content == ""  || draft_content == null || draft_content == '&nbsp;' || draft_content == '<p>&nbsp;</p>')  {
-	    	alert("지출사유를 입력하세요!")
-			.then(function (result) {
-				obj.getById["draft_content"].exec("FOCUS"); //포커싱
-		      })
+	    	alert("지출사유를 입력하세요!");
+			obj.getById["draft_content"].exec("FOCUS"); //포커싱
 			return;
 	    }
 	    
@@ -114,7 +110,7 @@ $(() => {
 	    let aprvLineInfo = aprvTblBody.html();
 	    if (aprvLineInfo.indexOf('tr') == -1) {
 	    	alert("결재라인을 설정하세요!");
- 		return;
+ 			return;
 	    }
 		
 		// 의견 및 긴급 여부 체크 모달 띄우기
@@ -487,10 +483,10 @@ const getApprovalEmpInfo = aprvLine => {
 
 				var html = "<tr>"
 			 			+ "<td class='levelno'>" + (index+1) + "</td>"
-						+ "<td class='department'>" + emp.department + "</td>"
-						+ "<td class='position'>" + emp.position + "</td>"
+						+ "<td class='department'>" + emp.fk_department_id + "</td>"
+						+ "<td class='position'>" + emp.gradelevel + "</td>"
 						+ "<input type='hidden' name='avoList[" + index + "].levelno' value='" + (index+1) + "'></td>"
-						+ "<input type='hidden' name='avoList[" + index + "].fk_approval_empno' value='" + emp.empno + "'></td>"
+						+ "<input type='hidden' name='avoList[" + index + "].fk_approval_empno' value='" + emp.employee_id + "'></td>"
 						+ "<input type='hidden' name='avoList[" + index + "].external' value='0'></td>"
 						+ "<td class='name'>" + emp.name + "</td></tr>";
 					

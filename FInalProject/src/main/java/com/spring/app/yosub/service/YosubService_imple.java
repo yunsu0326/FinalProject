@@ -12,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.digitalmail.domain.EmailVO;
 import com.spring.app.domain.Calendar_schedule_VO;
+import com.spring.app.domain.DraftVO;
 import com.spring.app.domain.EmployeesVO;
 // import com.spring.app.common.AES256;
 import com.spring.app.yosub.model.*;
@@ -44,9 +45,12 @@ public class YosubService_imple implements YosubService {
 		
 		List<EmailVO> emailVOList = null;
 		emailVOList = dao.SelectMyEmail_withPaging(paraMap);
-		
+		List<DraftVO> processingDraftList = dao.getMyDraftProcessing(loginuser.getEmployee_id());
+		List<DraftVO> processedDraftList = dao.getMyDraftProcessed(loginuser.getEmployee_id());
 		mav.addObject("emailVOList", emailVOList);
 		mav.addObject("requestedDraftCnt", requestedDraftCnt);
+		mav.addObject("processingDraftList", processingDraftList);
+		mav.addObject("processedDraftList", processedDraftList);
 		
 		mav.setViewName("main/index.tiles_MTS");
 		//  /WEB-INF/views/tiles1/main/index.jsp 파일을 생성한다.

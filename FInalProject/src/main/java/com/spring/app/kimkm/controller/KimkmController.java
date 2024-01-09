@@ -106,6 +106,8 @@ public class KimkmController {
 			
 			Map<String, String> dept_team = service.selectDeptTeam(employee_id);
 			
+			Map<String, String> vacation = service.selectVacation(employee_id);
+			
 			int idx = dept_team.get("JOB_NAME").indexOf("팀 ");
 			
 			if (idx != -1) {
@@ -113,8 +115,10 @@ public class KimkmController {
 			    dept_team.put("JOB_NAME", JOB_NAME);
 			}
 			
+			
 		 //	System.out.println(dept_team);
 			
+			mav.addObject("vacation", vacation);
 			mav.addObject("dept_team", dept_team);
 			mav.addObject("loginuser", loginuser);
 			mav.addObject("gender_birthday", gender_birthday);
@@ -318,6 +322,8 @@ public class KimkmController {
 		
 		Map<String, String> salaryStatement = service.salaryStatement(paraMap);
 		
+		String signimg = service.selectSignimg();
+		
 		int idx = salaryStatement.get("JOB_NAME").indexOf("팀 ");
 		
 		if (idx != -1) {
@@ -327,6 +333,7 @@ public class KimkmController {
 		
 	 //	System.out.println(salaryStatement);
 		
+		mav.addObject("signimg", signimg);
 		mav.addObject("salaryStatement", salaryStatement);
 		mav.setViewName("salary/salary.tiles_MTS");
 		

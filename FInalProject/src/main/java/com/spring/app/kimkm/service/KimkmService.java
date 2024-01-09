@@ -24,6 +24,9 @@ public interface KimkmService {
 
 	// 부서이름 팀명 알아오기
 	Map<String, String> selectDeptTeam(String employee_id);
+	
+	// 남은 휴가일수 알아오기
+	Map<String, String> selectVacation(String employee_id);
 
 	// 회원가입시 기본 정보 읽어오기
 	Map<String, String> selectRegister(String email);
@@ -36,6 +39,9 @@ public interface KimkmService {
 
 	// 급여명세서 테이블 가져오기
 	Map<String, String> salaryStatement(Map<String, String> paraMap);
+	
+	// 급여명세서 직인 이미지 가져오기
+	String selectSignimg();
 
 	// salary 테이블에서 조건에 만족하는 급여들을 가져와서 Excel 파일로 만들기 
 	void salary_to_Excel(Map<String, Object> paraMap, Model model);
@@ -66,6 +72,10 @@ public interface KimkmService {
 
 	// receipt_important update 하기
 	int receipt_important_update(Map<String, String> paraMap);
+
+	
+
+	
 	
 
 	

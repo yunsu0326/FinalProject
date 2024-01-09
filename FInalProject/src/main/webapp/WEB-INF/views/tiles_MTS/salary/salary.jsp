@@ -10,39 +10,44 @@
 
 <style type="text/css">
 
-    table#table2 {
-        border: solid 2px black;
-        width: 100%;
-        border-collapse: collapse;
-    }
+table#table2 {
+    border: solid 2px black;
+    width: 100%;
+    border-collapse: collapse;
+}
 
-    table#table2 th, td {
-        border: solid 1px black;
-        padding: 8px
-    }
+table#table2 th, td {
+    border: solid 1px black;
+    padding: 8px
+}
 
-    
-    table#table2 > tbody > tr > th,
-    table#table2 > tbody > tr:nth-child(1) > td {
-    	text-align: center;
-    }
-    
-    table#table2 > tbody > tr > td:nth-child(2) {
-    	text-align: right;
-    }
 
-	table#table1 th {
-		text-align: center;
-	}
-	
-	button {
-		float: right; 
-		display: flex; 
-		align-items: center; 
-		justify-content: center;
-		width: 8%;
-		height: 50px;
-	}
+table#table2 > tbody > tr > th,
+table#table2 > tbody > tr:nth-child(1) > td {
+	text-align: center;
+}
+
+table#table2 > tbody > tr > td:nth-child(2) {
+	text-align: right;
+}
+
+table#table1 th {
+	text-align: center;
+}
+
+button {
+	float: right; 
+	display: flex; 
+	align-items: center; 
+	justify-content: center;
+	width: 8%;
+	height: 50px;
+}
+
+img {
+	width: 100px;
+	height: 100px;
+}
     
 </style>
 
@@ -225,8 +230,9 @@ function print() {
 		
 		<tr>
 			<th>날인 (서명)</th>
-			<td></td>
-			<td colspan="2"></td>
+			<td colspan="3">
+				<img src="<%= ctxPath%>/resources/images/sign/" /> 
+			</td>
 		</tr>
 		
 	</table>
