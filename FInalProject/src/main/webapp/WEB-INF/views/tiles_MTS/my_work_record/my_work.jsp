@@ -80,6 +80,7 @@
 	div#rightDiv {width: 18%; margin-right: 13%; margin-left: auto;}
 	input#workDate {height: 30px; border: solid 1px gray;}
 	div#choiceMonth{display: flex; margin-left: 40%;}
+	div#max_container {min-height: 840px;}
 	
 </style>
 
@@ -334,7 +335,7 @@ function getMyWorkList() {
 		dataType:"JSON",
 		success:function(json){
 			let html = "";
-			
+		
 			html += "<div id='week1' class='widths' style='width: 60%; margin-left: 20%;'>"+
 						"<div onclick='toggle(\"week1\")' class='weeks'>"+
 						"<span class='fas fa-angle-down' style='font-size: 10pt;'></span>"+
@@ -471,6 +472,7 @@ function getMyWorkList() {
 							"<tbody>";
 					} // end of if(index == 19)
 					
+					
 				});
 								
 				html += "</tbody></table></div></div>";
@@ -485,6 +487,15 @@ function getMyWorkList() {
 					
 				const today = new Date();
 				weekOpen(today);
+			}
+			else {
+				html += "<tr class='row border'>"+
+							"<td class='col'>데이터가 없습니다</td>"+
+						"</tr>";
+				
+				html += "</tbody></table></div></div>";
+				
+				$("#weeksPlace").html(html);
 			}
 		},
 	  	error: function(request, status, error){
@@ -625,8 +636,8 @@ function padZero(value) {
 }
 </script>
 
-<div id="container">
-	
+<div id='max_container'>
+  <div id='container'>
     <%-- 상단 메뉴바 시작 --%>
     <nav class="navbar navbar-expand-lg mt-5 mb-4">
 		<div class="collapse navbar-collapse">
@@ -777,4 +788,5 @@ function padZero(value) {
       </div>
     </div>
   </div>
+ </div>
 </div>
