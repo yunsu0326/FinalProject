@@ -402,14 +402,7 @@
 							<option value="3">부서 캘린더</option>
 						</c:when>
 						
-						<%-- 일정등록시 부서캘린더 등록은 loginuser.gradelevel =='5' 인 사용자만 등록이 가능하도록 한다. --%> 
-						<c:when test="${loginuser.gradelevel =='5'}"> 
-							<option value="">선택하세요</option>
-							<option value="1">개인 캘린더</option>
-							<option value="3">부서 캘린더</option>
-						</c:when>
-						
-					<%-- 일정등록시 내캘린더 등록은 로그인 된 사용자이라면 누구나 등록이 가능하다. --%> 	
+					<%-- 일정등록시 부서캘린더와 내캘린더 등록은 로그인 된 사용자이라면 누구나 등록이 가능하다. --%> 	
 						<c:otherwise>
 							<option value="">선택하세요</option>
 							<option value="1">개인 캘린더</option>

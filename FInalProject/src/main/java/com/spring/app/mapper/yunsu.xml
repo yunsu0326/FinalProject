@@ -446,7 +446,7 @@
 		
 	</select>
 	
-	<!-- 자원예약 맵퍼 시작 ========================================================= -->
+	<!--  ========================자원예약 맵퍼 시작================================= -->
 	
 	
 	<!-- 자원 항목 불러오기 -->	
@@ -501,7 +501,7 @@
 		    from tbl_reservation R
 		    join tbl_employees E
 		    ON  R.fk_employee_id = E.employee_id
-		
+			where R.reservationno &lt; 9000
 			<choose>
 				<when test='startdate == "" and enddate == ""'></when>
 				
@@ -571,7 +571,7 @@
 		    ON  R.fk_employee_id = E.employee_id
 		    join tbl_reservation_small_category C
 		    ON R.fk_smcatgono = C.smcatgono
-		
+			where R.reservationno &lt; 9000
 			<choose>
 				<when test='startdate == "" and enddate == ""'></when>
 				
@@ -746,7 +746,7 @@
 		    join tbl_reservation_small_category C
 		    ON R.fk_smcatgono = C.smcatgono
 			where (R.fk_employee_id = #{employee_id} or lower(R.realuser) like '%'||lower(#{email})||'%')
-				
+			
 			<if test='startdate != "" and enddate != ""'>
 				and  ((to_char(startdate,'YYYY-MM-DD') between #{startdate} and #{enddate} )
 						or  ( to_char(enddate,'YYYY-MM-DD') between #{startdate} and #{enddate} ))
@@ -896,6 +896,7 @@
 	
 	</update>
 	
+	<!--  ========================자원예약 맵퍼 끝================================= -->
 	
 	<!-- 증명서 발급 시작 -->
 		<resultMap type="HashMap" id="oneMemberMap">
@@ -1036,7 +1037,9 @@
 		<result property="nowMonth1" 	column="nowMonth1" 	 javaType="String" />
 		
 	</resultMap>
-	<!-- 회의실 차트 보기 -->
+	
+	
+	<!-- 자원예약 회의실 차트 보기 -->
 	<select id="meetingroomchart" resultMap="meetingroomchart_map">
 		SELECT
      CASE
