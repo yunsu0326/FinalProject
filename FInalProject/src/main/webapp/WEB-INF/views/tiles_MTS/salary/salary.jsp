@@ -231,7 +231,7 @@ function print() {
 		<tr>
 			<th>날인 (서명)</th>
 			<td colspan="3">
-				<img src="<%= ctxPath%>/resources/images/sign/${requestScope.signimg}" /> 
+				<img src="<%= ctxPath%>/resources/images/sign/" /> 
 			</td>
 		</tr>
 		

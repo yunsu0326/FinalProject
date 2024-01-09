@@ -81,6 +81,11 @@ form {
     }
 }
 
+img {
+	width: 40px;
+	height: 42px;
+}
+
 </style>
 
 
@@ -217,7 +222,7 @@ function func_select(searchTypeVal){
 						////////////////////////////////////////////////////////
 						Highcharts.chart('container', {
 							chart: {
-								height: 600,
+								height: 750,
 								inverted: true
 							},
 							title: {
@@ -240,9 +245,15 @@ function func_select(searchTypeVal){
 								keys: ['from', 'to'],
 								data: ceoarr,
 								levels: [{
-									level: 1,
-									color: '#980104'
-								}],
+    					            level: 0,
+    					            color: '#ff8080'
+    					        }, {
+    					            level: 1,
+    					            color: '#99e6ff'
+    					        }, {
+    					            level: 2,
+    					            color: '#adebad'
+    					        }],
 								nodes: resultArr,
 								colorByPoint: false,
 								color: '#007ad0',
@@ -318,7 +329,7 @@ function func_select(searchTypeVal){
     									id: json[i].job_name,
     									title: json[i].job_name,
     									name: json[i].name,
-    									image: '<%= ctxPath%>/resources/images/'+json[i].photo
+    									image: '<%= ctxPath%>/resources/empImg/'+json[i].photo
     								  };
     						resultArr.push(obj);
     					}// end of for-------------------------------
@@ -326,7 +337,7 @@ function func_select(searchTypeVal){
     					////////////////////////////////////////////////////////
     					Highcharts.chart('container', {
     						chart: {
-    							height: 600,
+    							height: 750,
     							inverted: true
     						},
     						title: {
@@ -349,9 +360,12 @@ function func_select(searchTypeVal){
     							keys: ['from', 'to'],
     							data: ceoarr,
     							levels: [{
-    								level: 1,
-    								color: '#980104'
-    							}],
+    					            level: 0,
+    					            color: '#ff8080'
+    					        }, {
+    					            level: 1,
+    					            color: '#99e6ff'
+    					        }],
     							nodes: resultArr,
     							colorByPoint: false,
     							color: '#007ad0',
@@ -397,7 +411,7 @@ function func_select(searchTypeVal){
 											deptList.push(json2[i]);
 										}
 									}
-								 //	console.log(deptList);
+								 	console.log(deptList);
 	    	    					
 									let CEOArr = [];
 									let managerArr = [];
@@ -413,13 +427,13 @@ function func_select(searchTypeVal){
 											CEOArr.push(deptList[i].job_name);
 										}
 										else if(employee_id == manager_id ) {
-											managerArr.push(deptList[i].job_name);
+											managerArr.push({job_name: deptList[i].job_name, employee_id: deptList[i].employee_id });
 										}
 										else if(employee_id == t_manager_id ) {
-											t_managerArr.push(deptList[i].job_name);
+											t_managerArr.push({job_name: deptList[i].job_name, employee_id: deptList[i].employee_id });
 										}
 										else {
-											employeeArr.push(deptList[i].job_name);
+											employeeArr.push({job_name: deptList[i].job_name, employee_id: deptList[i].employee_id });
 										}
 									}// end of for-------------------
 									
@@ -437,15 +451,15 @@ function func_select(searchTypeVal){
 	    	    					}
 	    	    					else {
 										for(let i = 0; i < managerArr.length; i++) {
-											let deptname = managerArr[i].substring(0, 2);
+											let deptname = managerArr[i].job_name.substring(0, 2);
 											
 											for(let j = 0; j < t_managerArr.length; j++) {
-										 	const tname = t_managerArr[j].substring(0, 2);
+										 	const tname = t_managerArr[j].job_name.substring(0, 2);
 											
 												if(tname === deptname) {
 													let obj = [
-																marArr= managerArr[i],
-																t_marr= t_managerArr[j]
+																marArr= managerArr[i].employee_id,
+																t_marr= t_managerArr[j].employee_id
 															  ];
 													ceoarr.push(obj);
 												}
@@ -453,43 +467,42 @@ function func_select(searchTypeVal){
 										}// end of for----------------
 	    	    				 
 										for(let i = 0; i < t_managerArr.length; i++) {
-											const index = t_managerArr[i].indexOf(' ');
-											const tname = t_managerArr[i].substring(0, index + 1);
+											const index = t_managerArr[i].job_name.indexOf(' ');
+											const tname = t_managerArr[i].job_name.substring(0, index + 1);
 											  
 											for(let j = 0; j < employeeArr.length; j++) {
-												const index = employeeArr[j].indexOf(' ');
-												const ename = employeeArr[j].substring(0, index + 1);
+												const index = employeeArr[j].job_name.indexOf(' ');
+												const ename = employeeArr[j].job_name.substring(0, index + 1);
 												
 												if(ename === tname) {
 													let obj = [
-																marArr= t_managerArr[i],
-																t_marr= employeeArr[j]
+																marArr= t_managerArr[i].employee_id,
+																t_marr= employeeArr[j].employee_id
 															  ];
 													ceoarr.push(obj);
 												}
 											}// end of for----------------
 										} // end of for----------------
-									 //	console.log(ceoarr);
 	    	    					}
 	    	    					
 	    	    					let resultArr = [];
 	    	    					for(let i=0; i<deptList.length; i++) {
 	    	    						let obj = {
-	    	    									id: deptList[i].job_name,
+	    	    									id: deptList[i].employee_id,
 	    	    									title: deptList[i].job_name,
 	    	    									name: deptList[i].name,
-	    	    									image: '<%= ctxPath%>/resources/images/'+deptList[i].photo
+	    	    									image: '<%= ctxPath%>/resources/empImg/'+deptList[i].photo
 	    	    								  };
 	    	    						resultArr.push(obj); 
 	    	    					}// end of for-------------------------------
 	    	    					
-								 //	console.log(ceoarr);
-								 //	console.log(resultArr);
+								 	console.log(ceoarr);
+								 	console.log(resultArr);
 	    	    					
 									////////////////////////////////////////////////////////
 	    	    					Highcharts.chart('container', {
 	    	    						chart: {
-	    	    							height: 600,
+	    	    							height: 750,
 	    	    							inverted: true
 	    	    						},
 	    	    						title: {
@@ -513,13 +526,13 @@ function func_select(searchTypeVal){
 	    	    							data: ceoarr,
 	    	    							levels: [{
 	    	    					            level: 0,
-	    	    					            color: '#980104'
+	    	    					            color: '#99e6ff'
 	    	    					        }, {
 	    	    					            level: 1,
-	    	    					            color: '#359154'
+	    	    					            color: '#adebad'
 	    	    					        }, {
 	    	    					            level: 2,
-	    	    					            color: '#359154'
+	    	    					            color: '#dfbf9f'
 	    	    					        }],
 	    	    							nodes: resultArr,
 	    	    							colorByPoint: false,

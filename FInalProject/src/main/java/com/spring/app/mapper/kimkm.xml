@@ -157,7 +157,7 @@
 						from tbl_salary S  
 						JOIN tbl_employees E
 						ON S.fk_employee_id = E.employee_id
-						where fk_employee_id = 27
+						where fk_employee_id = #{employee_id}
 						order by year_month desc
 					)
 				)
@@ -167,7 +167,7 @@
 	
 	
 	<!-- 급여 명세서 요청하기 -->
-	<select id="salaryStatement" parameterType="String" resultType="HashMap">
+	<select id="salaryStatement" parameterType="HashMap" resultType="HashMap">
 		SELECT year_month, salary, name, job_name , NATIONAL_PENSION, LONG_TERM_CARE_PEE, HEALTH_INSURANCE, EMPLOYMENT_INSURANCE, BONUS, POSITION_ALLOWANCE, EXTRA_WORK_ALLOWANCE, MEAL_ALLOWANCE
 			 , M_SUM, P_SUM, P_SUM-M_SUM+MEAL_ALLOWANCE AS TOTAL
 		FROM
