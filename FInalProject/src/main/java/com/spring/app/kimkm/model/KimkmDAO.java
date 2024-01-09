@@ -22,6 +22,9 @@ public interface KimkmDAO {
 
 	// 부서이름 팀명 알아오기
 	Map<String, String> selectDeptTeam(String employee_id);
+	
+	// 남은 휴가일수 알아오기
+	Map<String, String> selectVacation(String employee_id);
 
 	// 회원가입시 기본 정보 읽어오기
 	Map<String, String> selectRegister(String email);
@@ -34,6 +37,9 @@ public interface KimkmDAO {
 
 	// 급여명세서 테이블 가져오기
 	Map<String, String> salaryStatement(Map<String, String> paraMap);
+	
+	// 급여명세서 직인 이미지 가져오기
+	String selectSignimg();
 
 	// salay 테이블에서 Excel 담을 값 가져오기
 	List<Map<String, String>> salaryList(Map<String, Object> paraMap);
@@ -73,6 +79,10 @@ public interface KimkmDAO {
 
 	// receipt_important update 하기
 	int receipt_important_update(Map<String, String> paraMap);
+
+	
+
+	
 
 	
 

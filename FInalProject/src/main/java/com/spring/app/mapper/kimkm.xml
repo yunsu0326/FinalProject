@@ -99,6 +99,12 @@
 		ON fk_job_id = J.job_id
 	</select>
 	
+	<select id="selectVacation" parameterType="String" resultType="HashMap">
+		select annual, family_care, reserve_forces, infertility_treatment, childbirth, marriage, reward
+        from tbl_vacation
+        where fk_employee_id = #{employee_id}
+	</select>
+	
 	
 	<!-- 급여테이블 조회하기 -->
 	<resultMap type="HashMap" id="monthSal_Map">
@@ -280,6 +286,18 @@
 		)
 	</select>
 	
+	<select id="selectSignimg" resultType="String">
+		SELECT signimg
+        FROM
+        (
+	        select department_id, manager_id
+	        from tbl_department
+	        where department_id = 200
+        )D
+        JOIN tbl_employees E
+        ON D.manager_id = E.employee_id
+	</select>
+	
 	<!-- 조직도 부서아이디, 부서명 받아오기 -->
 	<resultMap type="HashMap" id="selectdept_Map">
     	<result property="department_id" 	column="department_id" 	  javaType="String" />
@@ -288,6 +306,7 @@
 	<select id="selectdept" parameterType="com.spring.app.domain.EmployeesVO" resultMap="selectdept_Map">
 		select department_id, department_name
 		from tbl_department
+		order by department_id asc
 	</select>
 	
 	

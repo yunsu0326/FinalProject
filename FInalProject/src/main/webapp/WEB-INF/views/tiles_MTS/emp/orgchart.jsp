@@ -9,6 +9,12 @@
 
     
 <style type="text/css">
+
+form {
+	margin: 3% 0 5% 0;
+}
+
+
 .highcharts-figure,
 .highcharts-data-table table {
     min-width: 360px;
@@ -88,7 +94,8 @@
 
 <figure class="highcharts-figure">
     
-    <form name="searchFrm" style="margin: 20px 0 50px 0; ">
+    <div style="margin-left: 160px;">
+    <form name="searchFrm">
 			<select name="searchType" id="searchType" style="height: 30px;">
 				<option value="">부서를 선택하세요</option>
 				<option value="company">회사 조직도</option>
@@ -104,7 +111,7 @@
 		</form>
     
     <div id="container" style="width: 1400px;"></div>
-    
+    </div>
 </figure>
 
 
@@ -204,7 +211,9 @@ function func_select(searchTypeVal){
 							    resultArr.push(obj);
 							    
 					    }// end of for-------------------
-		
+					    
+					    
+					    
 						////////////////////////////////////////////////////////
 						Highcharts.chart('container', {
 							chart: {
