@@ -65,8 +65,6 @@
 	            $("#all_check").prop("checked",true);
 			  }
           });	      
-		  
-		  
       
       });
       
@@ -123,7 +121,6 @@
             } 
 		});
 	}
-<<<<<<< HEAD
     
  // receipt_favorites update 하기
 	function receipt_favorites_update(receipt_mail_seq){
@@ -229,118 +226,6 @@
 	};
       
   
-=======
-	
-	// receipt_favorites update 하기
-	function receipt_favorites_update(receipt_mail_seq){
-		$.ajax({
-			url:"<%= ctxPath%>/receipt_favorites_update.gw",
-			type:"post",
-			data:{"receipt_mail_seq":receipt_mail_seq},
-			dataType:"json",
-	        success:function(json){
-	        	console.log(json);
-	        	// {"receipt_favorites":"0"}
-	        	
-        		if(json.receipt_favorites1 === "1"){
-	        		$("span#"+receipt_mail_seq).text("favorite");
-	        		$("span#"+receipt_mail_seq).css("color", "red");
-	        	}
-	        	
-	        	else{
-	        		$("span#"+receipt_mail_seq).text("favorite_border");
-	        		$("span#"+receipt_mail_seq).css("color", "black");
-	        	}
-	        	
-	        },
-	        error: function(request, status, error){
-                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-            }
-			
-		});
-		
-	};
-	
-	
-	// receipt_favorites update 하기
-	function receipt_favorites_update(receipt_mail_seq){
-		$.ajax({
-			url:"<%= ctxPath%>/receipt_favorites_update.gw",
-			type:"post",
-			data:{"receipt_mail_seq":receipt_mail_seq},
-			dataType:"json",
-	        success:function(json){
-	        //	console.log(json);
-	        	// {"receipt_favorites":"0"}
-        		if(json.receipt_favorites === "1"){
-	        		$("span#"+receipt_mail_seq+"fav").text("favorite");
-	        		$("span#"+receipt_mail_seq+"fav").css("color", "red");
-	        	}
-	        	else{
-	        		$("span#"+receipt_mail_seq+"fav").text("favorite_border");
-	        		$("span#"+receipt_mail_seq+"fav").css("color", "black");
-	        	}
-	        },
-	        error: function(request, status, error){
-                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-            }
-		});
-	};
-	
-	
-	// email_receipt_read_count update 하기
-	function email_receipt_read_count_update(receipt_mail_seq){
-		$.ajax({
-			url:"<%= ctxPath%>/email_receipt_read_count_update.gw",
-			type:"post",
-			data:{"receipt_mail_seq":receipt_mail_seq},
-			dataType:"json",
-	        success:function(json){
-	        //	console.log(json);
-	        	
-        		$("span#"+receipt_mail_seq+"rc").text("drafts");
-        		$("span#"+receipt_mail_seq+"rc").css("color", "black");
-	        	
-	        },
-	        error: function(request, status, error){
-                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-            }
-		});
-	};
-	
-	
-	// receipt_important update 하기
-	function receipt_important_update(receipt_mail_seq){
-		$.ajax({
-			url:"<%= ctxPath%>/receipt_important_update.gw",
-			type:"post",
-			data:{"receipt_mail_seq":receipt_mail_seq},
-			dataType:"json",
-	        success:function(json){
-	        	console.log(json);
-	        	// {"receipt_favorites":"0"}
-        		if(json.receipt_important === "1"){
-	        		$("span#"+receipt_mail_seq+"imp").text("priority_high");
-	        		$("span#"+receipt_mail_seq+"imp").css("color", "orange");
-	        	}
-	        	else{
-	        		$("span#"+receipt_mail_seq+"imp").text("priority_high");
-	        		$("span#"+receipt_mail_seq+"imp").css("color", "black");
-	        	}
-	        },
-	        error: function(request, status, error){
-                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-            }
-		});
-	};
-	
-	
-	
-	
-	
-	
-	
->>>>>>> branch 'main' of https://github.com/YosubL/FinalProject.git
   </script>
 
 
@@ -432,12 +317,7 @@
 	                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: orange;"> priority_high </span>
 	                </c:if>		
 			        <!-- 중요메일 여부 -->
-<<<<<<< HEAD
-=======
-			        
->>>>>>> branch 'main' of https://github.com/YosubL/FinalProject.git
 			                
-			        
 					<!-- 수신자 정보 -->
 					<span class="emailRow_title ml-2">${emailVO.job_name}&nbsp;${emailVO.name}</span>
 					<!-- 수신자 정보 -->
