@@ -87,6 +87,25 @@ div.vacBoard, div.listContainer, div.shadow {
     box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.1);
     padding: 20px; 
 }
+/* 버튼 스타일링 */
+button#modalBtn {
+  	padding: 6px 15px; /* 버튼 내부 여백 설정 */
+  	cursor: pointer; /* 커서 모양 설정 */
+  	background-color: #00ace6; /* 배경 색상 설정 */
+  	color: #fff; /* 글자 색상 설정 */
+  	border: none; /* 테두리 제거 */
+  	border-radius: 5px; /* 테두리 반경 설정 */
+  	transition: background-color 0.3s; /* 배경 색상 전환 효과 설정 */
+}
+button#modalClose {
+	padding: 6px 15px; /* 버튼 내부 여백 설정 */
+  	cursor: pointer; /* 커서 모양 설정 */
+  	background-color: #bfbfbf; /* 배경 색상 설정 */
+  	color: #fff; /* 글자 색상 설정 */
+  	border: none; /* 테두리 제거 */
+  	border-radius: 5px; /* 테두리 반경 설정 */
+  	transition: background-color 0.3s; /* 배경 색상 전환 효과 설정 */
+}
 </style>
 
 <script type="text/javascript">
@@ -98,7 +117,7 @@ $(document).ready(function(){
 		const vacation_type = $("input#vacation_type").val().trim(); 			 // 사용자가 선택한 휴가종류
 		const vacation_start_date = $("input#vacation_start_date").val().trim(); // 사용자가 입력한 시작일 값
         const vacation_end_date = $("input#vacation_end_date").val().trim();     // 사용자가 입력한 종료일 값
-        const vacation_reason = $("textarea#vacation_reason").val().trim();	     // 사용자가 입력한 휴가신청사유
+        const vacation_reason = $("input#vacation_reason").val().trim();	     // 사용자가 입력한 휴가신청사유
         const annual = $("input:hidden[name='annual']").val().trim();
         
 	    const startParts = vacation_start_date.split('-');
@@ -320,27 +339,31 @@ window.onclick = function(event) {
 <div id="myModal" class="modal">
 	<form name="modalFrm">
 	    <div class="modal-content">
-	        <span onclick="closeModal()" style="cursor: pointer;">&times;</span> <!-- 닫기 버튼 -->
 	        <h4>휴가 신청</h4>
 	        <div class='flex mr-auto'>
+	        	<table style="width: 100%;" class="table table-bordered">
+	        	  <tr>
+	        	  	<td style='width: 30%;'>시작일</td>
+	        	  	<td><input type="date" id="vacation_start_date" name="vacation_start_date" class="border p-2.5" required></td>
+	        	  </tr>
+	        	  <tr>
+	        	  	<td>종료일</td>
+	        	  	<td><input type="date" id="vacation_end_date" name="vacation_end_date" class="border p-2.5" required></td>
+	        	  </tr>
+	        	  <tr>
+	        	  	<td>사유</td>
+	        	  	<td><input id="vacation_reason" name="vacation_reason" class='border'/></td>
+	        	  </tr>
+	        	</table>
 	        	<input type="hidden"value="${sessionScope.loginuser.employee_id}" name="employee_id"/>
-		        <input type="date" id="vacation_start_date" name="vacation_start_date" class="border p-2.5" required>
 		        <input type="hidden" id="vacation_type" name="vacation_type" />
 		        <input type="hidden" id="vacation_reg_date" name="vacation_reg_date" />
-		        <i class="fa-solid fa-arrow-right" style="margin-top: 1.5%;"></i>&nbsp;
-		        <input type="date" id="vacation_end_date" name="vacation_end_date" class="border p-2.5" required>
 		        <input type="hidden" id="daysDiff" name="daysDiff" />
 		        <input type="hidden" id="annual" name="annual" value="${requestScope.annual}"/>
 	        </div>
-	        
-	        <div class="mt-3">
-	        	<span>사유(선택)</span>
-	        	<textarea id="vacation_reason" name="vacation_reason"></textarea>
-	        </div>
-	        
 	        <div class='text-right'>
-	        	<button type="submit" id="modalBtn" class="mr-2">신청</button>	
-	        	<button type="reset" id="modalClose">취소</button>	
+	        	<button type="submit" id="modalBtn" class="mr-2 btn-sm">확인</button>	
+	        	<button type="reset" id="modalClose" class='btn-sm'>취소</button>	
 	        </div>
 	    </div>
     </form>

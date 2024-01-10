@@ -183,4 +183,11 @@ public class WorkService_imple implements WorkService {
 		return todayEndTime;
 	}
 
+	// 출근한 날짜를 가져와 출근한 시간 가져오기 
+	@Override
+	public Map<String, String> getMyWorkTime(Map<String, String> paraMap) {
+		Map<String, String> getMyWorkTime = dao.getMyWorkTime(paraMap);
+		return getMyWorkTime;
+	}
+
 }
