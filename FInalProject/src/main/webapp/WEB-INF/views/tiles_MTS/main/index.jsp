@@ -658,10 +658,7 @@ function padZero(value) {
 							<th>이메일</th>
 							<td>${requestScope.loginuser.email}</td>
 						</tr>
-						<tr>
-							<th>입사일자</th>
-							<td>${requestScope.loginuser.hire_date}</td>
-						</tr>
+						
 					</table>
 					
 					<ul>
