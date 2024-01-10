@@ -39,7 +39,7 @@ import com.spring.app.yosub.service.*;
 			   									@RequestParam(defaultValue = "") String gender,
 			   									@RequestParam(defaultValue = "") String employee_id) {
 		   
-		   
+		    
 		   //employees 테이블의 근무중 사원 부서명 가져오기
 		   List<Map<String, String>> deptNameList = service.deptNameList();
 
