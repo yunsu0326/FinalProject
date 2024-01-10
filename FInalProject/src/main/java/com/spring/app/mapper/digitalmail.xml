@@ -41,6 +41,7 @@
 		</choose>
 	</select>
 	
+<<<<<<< HEAD
 <!-- 페이징 처리된 내가 받은 총 메일 보기  -->       
    <select id="SelectMyEmail_withPaging" parameterType="HashMap" resultType="com.spring.app.digitalmail.domain.EmailVO">
       SELECT 
@@ -88,6 +89,55 @@
       ) T
       WHERE RNO BETWEEN #{startRno} AND #{endRno}
    </select>
+=======
+	<!-- 페이징 처리된 내가 받은 총 메일 보기  --> 	   
+	<select id="SelectMyEmail_withPaging" parameterType="HashMap" resultType="com.spring.app.digitalmail.domain.EmailVO">
+		SELECT 
+		    T.receipt_mail_seq, T.send_email_seq, T.email_subject, T.name, T.job_name, T.send_time
+    		, T.receipt_favorites, T.email_receipt_read_count, T.receipt_important
+		FROM 
+		(
+		SELECT rownum AS RNO
+			, V.receipt_mail_seq, V.send_email_seq, V.email_subject, V.name, V.job_name, V.send_time
+			, V.receipt_favorites, V.email_receipt_read_count, V.receipt_important
+		FROM 
+		(
+		SELECT 
+			r.receipt_mail_seq, e.send_email_seq, e.email_subject, p.name, j.job_name, to_char(e.send_time, 'yyyy-mm-dd hh24:mi') as send_time
+		    , r.receipt_favorites, r.email_receipt_read_count, r.receipt_important
+		    FROM tbl_receipt_email r
+			JOIN tbl_email e ON r.fk_send_email_seq = e.send_email_seq
+			JOIN tbl_employees p ON p.email = e.fk_sender_email
+			JOIN tbl_jobs j ON j.job_id = p.fk_job_id 
+	        WHERE 
+	            (r.fk_recipient_email = #{email} 
+	            OR r.fk_reference_email = #{email} 
+	            OR r.fk_hidden_reference_email = #{email})
+	            AND r.receipt_delete = 0
+	            <choose>
+	                <when test='searchType == "subject" and searchWord != ""'>
+	                    AND lower(e.email_subject) LIKE '%' || lower(#{searchWord}) || '%'
+	                </when>
+	                <when test='searchType == "content" and searchWord != ""'>
+	                    AND lower(e.email_contents) LIKE '%' || lower(#{searchWord}) || '%'
+	                </when>
+	                <when test='searchType == "subject_content" and searchWord != ""'>
+	                    AND (lower(e.email_subject) LIKE '%' || lower(#{searchWord}) || '%' OR lower(content) LIKE '%' || lower(#{searchWord}) || '%') 
+	                </when>
+	                <when test='searchType == "name" and searchWord != ""'>
+	                    AND lower(p.name) LIKE '%' || lower(#{searchWord}) || '%'
+	                </when>
+	                <when test='searchType == "job" and searchWord != ""'>
+	                    AND lower(j.job_name) LIKE '%' || lower(#{searchWord}) || '%'
+	                </when>
+	                <otherwise></otherwise>
+	            </choose>    
+	        	order by r.fk_send_email_seq desc
+	    ) V
+		) T
+		WHERE RNO BETWEEN #{startRno} AND #{endRno}
+	</select>
+>>>>>>> branch 'main' of https://github.com/YosubL/FinalProject.git
 	
 	<!-- === 검색어 입력시 자동글 완성하기  ===  -->
 	<select id="emailWordSearchShow" parameterType="HashMap" resultType="String"> 

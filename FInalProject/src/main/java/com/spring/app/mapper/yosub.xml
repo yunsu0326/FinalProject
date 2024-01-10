@@ -272,9 +272,8 @@
 	<select id="scheduleselect" resultType="com.spring.app.domain.Calendar_schedule_VO" parameterType="HashMap">
 		select scheduleno, startdate, enddate, subject, color, place, joinuser, content, fk_smcatgono, fk_lgcatgono, fk_department_id, fk_employee_id 
 		from tbl_calendar_schedule
-		where fk_employee_id = #{fk_employee_id} OR
-		fk_department_id = #{fk_department_id} OR
-		fk_lgcatgono = 2 AND
+		where (fk_employee_id = #{fk_employee_id} OR
+		fk_department_id = #{fk_department_id}) AND
 		(sysdate between startdate and enddate) OR
 		(fk_lgcatgono != 2 AND lower(joinuser) like '%'|| lower(#{fk_email}) ||'%')
 		order by scheduleno asc
@@ -331,11 +330,80 @@
 	    values(JOB_ID_seq.nextval, #{department_id}, #{team_name}||'사원', 12600000, 1, #{team_id})
 	</insert>
 
+
+	<resultMap type="HashMap" id="get_department_info_Map">
+		<result property="name" 		column="name"  			javaType="String"/>
+		<result property="job_name" 	column="job_name"  		javaType="String"/>
+		<result property="employee_id" 	column="employee_id"  	javaType="String"/>
+		<result property="gradelevel" 	column="gradelevel"  	javaType="String"/>
+		<result property="phone" 		column="phone"  		javaType="String"/>
+	</resultMap>
 	<!--  부서정보 가져오기 등록하기  -->
-	<select id="get_department_info" parameterType="String" resultType="com.spring.app.domain.DepartmentVO">
-	    select department_id, department_name, manager_id
-		from tbl_department
-		where FK_DEPARTMENT_ID = #{department_id}
+	<select id="get_department_info" parameterType="String" resultMap="get_department_info_Map">
+	    select name, job_name, employee_id, E.gradelevel, phone
+		from tbl_employees E
+		JOIN tbl_jobs J
+		ON E.fk_job_id = J.job_id
+		where E.fk_department_id = #{department_id}
+		  and E.gradelevel > 1
+        order by 4 desc, 2 asc
 	</select>
+	
+	<resultMap type="HashMap" id="get_team_info_Map">
+		<result property="name" 		column="name"  			javaType="String"/>
+		<result property="job_name" 	column="job_name"  		javaType="String"/>
+		<result property="employee_id" 	column="employee_id"  	javaType="String"/>
+		<result property="gradelevel" 	column="gradelevel"  	javaType="String"/>
+		<result property="phone" 		column="phone"  		javaType="String"/>
+	</resultMap>
+	<!--  팀정보 가져오기 등록하기  -->
+	<select id="get_team_info" parameterType="String" resultMap="get_team_info_Map">
+	    select name, job_name, employee_id, E.gradelevel, phone
+		from tbl_employees E
+		JOIN tbl_jobs J
+		ON E.fk_job_id = J.job_id
+		where E.fk_team_id = #{team_id}
+        order by 4 desc
+	</select>
+
+	<!-- 부서삭제하기  -->
+	<delete id="department_del" parameterType="String">
+	   DELETE FROM tbl_department WHERE department_id = #{department_id}
+	</delete>  
+
+	<select id="SelectMyEmail_withPaging" parameterType="HashMap" resultType="com.spring.app.digitalmail.domain.EmailVO">
+	        SELECT 
+		    T.send_email_seq, T.email_subject, T.name, T.job_name, T.send_time
+    		, T.receipt_favorites, T.email_receipt_read_count
+		FROM 
+		(
+		SELECT rownum AS RNO
+			, V.send_email_seq, V.email_subject, V.name, V.job_name, V.send_time
+			, V.receipt_favorites, V.email_receipt_read_count
+		FROM 
+		(
+		SELECT 
+			e.send_email_seq, e.email_subject, p.name, j.job_name, to_char(e.send_time, 'yyyy-mm-dd hh24:mi') as send_time
+		    , r.receipt_favorites, r.email_receipt_read_count
+		    FROM tbl_receipt_email r
+			JOIN tbl_email e ON r.fk_send_email_seq = e.send_email_seq
+			JOIN tbl_employees p ON p.email = e.fk_sender_email
+			JOIN tbl_jobs j ON j.job_id = p.fk_job_id 
+	        WHERE 
+	            (r.fk_recipient_email = #{email} 
+	            OR r.fk_reference_email = #{email} 
+	            OR r.fk_hidden_reference_email = #{email})
+	            AND r.receipt_delete = 0
+	        	order by r.fk_send_email_seq desc
+	    ) V
+		) T
+		WHERE RNO BETWEEN 1 AND 5
+	</select>
+
+
+
+
+
+
 
 </mapper>

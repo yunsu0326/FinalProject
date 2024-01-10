@@ -10,7 +10,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.domain.CommentVO;
+import com.spring.app.domain.NoticeboardFileVO;
 import com.spring.app.domain.NoticeboardVO;
+import com.spring.app.domain.BoardFileVO;
 import com.spring.app.domain.BoardVO;
 
 @Repository
@@ -53,8 +55,8 @@ public class SaehanDAO_imple implements SaehanDAO{
 	
 	// 글쓰기(파일첨부가 없는 글쓰기)
 	@Override
-	public int add(BoardVO boardvo) {
-		int n = sqlsession.insert("saehan.add", boardvo);
+	public int add_nofile(BoardVO boardvo) {
+		int n = sqlsession.insert("saehan.add_nofile", boardvo);
 		return n;
 	}
 	
@@ -207,19 +209,15 @@ public class SaehanDAO_imple implements SaehanDAO{
 		return boardList;
 	}
 
-	//첨부파일 없는 공지사항 쓰기
+	//첨부파일 있는 공지사항 쓰기
 	@Override
 	public int notice_add(NoticeboardVO boardvo) {
 		int n = sqlsession.insert("saehan.notice_add", boardvo);
 		return n;
 	}
 
-	//첨부파일 있는 공지사항 쓰기
-	@Override
-	public int notice_add_withFile(NoticeboardVO boardvo) {
-		int n = sqlsession.insert("saehan.notice_add_withFile", boardvo);
-		return n;
-	}
+	
+	
 
     //공지사항 글 1개 조회하기 
 	@Override
@@ -258,8 +256,8 @@ public class SaehanDAO_imple implements SaehanDAO{
 
 	//공지사항에 있는 첨부파일 삭제하기
 	@Override
-	public int notice_delete_file(Map<String, String> paraMap) {
-		int n = sqlsession.update("saehan.notice_delete_file", paraMap);
+	public int notice_delete_file(String fileno) {
+		int n = sqlsession.delete("saehan.notice_delete_file", fileno);
 		return n;
 	}
 
@@ -270,9 +268,209 @@ public class SaehanDAO_imple implements SaehanDAO{
 		return n;
 	}
 
+/*
+	@Override
+	public int add_withMultiFilet(BoardFileVO boardvo) {
+		int n = sqlsession.update("saehan.add_withMultiFilet", boardvo);
+		return n;
+	}
+*/
+	// 자유게시판 글번호 알아오기
+	@Override
+	public String getfreeBoardSeq() {
+		String seq = sqlsession.selectOne("saehan.getfreeboardSeq");
+		return seq;
+	}
+	
+	// 공지사항 글번호 알아오기
+	@Override
+	public String getNoitceBoardSeq() {
+		String seq = sqlsession.selectOne("saehan.getNoitceboardSeq");
+		return seq;
+	}
+	
+
+	@Override
+	public int insertFiles(List<BoardFileVO> fileList) {
+		int n = sqlsession.insert("saehan.insertFiles", fileList);
+		return n;
+	}
+
+	// 글 작성하기
+	@Override
+	public int addEnd(BoardVO boardvo) {
+		int n = sqlsession.insert("saehan.addEnd", boardvo);
+		return n;
+	}
+
+
+
+	
+	// 첨부파일 목록 조회(글 상세 조회)
+		@Override
+		public List<BoardFileVO> getView_files(String seq) {
+			return sqlsession.selectList("saehan.getView_files", seq);
+		}
+	/*
+	@Override
+	public int getTake_seq(Map<String, String> paraMap) {
+		int chabun = sqlsession.selectOne("saehan.getTake_seq_One", paraMap);
+		return chabun;
+	}
+
+	
+	@Override
+	public int add_withMultiFilet(String seq) {
+		fot
+		int n = 
+		return 0;
+	}
+	*/
+
+		//파일 번호로 파일 가져오기
+		@Override
+		public BoardFileVO getEach_view_files(String fileno) {
+			return sqlsession.selectOne("saehan.getEach_view_files", fileno);
+		}
+
+		
+		//파일테이블에 있는 행 삭제하기
+		@Override
+		public int del_attach(Map<String, String> paraMap) {
+			int n = sqlsession.delete("saehan.del_attach", paraMap);
+			return n;
+		}
+
+		//자유게시판 글 수정하기
+		@Override
+		public int freeboard_edit(BoardVO boardvo) {
+			return sqlsession.update("saehan.freeboard_edit", boardvo);
+		}
+
+		
+		@Override
+		public int deleteFile(String fileno) {
+			int n = sqlsession.delete("saehan.file_delete", fileno);
+			return n;
+		}
+
+		
+		//파일 삭제하면 글테이블의 filename 유무 0으로 만들기  (1은 파일 존재 , 0은 파일존재 하지 않음)
+		@Override
+		public int getfreeboard_filename_clear(Map<String, String> paraMap) {
+			int n = sqlsession.update("saehan.freeboard_filename_clear", paraMap);
+			return n;
+		}
+
+		//자유게시판 파일 추가하기
+		@Override
+		public int getfreeboard_filename_add(Map<String, String> paraMap) {
+			int n = sqlsession.update("saehan.freeboard_filename_add", paraMap);
+			return n;
+		}
+
+		//공지사항 첨부파일 추가하기
+		@Override
+		public int notice_insertFiles(List<NoticeboardFileVO> fileList) {
+			int n = sqlsession.insert("saehan.notice_insertFiles", fileList);
+			return n;
+		}
+
+		
+		//공지사항 첨부파일 없는 거 글 쓰기
+		@Override
+		public int nofile_notice_add(NoticeboardVO boardvo) {
+			int n = sqlsession.insert("saehan.notice_add_noFile", boardvo);
+			return n;
+		}
+
+		
+		//공지사항 첨부파일 목록 조회하기
+		@Override
+		public List<NoticeboardFileVO> getView_notice_files(String seq) {
+			return sqlsession.selectList("saehan.getView_notice_files", seq);
+		}
+
+
+		@Override
+		public int notice_del_attach(Map<String, String> paraMap) {
+			int n = sqlsession.delete("saehan.notice_del_attach", paraMap);
+			return n;
+		}
+
+
+		@Override
+		public int notice_nofile_del(Map<String, String> paraMap) {
+			int n = sqlsession.delete("saehan.notice_nofile_del", paraMap);
+			return n;
+		}
+
+		//파일번호 공지사항에서 첨부파일 하나만 가져오기
+		@Override
+		public NoticeboardFileVO getNotice_Each_view_files(String fileno) {
+			return sqlsession.selectOne("saehan.getNotice_Each_view_files", fileno);
+		}
+		
+		
+		//공지사항 글 수정하기
+		@Override
+		public int Noticeboard_edit(NoticeboardVO boardvo) {
+			return sqlsession.update("saehan.noticeboard_edit", boardvo);
+		}
+
+
+		@Override
+		public int notice_delete_file(Map<String, String> paraMap) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		
+		// update_attachfile ----
+		@Override
+		public String noticeboard_update_attachfile(String fk_seq) {
+			String attachfile = sqlsession.selectOne("saehan.noticeboard_update_attachfile", fk_seq);
+			return attachfile;
+		}
+
+
+		@Override
+		public int getnoticeboard_filename_clear(Map<String, String> paraMap) {
+			int n = sqlsession.update("saehan.noticeboard_filename_clear", paraMap);
+			return n;
+		}
+
+
+		@Override
+		public int getnoticeboard_filename_add(Map<String, String> paraMap) {
+			int n = sqlsession.update("saehan.noticeboard_filename_add", paraMap);
+			return n;
+		}
+
+
+		@Override
+		public String freeboard_update_attachfile(String fk_seq) {
+			String attachfile = sqlsession.selectOne("saehan.freeboard_update_attachfile", fk_seq);
+			return attachfile;
+
+		}
+		
+		
+
+	
+		
+		
+		
+
+
+		
 
 	
 
+
+
+
+		
 	
 
 	

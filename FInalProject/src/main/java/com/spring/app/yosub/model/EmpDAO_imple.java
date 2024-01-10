@@ -162,9 +162,23 @@ public class EmpDAO_imple implements EmpDAO {
 	@Override
 	public List<Map<String, String>> get_department_info(String department_id) {
 		
-		List<Map<String, String>> get_department_info = sql.selectOne("yosub.get_department_info", department_id);
+		List<Map<String, String>> get_department_info = sql.selectList("yosub.get_department_info", department_id);
 		
 		return get_department_info;
+	}
+
+	@Override
+	public List<Map<String, String>> get_team_info(String team_id) {
+		
+		List<Map<String, String>> get_team_info = sql.selectList("yosub.get_team_info", team_id);
+		
+		return get_team_info;
+	}
+
+	@Override
+	public int department_del(String department_id) {
+		int n = sql.delete("yosub.department_del",department_id);
+		return n;
 	}
 
 }

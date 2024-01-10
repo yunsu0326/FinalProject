@@ -145,7 +145,7 @@ public interface ApprovalService {
 	int delApprovalLine(SavedAprvLineVO sapVO);
 
 	// 환경설정-서명이미지 수정
-//	int updateSignature(Map<String, String> paraMap);
+	int updateSignature(Map<String, String> paraMap);
 	
 	// 기안 상신취소하기
 	boolean cancelDraft(DraftVO dvo);

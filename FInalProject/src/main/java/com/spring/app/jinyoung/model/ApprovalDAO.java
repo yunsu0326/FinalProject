@@ -178,10 +178,10 @@ public interface ApprovalDAO {
 
 	// 관리자메뉴-공통결재라인 저장
 	int saveOfficialApprovalLine(OfficialAprvLineVO oapVO);
-/*
+
 	// 환경설정-서명이미지 수정
 	int updateSignature(Map<String, String> paraMap);
-*/
+
 	// temp_draft에서 select
 	DraftVO getTempDraftInfo(DraftVO dvo);
 

@@ -219,11 +219,7 @@ $(document).ready(function(){
 				        // 모달 열기
 				        $("#modal_member").modal("show");
 
-				        if(socket){
-		        			let socketMsg = empData.name + "회원 정보를 조회하였습니다.";
-		        			socket.send(socketMsg);
-		           		}
-				        
+				       				        
 				    } else {
 				        alert("JSON 데이터가 유효하지 않습니다.");
 				    }

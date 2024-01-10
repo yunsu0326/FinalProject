@@ -374,11 +374,12 @@ import com.spring.app.yosub.service.*;
 	 		
 	 	}
 	 	
-	 	
+	 	// 부서에 따른 부서 내 정보 가져오기
 	 	@ResponseBody
 	 	@GetMapping(value = "/emp/get_department_info.gw", produces = "text/plain;charset=UTF-8")
 	 	public String get_department_info(@RequestParam(defaultValue = "") String department_id) {
-	 	    
+	 		// System.out.println("department_id" + department_id);
+	 		
 	 		List<Map<String, String>> get_department_info = service.get_department_info(department_id);
 			JsonArray jsonArr = new JsonArray(); // []
 			if(get_department_info != null && get_department_info.size() > 0) {
@@ -386,15 +387,50 @@ import com.spring.app.yosub.service.*;
 					JsonObject jsonObj = new JsonObject(); // {}
 					jsonObj.addProperty("manager_id", map.get("employee_id"));
 					jsonObj.addProperty("name", map.get("name"));
-					System.out.println(map.get("name"));
+					jsonObj.addProperty("phone", map.get("phone"));
+					jsonObj.addProperty("job_name", map.get("job_name"));
 					jsonArr.add(jsonObj); 
 				}// end of for-------------------------
 			}
 			return new Gson().toJson(jsonArr);
 	 	}
 	 	
-
-	  
+	 	
+	 	@ResponseBody
+	 	@GetMapping(value = "/emp/get_team_info.gw", produces = "text/plain;charset=UTF-8")
+	 	public String get_team_info(@RequestParam(defaultValue = "") String team_id) {
+	 		 System.out.println("team_id" + team_id);
+	 		
+	 		List<Map<String, String>> get_team_info = service.get_team_info(team_id);
+			JsonArray jsonArr = new JsonArray(); // []
+			if(get_team_info != null && get_team_info.size() > 0) {
+				for(Map<String, String> map : get_team_info) {
+					JsonObject jsonObj = new JsonObject(); // {}
+					jsonObj.addProperty("manager_id", map.get("employee_id"));
+					jsonObj.addProperty("name", map.get("name"));
+					jsonObj.addProperty("phone", map.get("phone"));
+					jsonObj.addProperty("job_name", map.get("job_name"));
+					jsonArr.add(jsonObj); 
+				}// end of for-------------------------
+			}
+			return new Gson().toJson(jsonArr);
+	 	}
+	 	
+	 	
+	 // 부서삭제하기
+	 	@ResponseBody
+	 	@GetMapping(value = "/emp/department_del.gw", produces = "text/plain;charset=UTF-8")
+		public String department_del(String department_id) {
+	 		int n = service.department_del(department_id);
+			try {
+	 			return "{\"n\":1}";
+	 		} catch(Exception e) { // 부서번호 삭제시  department_id 컬럼에 Foreign Key 제약에 의해 자식 테이블인 employees 테이블에 사원들이 존재하는 경우  
+	 			return "{\"n\":0}";
+	 		}
+	 	}
+	 	
+	 	
+	 	
 	   
 	 	
 	 	

@@ -251,6 +251,14 @@ public class EmployeesVO {
 	public void setAttach(MultipartFile attach) {
 		this.attach = attach;
 	}
+
+	public String getSignimg() {
+		return signimg;
+	}
+
+	public void setSignimg(String signimg) {
+		this.signimg = signimg;
+	}
 	
 	
 	

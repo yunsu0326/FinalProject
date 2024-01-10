@@ -40,6 +40,10 @@ table#sal_tbl td {
     text-align: center;
 }
 
+#noSal {
+	font-size: 20pt;
+}
+
 
 div[align="center"] {
     border: solid 0px gray;
@@ -127,21 +131,25 @@ function salaryStatement(year_month, fk_employee_id) {
 			</tr>
 		</thead>
 		
-		
-		
+		<c:if test="${empty requestScope.monthSalList}">
+			<tr>
+	            <td colspan="8" id="noSal">급여 내역이 없습니다.</td>
+	        </tr>
+		</c:if>
+		<c:if test="${not empty requestScope.monthSalList}">
 		<c:forEach var="monthsal" items="${requestScope.monthSalList}">
 	        <tr>
 	            <td><input type="checkbox" name="year_month" id="${status.index}" value="${monthsal.year_month}" /></td>
 	            <td>${monthsal.year_month}</td>
 	            <td>${monthsal.year_month}-01 ~ ${monthsal.last_day_of_month}</td>
-	            <td>${monthsal.year_month}-15</td>
-	            <td>${monthsal.salary}</td>
+	            <td>${monthsal.next_month}-15</td>
+	            <td>${monthsal.p_sum}</td>
 	            <td>${monthsal.m_sum}</td>
 	            <td>${monthsal.total}</td>
 	            <td><button type="button" class="green-button" onclick="salaryStatement('${monthsal.year_month}', '${monthsal.fk_employee_id}')">보기</button></td>
 	        </tr>
-	        
 	    </c:forEach>
+	    </c:if>
 	</table>
 	<input type="hidden" name="str_year_month" />
 	</form>

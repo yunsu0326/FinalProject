@@ -9,7 +9,7 @@
 $(()=>{
 	
 	$('.processingMenu').show();
-	$('a#upcomingList').css('color','#086BDE');
+	$('a#upcomingList').css('color','#03C75A');
 	
 	// 검색창에서 엔터시 검색하기 함수 실행
 	$("#searchWord").bind("keydown", (e) => {

@@ -10,39 +10,44 @@
 
 <style type="text/css">
 
-    table#table2 {
-        border: solid 2px black;
-        width: 100%;
-        border-collapse: collapse;
-    }
+table#table2 {
+    border: solid 2px black;
+    width: 100%;
+    border-collapse: collapse;
+}
 
-    table#table2 th, td {
-        border: solid 1px black;
-        padding: 8px
-    }
+table#table2 th, td {
+    border: solid 1px black;
+    padding: 8px
+}
 
-    
-    table#table2 > tbody > tr > th,
-    table#table2 > tbody > tr:nth-child(1) > td {
-    	text-align: center;
-    }
-    
-    table#table2 > tbody > tr > td:nth-child(2) {
-    	text-align: right;
-    }
 
-	table#table1 th {
-		text-align: center;
-	}
-	
-	button {
-		float: right; 
-		display: flex; 
-		align-items: center; 
-		justify-content: center;
-		width: 8%;
-		height: 50px;
-	}
+table#table2 > tbody > tr > th,
+table#table2 > tbody > tr:nth-child(1) > td {
+	text-align: center;
+}
+
+table#table2 > tbody > tr > td:nth-child(2) {
+	text-align: right;
+}
+
+table#table1 th {
+	text-align: center;
+}
+
+button {
+	float: right; 
+	display: flex; 
+	align-items: center; 
+	justify-content: center;
+	width: 8%;
+	height: 50px;
+}
+
+img {
+	width: 100px;
+	height: 100px;
+}
     
 </style>
 
@@ -113,12 +118,7 @@ function print() {
 		<tr>
 			<th>기본급여</th>
 			<td>
-				<c:if test="${not empty requestScope.salaryStatement.SALARY}">
-					<fmt:formatNumber value="${requestScope.salaryStatement.SALARY}" pattern="#,###" />원
-				</c:if>
-				<c:if test="${empty requestScope.salaryStatement.SALARY}">
-					-
-				</c:if>
+				<fmt:formatNumber value="${requestScope.salaryStatement.SALARY}" pattern="#,###" />원
 			</td>
 			<td colspan="2"></td>
 		</tr>
@@ -126,10 +126,10 @@ function print() {
 		<tr>
 			<th>직책수당</th>
 			<td>
-				<c:if test="${not empty value}">
-					<fmt:formatNumber value="" pattern="#,###" />원
+				<c:if test="${requestScope.salaryStatement.POSITION_ALLOWANCE ne 0}">
+					<fmt:formatNumber value="${requestScope.salaryStatement.POSITION_ALLOWANCE}" pattern="#,###" />원
 				</c:if>
-				<c:if test="${empty value}">
+				<c:if test="${requestScope.salaryStatement.POSITION_ALLOWANCE eq 0}">
 					-
 				</c:if>
 			</td>
@@ -137,12 +137,12 @@ function print() {
 		</tr>
 		
 		<tr>
-			<th>휴일근무수당</th>
+			<th>추가근무수당</th>
 			<td>
-				<c:if test="${not empty value}">
-					<fmt:formatNumber value="" pattern="#,###" />원
+				<c:if test="${requestScope.salaryStatement.EXTRA_WORK_ALLOWANCE ne 0}">
+					<fmt:formatNumber value="${requestScope.salaryStatement.EXTRA_WORK_ALLOWANCE}" pattern="#,###" />원
 				</c:if>
-				<c:if test="${empty value}">
+				<c:if test="${requestScope.salaryStatement.EXTRA_WORK_ALLOWANCE eq 0}">
 					-
 				</c:if>
 			</td>
@@ -152,10 +152,10 @@ function print() {
 		<tr>
 			<th>상여금</th>
 			<td>
-				<c:if test="${not empty salaryStatement.B}">
-					<fmt:formatNumber value="${requestScope.salaryStatement.B}" pattern="#,###" />원
+				<c:if test="${requestScope.salaryStatement.BONUS ne 0}">
+					<fmt:formatNumber value="${requestScope.salaryStatement.BONUS}" pattern="#,###" />원
 				</c:if>
-				<c:if test="${empty salaryStatement.B}">
+				<c:if test="${requestScope.salaryStatement.BONUS eq 0}">
 					-
 				</c:if>
 			</td>
@@ -164,45 +164,14 @@ function print() {
 		
 		<tr>
 			<th>급여계</th>
-			<td><fmt:formatNumber value="${requestScope.salaryStatement.A}" pattern="#,###" />원</td>
-			<td colspan="2"></td>
-		</tr>
-		
-		<tr>
-			<th>갑근세</th>
-			<td>
-				<c:if test="${not empty value}">
-					<fmt:formatNumber value="" pattern="#,###" />원
-				</c:if>
-				<c:if test="${empty value}">
-					-
-				</c:if>
-			</td>
-			<td colspan="2"></td>
-		</tr>
-		
-		<tr>
-			<th>주민세</th>
-			<td>
-				<c:if test="${not empty value}">
-					<fmt:formatNumber value="" pattern="#,###" />원
-				</c:if>
-				<c:if test="${empty value}">
-					-
-				</c:if>
-			</td>
+			<td><fmt:formatNumber value="${requestScope.salaryStatement.P_SUM}" pattern="#,###" />원</td>
 			<td colspan="2"></td>
 		</tr>
 		
 		<tr>
 			<th>국민연금</th>
 			<td>
-			<c:if test="${not empty requestScope.salaryStatement.KSAL}">
-					<fmt:formatNumber value="${requestScope.salaryStatement.KSAL}" pattern="#,###" />원
-				</c:if>
-				<c:if test="${empty requestScope.salaryStatement.KSAL}">
-					-
-				</c:if>
+				<fmt:formatNumber value="${requestScope.salaryStatement.NATIONAL_PENSION}" pattern="#,###" />원
 			</td>
 			<td colspan="2"></td>
 		</tr>
@@ -210,12 +179,7 @@ function print() {
 		<tr>
 			<th>장기요양</th>
 			<td>
-			<c:if test="${not empty requestScope.salaryStatement.YSAL}">
-					<fmt:formatNumber value="${requestScope.salaryStatement.YSAL}" pattern="#,###" />원
-				</c:if>
-				<c:if test="${empty requestScope.salaryStatement.YSAL}">
-					-
-				</c:if>
+				<fmt:formatNumber value="${requestScope.salaryStatement.LONG_TERM_CARE_PEE}" pattern="#,###" />원
 			</td>
 			<td colspan="2"></td>
 		</tr>
@@ -223,12 +187,7 @@ function print() {
 		<tr>
 			<th>건강보험</th>
 			<td>
-			<c:if test="${not empty requestScope.salaryStatement.HSAL}">
-					<fmt:formatNumber value="${requestScope.salaryStatement.HSAL}" pattern="#,###" />원
-				</c:if>
-				<c:if test="${empty requestScope.salaryStatement.HSAL}">
-					-
-				</c:if>
+				<fmt:formatNumber value="${requestScope.salaryStatement.HEALTH_INSURANCE}" pattern="#,###" />원
 			</td>
 			<td colspan="2"></td>
 		</tr>
@@ -236,12 +195,7 @@ function print() {
 		<tr>
 			<th>고용보험</th>
 			<td>
-			<c:if test="${not empty requestScope.salaryStatement.BSAL}">
-					<fmt:formatNumber value="${requestScope.salaryStatement.BSAL}" pattern="#,###" />원
-				</c:if>
-				<c:if test="${empty requestScope.salaryStatement.BSAL}">
-					-
-				</c:if>
+				<fmt:formatNumber value="${requestScope.salaryStatement.EMPLOYMENT_INSURANCE}" pattern="#,###" />원
 			</td>
 			<td colspan="2"></td>
 		</tr>
@@ -249,12 +203,7 @@ function print() {
 		<tr>
 			<th>공제합계</th>
 			<td>
-			<c:if test="${not empty requestScope.salaryStatement.SUM}">
-					<fmt:formatNumber value="${requestScope.salaryStatement.SUM}" pattern="#,###" />원
-				</c:if>
-				<c:if test="${empty requestScope.salaryStatement.SUM}">
-					-
-				</c:if>
+				<fmt:formatNumber value="${requestScope.salaryStatement.M_SUM}" pattern="#,###" />원
 			</td>
 			<td colspan="2"></td>
 		</tr>
@@ -262,32 +211,28 @@ function print() {
 		<tr>
 			<th>비과세수당</th>
 			<td>
-				<c:if test="${not empty value}">
-					<fmt:formatNumber value="" pattern="#,###" />원
+				<c:if test="${requestScope.salaryStatement.MEAL_ALLOWANCE ne 0}">
+					<fmt:formatNumber value="${requestScope.salaryStatement.MEAL_ALLOWANCE}" pattern="#,###" />원
 				</c:if>
-				<c:if test="${empty value}">
+				<c:if test="${requestScope.salaryStatement.MEAL_ALLOWANCE eq 0}">
 					-
 				</c:if>
 			</td>
-			<td colspan="2"></td>
+			<td colspan="2">식비 1일 1만원</td>
 		</tr>
 		
 		<tr>
 			<th>실 지급액</th>
 			<td>
-				<c:if test="${not empty requestScope.salaryStatement.TOTAL}">
-					<fmt:formatNumber value="${requestScope.salaryStatement.TOTAL}" pattern="#,###" />원
-				</c:if>
-				<c:if test="${empty requestScope.salaryStatement.TOTAL}">
-					-
-				</c:if>
+				<fmt:formatNumber value="${requestScope.salaryStatement.TOTAL}" pattern="#,###" />원
 			<td colspan="2">*급여계 - 공제합계</td>
 		</tr>
 		
 		<tr>
 			<th>날인 (서명)</th>
-			<td></td>
-			<td colspan="2"></td>
+			<td colspan="3">
+				<img src="<%= ctxPath%>/resources/images/sign/" /> 
+			</td>
 		</tr>
 		
 	</table>
