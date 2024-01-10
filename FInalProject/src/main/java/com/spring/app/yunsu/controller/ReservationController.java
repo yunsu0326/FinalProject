@@ -114,7 +114,7 @@ public class ReservationController {
 		EmployeesVO loginuser = (EmployeesVO) session.getAttribute("loginuser");
 		String employee_id = loginuser.getEmployee_id();
 		String email = loginuser.getEmail();
-
+		//System.out.println(employee_id);
 		if(pagination.getSearchWord() == null || "".equals(pagination.getSearchWord()) || pagination.getSearchWord().trim().isEmpty()) {
 			pagination.setSearchWord("");
 		}
@@ -154,7 +154,9 @@ public class ReservationController {
 		paraMap.put("enddate", enddate);
 		paraMap.put("employee_id", employee_id);
 		paraMap.put("email", email);
-
+		
+		System.out.println("확인용"+paraMap.get("employee_id"));
+		System.out.println("확인용"+paraMap.get("email"));
 		// 예약 내역 전체 개수 구하기
 		int listCnt = service.getResrvSearchCnt(paraMap);
 	//	System.out.println(listCnt);
@@ -168,6 +170,10 @@ public class ReservationController {
 		// 한 페이지에 표시할 이용자 예약 내역 글 목록
 		reservList = service.getResrvList(paraMap);
 		mav.addObject("reservList", reservList);
+		
+		for(Map<String, String> paMap:reservList) {
+			System.out.println(paMap.get("fk_employee_id"));
+		}
 		
 		pagination.setQueryString("&startdate="+startdate+"&enddate="+enddate);
 		
