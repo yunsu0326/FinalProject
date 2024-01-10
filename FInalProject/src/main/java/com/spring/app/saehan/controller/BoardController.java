@@ -421,7 +421,7 @@ public class BoardController {
 				else {
 					// 자신의 글을 수정할 경우
 					mav.addObject("boardvo", boardvo);
-					mav.setViewName("main/edit.tiles_MTS");
+					mav.setViewName("mshboard/edit.tiles_MTS");
 
 					return mav;
 				}
@@ -739,7 +739,7 @@ public class BoardController {
 
 					mav.addObject("fileList", fileList);
 					mav.addObject("boardvo", boardvo);
-					mav.setViewName("main/del.tiles_MTS");
+					mav.setViewName("mshboard/del.tiles_MTS");
 
 					return mav;
 				} // end of try {----------------
@@ -1469,7 +1469,7 @@ public class BoardController {
 		String goBackURL = MyUtil.getCurrentURL(request);
 
 		mav.addObject("goBackURL", goBackURL);
-		mav.setViewName("main/noticeboard.tiles_MTS");
+		mav.setViewName("mshboard/noticeboard.tiles_MTS");
 
 		return mav;
 
@@ -1842,7 +1842,7 @@ public class BoardController {
 
 					mav.addObject("fileList", fileList);
 					mav.addObject("boardvo", boardvo);
-					mav.setViewName("main/notice_del.tiles_MTS");
+					mav.setViewName("mshboard/notice_del.tiles_MTS");
 
 					return mav;
 				} // end of try {----------------
@@ -1948,7 +1948,7 @@ public class BoardController {
 					else {
 						// 자신의 글을 수정할 경우
 						mav.addObject("boardvo", boardvo);
-						mav.setViewName("main/notice_edit.tiles_MTS");
+						mav.setViewName("mshboard/notice_edit.tiles_MTS");
 
 						return mav;
 					}

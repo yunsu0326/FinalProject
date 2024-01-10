@@ -7,6 +7,9 @@
 %>
 
 <style type="text/css">
+	
+  
+         
 	table {
   border-collapse: collapse;
   width: 100%;
@@ -35,7 +38,25 @@ button#updateDocument,button#deleteDocument{
 </style>
 
 <script type="text/javascript">
+	
+	$(document).ready(function(){
+		
+		$("input[name=attach]").off().on("change", function(){
 
+			if (this.files && this.files[0]) {
+
+				var maxSize = 10 * 1024 * 1024;
+				var fileSize = this.files[0].size;
+
+				if(fileSize > maxSize){
+					alert("첨부파일 사이즈는 10MB 이내로 등록 가능합니다.");
+					$(this).val('');
+					return false;
+				}
+			}
+		});
+		
+	});
 // function declaration
 
 //재직증명서 모달 열기
@@ -142,6 +163,7 @@ function updateDocument(seq){
 
 // 문서 수정하기 전송
 function goupdateDocument(){
+	
 	if($("input#updateDocumentSubject").val() == ""){
 		alert("문서제목을 입력해주세요.")
 		return;
@@ -152,6 +174,8 @@ function goupdateDocument(){
 		return;
 	}
 	
+	
+	
 	  const frm = document.documentUpdate;
 	  frm.method = "post";
 	  frm.action = "<%= ctxPath%>/updateDocument.gw";
@@ -159,7 +183,7 @@ function goupdateDocument(){
 }
 </script>
 
-<div class="container" style="margin-top:200px;  text-align:center;">
+<div class="container" style="margin-top:50px;  text-align:center; padding-bottom:200px;">
 	<h3>증명서 발급</h3>
 	<table style="margin-bottom:100px;">
 	 <thead>
@@ -375,3 +399,4 @@ function goupdateDocument(){
     </div>
   </div>
 </div>
+

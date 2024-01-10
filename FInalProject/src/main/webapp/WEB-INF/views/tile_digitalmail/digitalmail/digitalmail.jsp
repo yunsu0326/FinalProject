@@ -65,8 +65,6 @@
 	            $("#all_check").prop("checked",true);
 			  }
           });	      
-		  
-		  
       
       });
       
@@ -90,7 +88,6 @@
 			data:{"send_email_seq":send_email_seq },
 	        success:function(json){
 	        	if(json != "" && json != null){
-	        		
 	        		alert("비밀 메일입니다. 암호를 입력해주세요.");
 	        		location.href="<%=ctxPath%>/digitalmailview.gw?send_email_seq="+send_email_seq;
 	  				<%--  
@@ -124,8 +121,8 @@
             } 
 		});
 	}
-	
-	// receipt_favorites update 하기
+    
+ // receipt_favorites update 하기
 	function receipt_favorites_update(receipt_mail_seq){
 		$.ajax({
 			url:"<%= ctxPath%>/receipt_favorites_update.gw",
@@ -227,13 +224,8 @@
             }
 		});
 	};
-	
-	
-	
-	
-	
-	
-	
+      
+  
   </script>
 
 
@@ -325,9 +317,7 @@
 	                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: orange;"> priority_high </span>
 	                </c:if>		
 			        <!-- 중요메일 여부 -->
-			        
 			                
-			        
 					<!-- 수신자 정보 -->
 					<span class="emailRow_title ml-2">${emailVO.job_name}&nbsp;${emailVO.name}</span>
 					<!-- 수신자 정보 -->
