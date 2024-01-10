@@ -52,6 +52,7 @@
 		
 		  const wordLength = $(this).val().trim().length;
 		  // 검색어에서 공백을 제거한 길이를 알아온다.
+		  const myEmail = "${sessionScope.loginuser.email}";
 		  
 		  if(wordLength == 0) {
 			  $("div#displayList").hide();
@@ -64,8 +65,10 @@
 				  $.ajax({
 					  url:"<%= ctxPath%>/emailwordSearchShow.gw",
 					  type:"get",
-					  data:{"searchType":$("input[name='searchType']").val()
-						   ,"searchWord":$("input[name='searchWord']").val()},
+					  data:{"searchType":$("input[name='searchType']").val(),
+						  "searchWord":$("input[name='searchWord']").val(),
+						  "myEmail": myEmail
+					  },
 				      dataType:"json",
 				      success:function(json){
 				      	

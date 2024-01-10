@@ -123,6 +123,20 @@
 	   
 	}
 	
+	.sidebarOption> a.menu_name{
+	    margin-left: 10px;
+	    font-size: 14px;
+		color : black;
+	}
+	
+	
+	div.sidebarOption:hover > a.menu_name:hover:hover
+	{
+	    background-color: white;
+	    color: rgb(3, 199, 90);
+	    font-weight: 800;
+	}
+	
 	.sidebarOption> span.menu_name{
 	    margin-left: 10px;
 	    font-size: 14px;
@@ -135,7 +149,6 @@
 	    color: rgb(3, 199, 90);
 	    font-weight: 800;
 	}
-	
 	
 	
 	.sidebar_footer{

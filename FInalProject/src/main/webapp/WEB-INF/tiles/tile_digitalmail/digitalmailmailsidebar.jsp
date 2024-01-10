@@ -59,35 +59,35 @@
  		</div>
        	<div class="sidebarOption opt">
 			<span class="material-icons-outlined">mail_outline</span>
-			<span class="menu_name">전체메일함</span>
+			<a class="menu_name">전체메일함</a>
         </div>
         <div class="sidebarOption opt" style="vertical-align: center;">
 			<span class="material-icons-outlined">forward_to_inbox</span>
-            <span class="menu_name">보낸메일함</span>
+            <a class="menu_name">보낸메일함</a>
         </div>
         <div class="sidebarOption opt">
 			<span class="material-icons-outlined">note_add</span>
-			<span class="menu_name">임시보관함</span>
+			<a href="<%= ctxPath %>/emailaddstoplist.gw" class="menu_name">임시보관함</a>
 		</div>
         <div class="sidebarOption opti">
     		<span class="material-icons-outlined"> inbox </span> 
-    		<span class="menu_name">받은메일함</span>
+    		<a class="menu_name">받은메일함</a>
 		</div>
 		<div class="sidebarOption opt">
 			<span class="material-icons-outlined">mark_email_unread</span>
-			<span class="menu_name">안읽은메일함</span>
+			<a class="menu_name">안읽은메일함</a>
         </div>
 		<div class="sidebarOption opt">
 			<span class="material-icons-outlined" style="color: orange;"> priority_high </span> 
-			<span class="menu_name">중요메일함</span>
+			<a class="menu_name">중요메일함</a>
 		</div>
 		<div class="sidebarOption opt">
 			<span class="material-icons-outlined" style="color: red;"> favorite </span> 
-			<span class="menu_name">즐겨찾기</span>
+			<a class="menu_name">즐겨찾기</a>
 		</div>
 		<div class="sidebarOption opt">
 			<span class="material-icons-outlined"> delete </span> 
-			<span class="menu_name">휴지통</span>
+			<a class="menu_name">휴지통</a>
 		</div>
 		<div class="sidebarOption more">
 			<span class="material-icons-outlined"> expand_more </span> 
@@ -96,19 +96,19 @@
 		<div class="more_memu">
 			<div class="sidebarOption opt">
 				<span class="material-icons-outlined">drafts</span>
-				<span class="menu_name">읽은메일함</span>
+				<a class="menu_name">읽은메일함</a>
 			</div>
 			<div class="sidebarOption opt">
 				<span class="material-icons-outlined">edit_note</span>
-	            <span class="menu_name">내게쓴메일함</span>
+	            <a class="menu_name">내게쓴메일함</a>
 			</div>
 			<div class="sidebarOption opt">
 				<span class="material-icons-outlined">face</span> 
-	            <span class="menu_name">우리팀메일</span>
+	            <a class="menu_name">우리팀메일</a>
 			</div>
 			<div class="sidebarOption opt">
 				<span class="material-icons-outlined">account_circle</span> 
-				<span class="menu_name">우리부서메일</span>
+				<a class="menu_name">우리부서메일</a>
 			</div>
 	        <div class="sidebarOption reset">
 				<span class="material-icons-outlined">expand_less</span> 

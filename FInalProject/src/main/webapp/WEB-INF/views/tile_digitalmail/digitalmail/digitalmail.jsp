@@ -88,7 +88,6 @@
 			data:{"send_email_seq":send_email_seq },
 	        success:function(json){
 	        	if(json != "" && json != null){
-	        		
 	        		alert("비밀 메일입니다. 암호를 입력해주세요.");
 	        		location.href="<%=ctxPath%>/digitalmailview.gw?send_email_seq="+send_email_seq;
 	  				<%--  
@@ -122,6 +121,110 @@
             } 
 		});
 	}
+    
+ // receipt_favorites update 하기
+	function receipt_favorites_update(receipt_mail_seq){
+		$.ajax({
+			url:"<%= ctxPath%>/receipt_favorites_update.gw",
+			type:"post",
+			data:{"receipt_mail_seq":receipt_mail_seq},
+			dataType:"json",
+	        success:function(json){
+	        	console.log(json);
+	        	// {"receipt_favorites":"0"}
+	        	
+        		if(json.receipt_favorites1 === "1"){
+	        		$("span#"+receipt_mail_seq).text("favorite");
+	        		$("span#"+receipt_mail_seq).css("color", "red");
+	        	}
+	        	
+	        	else{
+	        		$("span#"+receipt_mail_seq).text("favorite_border");
+	        		$("span#"+receipt_mail_seq).css("color", "black");
+	        	}
+	        	
+	        },
+	        error: function(request, status, error){
+                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+			
+		});
+		
+	};
+	
+	
+	// receipt_favorites update 하기
+	function receipt_favorites_update(receipt_mail_seq){
+		$.ajax({
+			url:"<%= ctxPath%>/receipt_favorites_update.gw",
+			type:"post",
+			data:{"receipt_mail_seq":receipt_mail_seq},
+			dataType:"json",
+	        success:function(json){
+	        //	console.log(json);
+	        	// {"receipt_favorites":"0"}
+        		if(json.receipt_favorites === "1"){
+	        		$("span#"+receipt_mail_seq+"fav").text("favorite");
+	        		$("span#"+receipt_mail_seq+"fav").css("color", "red");
+	        	}
+	        	else{
+	        		$("span#"+receipt_mail_seq+"fav").text("favorite_border");
+	        		$("span#"+receipt_mail_seq+"fav").css("color", "black");
+	        	}
+	        },
+	        error: function(request, status, error){
+                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+		});
+	};
+	
+	
+	// email_receipt_read_count update 하기
+	function email_receipt_read_count_update(receipt_mail_seq){
+		$.ajax({
+			url:"<%= ctxPath%>/email_receipt_read_count_update.gw",
+			type:"post",
+			data:{"receipt_mail_seq":receipt_mail_seq},
+			dataType:"json",
+	        success:function(json){
+	        //	console.log(json);
+	        	
+        		$("span#"+receipt_mail_seq+"rc").text("drafts");
+        		$("span#"+receipt_mail_seq+"rc").css("color", "black");
+	        	
+	        },
+	        error: function(request, status, error){
+                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+		});
+	};
+	
+	
+	// receipt_important update 하기
+	function receipt_important_update(receipt_mail_seq){
+		$.ajax({
+			url:"<%= ctxPath%>/receipt_important_update.gw",
+			type:"post",
+			data:{"receipt_mail_seq":receipt_mail_seq},
+			dataType:"json",
+	        success:function(json){
+	        	console.log(json);
+	        	// {"receipt_favorites":"0"}
+        		if(json.receipt_important === "1"){
+	        		$("span#"+receipt_mail_seq+"imp").text("priority_high");
+	        		$("span#"+receipt_mail_seq+"imp").css("color", "orange");
+	        	}
+	        	else{
+	        		$("span#"+receipt_mail_seq+"imp").text("priority_high");
+	        		$("span#"+receipt_mail_seq+"imp").css("color", "black");
+	        	}
+	        },
+	        error: function(request, status, error){
+                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+		});
+	};
+      
   
   </script>
 
@@ -189,22 +292,31 @@
 					<div class="emailRow_options">
 						<input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
 		                <c:if test="${emailVO.receipt_favorites==0}">
-		                	<span class="material-icons-outlined ml-2">favorite_border</span>
+		                	<span id="${emailVO.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.receipt_mail_seq}')">favorite_border</span>
 		                </c:if>
 		                <c:if test="${emailVO.receipt_favorites==1}">
-		                	<span class="material-icons-outlined ml-2" style="color: red;">favorite</span>
+		                	<span id="${emailVO.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.receipt_mail_seq}')" style="color: red;">favorite</span>
 		                </c:if>
 					</div>
 					<!-- 즐겨찾기 여부 -->
 					
 					<!-- 읽음 여부 정보 -->
 					<c:if test="${emailVO.email_receipt_read_count==0}">
-	                	<span class="material-icons-outlined ml-2">mark_email_unread</span>
+	                	<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="email_receipt_read_count_update('${emailVO.receipt_mail_seq}')" style="color: red;">mark_email_unread</span>
 	                </c:if>
 	                <c:if test="${emailVO.email_receipt_read_count==1}">
-	                	<span class="material-icons-outlined ml-2" style="color: red;">drafts</span>
+	                	<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="email_receipt_read_count_update('${emailVO.receipt_mail_seq}')">drafts</span>
 	                </c:if>		
 			        <!-- 읽음 여부 정보 -->
+			        
+			        <!-- 중요메일 여부 -->
+					<c:if test="${emailVO.receipt_important==0}">
+	                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: black;"> priority_high </span>
+	                </c:if>
+	                <c:if test="${emailVO.receipt_important==1}">
+	                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: orange;"> priority_high </span>
+	                </c:if>		
+			        <!-- 중요메일 여부 -->
 			                
 					<!-- 수신자 정보 -->
 					<span class="emailRow_title ml-2">${emailVO.job_name}&nbsp;${emailVO.name}</span>
