@@ -221,14 +221,12 @@ $(document).ready(function(){
 				        $("#modal_marriage").text(empData.marriage);
 				        $("#modal_reward").text(empData.reward);
 				        
-				        $("#button").html("<button type='button' id='btn_edit' onclick='javascript:location.href=\"" + '<%= ctxPath %>/infoEdit.gw?employee_id=' + empData.employee_id + "\"'>수정하기</button>");
+				        $("#button").html("<button type='button' id='btn_edit' onclick='javascript:location.href=\"" + '<%= ctxPath %>/emp/infoEdit.gw?employee_id=' + empData.employee_id + "\"'>수정하기</button>");
 
-
-				        
 				        // 모달 열기
 				        $("#modal_member").modal("show");
 
-				       				        
+				       				       
 				    } else {
 				        alert("JSON 데이터가 유효하지 않습니다.");
 				    }
@@ -241,130 +239,11 @@ $(document).ready(function(){
  		
     }); //$(document).on("click", "table#emptbl tr.empinfo", function (e) {
   	  
-		
-    	
-
-	// 우편번호 input태그 누르면 다음 주소찾기 띄우기
-	$("input:text[name='postcode']").on("focus", function(e) {
-		$("input#address").removeAttr("readonly");
-	    
-	    // 참고항목을 쓰기가능 으로 만들기
-	    $("input#extraAddress").removeAttr("readonly");
-	    
-		new daum.Postcode({
-	        oncomplete: function(data) {
-	           
-	            let addr = ''; 
-	            let extraAddr = ''; 
-
-	            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-	            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-	                addr = data.roadAddress;
-	            } else { // 사용자가 지번 주소를 선택했을 경우(J)
-	                addr = data.jibunAddress;
-	            }
-
-	            // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-	            if(data.userSelectedType === 'R'){
-	                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-	                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-	                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-	                    extraAddr += data.bname;
-	                }
-	                // 건물명이 있고, 공동주택일 경우 추가한다.
-	                if(data.buildingName !== '' && data.apartment === 'Y'){
-	                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-	                }
-	                // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-	                if(extraAddr !== ''){
-	                    extraAddr = ' (' + extraAddr + ')';
-	                }
-	                // 조합된 참고항목을 해당 필드에 넣는다.
-	                document.getElementById("extraAddress").value = extraAddr;
-	            
-	            } else {
-	                document.getElementById("extraAddress").value = '';
-	            }
-
-	            // 우편번호와 주소 정보를 해당 필드에 넣는다.
-	            document.getElementById('postcode').value = data.zonecode;
-	            document.getElementById("address").value = addr;
-	            $("input:hidden[id='postcode_v']").val(1);
-	            $("input:hidden[id='address_v']").val(1);
-	            // 커서를 상세주소 필드로 이동한다.
-	            document.getElementById("detailAddress").focus();
-	            
-	        },
-	        onclose: function(state) {
-	            // 다음 우편번호 서비스 창이 닫혔을 때 호출되는 콜백
-	            if (state === 'FORCE_CLOSE') {
-	                // 사용자가 창을 강제로 닫았을 경우, 여기에 원하는 동작을 추가할 수 있습니다.
-	                // 예를 들어, 다른 곳으로 포커스를 이동하거나 다른 동작을 수행할 수 있습니다.
-	                document.getElementById("bank_name").focus();
-	            }
-	        }
-	    }).open();
-		
-	    // 주소를 읽기전용(readonly) 로 만들기
-	    $("input#address").attr("readonly", true);
-	    
-	    // 참고항목을 읽기전용(readonly) 로 만들기
-	    $("input#extraAddress").attr("readonly", true);
-	});
-	
-	
-	// 주소 변경시 상세주소 비우기
-	$("input:text[id='detailAddress']").on("focus", function(e){
-		
-		$(e.target).val("");
-		
-	});
-	
-	// 상세주소 유효성검사
-	$("input:text[id='detailAddress']").on("focus", function(e){
-		
-		if($(e.target).val("")){
-			$(e.target).addClass("error");
-			$("input:hidden[id='detailaddress_v']").val(0);
-		}
-		else{
-			$(e.target).removeClass("error");
-			$("input:hidden[id='detailaddress_v']").val(1);
-		}
-		
-	});
-			
-	
-	// 계좌번호 유효성검사
-	$("input:text[name='bank_code']").on("focusout", function(e) {
-		
-		const regExp_phone = new RegExp(/^\d+$/);
-		
-		const bool = regExp_phone.test($(e.target).val());		
-		
-		if(!bool) {
-			$(e.target).addClass("error");
-			$("input:hidden[id='bank_code']").val(0);
-		}
-		else {
-			$(e.target).removeClass("error");
-			$("input:hidden[id='bank_code']").val(1);
-		}
-		
-	});
-	
-	
-	// 취소버튼 클릭시 이전페이지 이동
-	$("button#btnCancel").click(function() {
-		const cancel = confirm("프로필 수정을 취소하시겠습니까?")
-		if(cancel) {
-			window.history.back();
-		}
-	});
-	
     
+   	
 	
 }); // end of $(document).ready(function(){})----------------
+
 
 
 function btnUpdate() {
@@ -496,9 +375,6 @@ function btnUpdate() {
       </table>
    
    
-    <div align="right" style="border: solid 0px gray; width: 80%; margin: 30px auto;"> 
-       <button type="button" class="btn btn-sm btn-secondary" onclick="<%= ctxPath%>/emp/payment.gw">월급 지급하기</button>
-    </div>
     
     
     

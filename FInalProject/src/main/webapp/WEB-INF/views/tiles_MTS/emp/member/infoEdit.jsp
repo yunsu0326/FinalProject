@@ -158,7 +158,10 @@ button#btnCancel {
 <script type="text/javascript">
 
 $(document).ready(function(){
-	
+
+	 // 부서 이름 뿌리기
+  	 populateDepartmentsDropdown();
+  	 
 	$("input.error").removeClass("error");
 	$("input.check").val(1);
 	
@@ -375,6 +378,34 @@ function btnUpdate() {
 	
 }
 
+
+function populateDepartmentsDropdown() {
+	    $.ajax({
+	        url: "<%= ctxPath%>/emp/select_department.gw", 
+	        dataType: "json",
+	        success: function (json) {
+	        	//console.log(JSON.stringify(json));
+	        
+	            let dropdownOptions = "<option value='${requestScope.empOneDetail.department_id}'>${requestScope.empOneDetail.department_name}</option>";
+
+	            if (json.length > 0) {
+	                $.each(json, function (index, item) {
+	                	
+	                    	dropdownOptions += "<option value="+item.department_id+">"+item.department_name+"</option>";
+	                	
+	                });
+	            }
+
+	            $("select[name='dept_id']").html(dropdownOptions);
+	            $("select[name='del_dept_id']").html(dropdownOptions);
+	        },
+	        error: function (request, status, error) {
+	            alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
+	        }
+	    });
+	}
+
+
 </script>
 	
 	<div id="top">
@@ -387,30 +418,30 @@ function btnUpdate() {
 		<div style="display: flex; justify-content: center;">
 		
 			<div id="photo">
-				<img src="<%= ctxPath%>/resources/empImg/${requestScope.loginuser.photo}" id="previewImg" />
+				<img src="<%= ctxPath%>/resources/empImg/${requestScope.empOneDetail.photo}" id="previewImg" />
 			</div>
 				
 			<table id="table1" class="myinfo_tbl">
 		 
 				<tr>
 					<th>성명</th>
-					<td>${requestScope.loginuser.name}</td>
+					<td>${requestScope.empOneDetail.name}</td>
 					<th>사원번호</th>
-					<td>${requestScope.loginuser.employee_id}</td>
+					<td>${requestScope.empOneDetail.employee_id}</td>
 				</tr>
 		 
 				<tr>
 					<th>부서명</th>
-					<td>${requestScope.dept_team.DEPARTMENT_NAME}</td>
+					<td><select name="dept_id"> </select></td>
 					<th>팀명</th>
-					<td>${requestScope.dept_team.TEAM_NAME}</td>
+					<td>${requestScope.empOneDetail.team_name}</td>
 				</tr>
 				
 				<tr>
 					<th>직급</th>
-					<td>${requestScope.dept_team.JOB_NAME}</td>
+					<td>${requestScope.empOneDetail.job_name}</td>
 					<th>입사일자</th>
-					<td>${requestScope.loginuser.hire_date}</td>
+					<td>${requestScope.empOneDetail.hire_date}</td>
 				</tr>
 				
 			</table>
@@ -426,40 +457,40 @@ function btnUpdate() {
 		
 			<tr>
 				<th>이메일</th>
-				<td class="input_size"><input type="text" name="email" value="${requestScope.loginuser.email}" readonly /></td>
+				<td class="input_size"><input type="text" name="email" value="${requestScope.empOneDetail.email}" /></td>
 				<th>연락처</th>
 				<td class="input_size">
-					<input type="text" class="error requiredInfo" name="phone" value="${requestScope.loginuser.phone}" />
+					<input type="text" class="error requiredInfo" name="phone" value="${requestScope.empOneDetail.phone}" />
 					<input type="hidden" id="phone" class="check" />
 				</td>
 			</tr>
 	
 			<tr>
 				<th>생년월일</th>
-				<td class="input_size"><input type="text" name="jubun" value="${requestScope.gender_birthday.BIRTHDAY.substring(0, 4)}년 ${requestScope.gender_birthday.BIRTHDAY.substring(4, 6)}월 ${requestScope.gender_birthday.BIRTHDAY.substring(6, 8)}일" readonly /></td>
+				<td class="input_size">${requestScope.empOneDetail.birthday.substring(0, 2)}년 ${requestScope.empOneDetail.birthday.substring(3, 5)}월 ${requestScope.empOneDetail.birthday.substring(6, 8)}일</td>
 				<th>성별</th>
-				<td class="input_size"><input type="text" name="gender" value="${requestScope.gender_birthday.GENDER}" readonly /></td>
+				<td class="input_size">${requestScope.empOneDetail.gender}</td>
 			</tr>
 			
 			<tr>
 				<th>우편번호</th>
 				<td class="input_size">
-					<input type="text" class="error requiredInfo" name="postcode" id="postcode" value="${requestScope.loginuser.postcode}" />
+					<input type="text" class="error requiredInfo" name="postcode" id="postcode" value="${requestScope.empOneDetail.post_code}" />
 					<input type="hidden" id="postcode_v" class="check" />
 				</td>
 				<th>주소 참고사항</th>
-				<td class="input_size"><input type="text" class="error requiredInfo" name="extraaddress" id="extraAddress" size="30" value="${requestScope.loginuser.extraaddress}" /></td>
+				<td class="input_size"><input type="text" class="error requiredInfo" name="extraaddress" id="extraAddress" size="30" value="${requestScope.empOneDetail.extraaddress}" /></td>
 			</tr>
 			
 			<tr>
 				<th>주소</th>
 				<td class="input_size">
-					<input type="text" class="error requiredInfo" name="address" id="address" style="margin-bottom: 1%;" size="30" value="${requestScope.loginuser.address}" />
+					<input type="text" class="error requiredInfo" name="address" id="address" style="margin-bottom: 1%;" size="30" value="${requestScope.empOneDetail.address}" />
 					<input type="hidden" id="address_v" class="check" />
 				</td>
 				<th>상세주소</th>
 				<td class="input_size">
-					<input type="text" class="error requiredInfo" name="detailaddress" id="detailAddress" size="30" value="${requestScope.loginuser.detailaddress}" />
+					<input type="text" class="error requiredInfo" name="detailaddress" id="detailAddress" size="30" value="${requestScope.empOneDetail.detailaddress}" />
 					<input type="hidden" id="detailaddress_v" class="check" />
 				</td>
 			</tr> 
@@ -468,7 +499,7 @@ function btnUpdate() {
 				<th>은행명</th>
 				<td class="input_size">
 					<select name="bank_name" id="bank_name">
-						<option>${requestScope.loginuser.bank_name}</option>
+						<option>${requestScope.empOneDetail.bank_name}</option>
 						<option>농협은행</option>
 						<option>신한은행</option>
 						<option>국민은행</option>
@@ -482,14 +513,14 @@ function btnUpdate() {
 				</td>
 				<th>계좌번호</th>
 				<td class="input_size">
-					<input type="text" class="error requiredInfo" name="bank_code" value="${requestScope.loginuser.bank_code}" />
+					<input type="text" class="error requiredInfo" name="bank_code" value="${requestScope.empOneDetail.bank_code}" />
 					<input type="hidden" id="bank_code" class="check" />
 				</td>
 			</tr>
 			
 		</table>
 		
-		<input type="hidden" value="${requestScope.loginuser.photo}" name="photo" />
+		<input type="hidden" value="${requestScope.empOneDetail.photo}" name="photo" />
 		<input type="hidden" value="${employee_id}" name="employee_id" />
 	</form>
 	

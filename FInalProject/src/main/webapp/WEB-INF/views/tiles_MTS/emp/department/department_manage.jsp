@@ -353,8 +353,9 @@
  						    	     select_department(); // 모든부서 출력해주기
  							    	 select_team(); // 모든팀 출력해주기
  							   	 	 populateDepartmentsDropdown(); // 부서 이름 뿌리기
+ 	 						        $("#departmentDelModal").modal("hide"); // 모달 띄우기
+
  						         }
- 						        $("#departmentDelModal").modal("hide"); // 모달 띄우기
  						     },
  							 error: function(request, status, error){
  								alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
@@ -390,8 +391,9 @@
 						    	     department_id_max();  // 신규부서번호 입력해주기
 						    	     select_department(); // 모든부서 출력해주기
 							    	 select_team(); // 모든팀 출력해주기
+							    	 $("#teamDelModal").modal("hide"); // 모달 띄우기
 						         }
-						         $("#teamDelModal").modal("hide"); // 모달 띄우기
+						         
 						     },
 							 error: function(request, status, error){
 									alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);

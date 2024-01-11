@@ -4,6 +4,8 @@ package com.spring.app.yosub.controller;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.json.JSONObject;
@@ -13,11 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.spring.app.common.MyUtil;
+import com.spring.app.domain.EmployeesVO;
 import com.spring.app.yosub.service.*;
 		
 	
@@ -467,6 +471,27 @@ import com.spring.app.yosub.service.*;
 	 	
 	 	
 	 	
+		 	
+		 // 수정페이지 요청
+			@GetMapping("/infoEdit.gw")
+			public ModelAndView requiredLogin_myinfoEdit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+				
+					String employee_id = request.getParameter("employee_id");
+				   System.out.println("employee_id" + employee_id);
+				   //employee_id9999
+				   
+				   Map<String, String> empOneDetail = service.oneMemberMap(employee_id);
+				   
+				   String name = empOneDetail.get("name");
+				   System.out.println("name" + name);
+				   //name이요섭
+				   
+				   
+		        	mav.addObject("empOneDetail", empOneDetail);
+		        	mav.setViewName("emp/member/infoEdit.tiles_MTS");
+				
+				return mav;
+			}
 	   
 	 	
 	 	

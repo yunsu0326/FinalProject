@@ -97,8 +97,16 @@ public class EmpDAO_imple implements EmpDAO {
 	@Override
 	public int update_employees_department_id(Map<String, String> paraMap) {
 		
-		int n = sql.update("yosub.update_employees_department_id", paraMap);
+		String job_id = sql.selectOne("yosub.employees_department_job", paraMap);
 		
+		paraMap.put("job_id", job_id);
+		
+		int n =0;
+		
+		if(job_id != "") {
+		
+		 n = sql.update("yosub.update_employees_department_id", paraMap);
+		}
 		return n;
 	}
 
@@ -152,8 +160,15 @@ public class EmpDAO_imple implements EmpDAO {
 	@Override
 	public int update_employees_team_id(Map<String, String> paraMap) {
 		
-		int n = sql.update("yosub.update_employees_team_id", paraMap);
+		String job_id = sql.selectOne("yosub.employees_team_job", paraMap);
 		
+		paraMap.put("job_id", job_id);
+		
+		int n =0;
+		
+		if(job_id != "") {
+		n = sql.update("yosub.update_employees_team_id", paraMap);
+		}
 		return n;
 	}
 	
@@ -194,5 +209,6 @@ public class EmpDAO_imple implements EmpDAO {
 		int n = sql.delete("yosub.team_del",team_id);
 		return n;
 	}
+
 
 }
