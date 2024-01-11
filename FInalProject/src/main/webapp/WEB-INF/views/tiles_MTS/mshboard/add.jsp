@@ -333,7 +333,6 @@ $(document).ready(function(){
 	 
 	<%-- ===== 파일첨부하기 시작 ====== --%>
 	<form name="addFrm" enctype="multipart/form-data" style="margin: 2% 0;">
-			
 
    		<div class="section-title">
       			<span class="write_span">성명</span>
