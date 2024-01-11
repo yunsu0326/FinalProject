@@ -79,4 +79,7 @@ public interface WorkDAO {
 	// 오늘날짜의 퇴근시간 얻어오기
 	String todayEndTime(String fk_employee_id);
 
+	// 출근한 날짜를 가져와 출근한 시간 가져오기 
+	Map<String, String> getMyWorkTime(Map<String, String> paraMap);
+
 }

@@ -320,7 +320,13 @@ $(document).ready(function(){
    	    frm.action = "<%= ctxPath %>/workRequest.gw";
    	    frm.submit();	
     }); 
-}); // end of $(document).ready(function() -------------------------
+    
+    // 모달창에서 취소 클릭시 닫아주기
+    $("input#cancle").click(function(){
+    	closeModal();
+    });
+    	
+});// end of $(document).ready(function() -------------------------
 
 // 주차별 근태기록 가져오기
 function getMyWorkList() {
@@ -633,6 +639,11 @@ function parseTime(timeString) {
 // 주어진 값이 10보다 작을 경우 그 앞에 0을 붙여서 두 자리 수로 만드는 함수
 function padZero(value) {
     return value < 10 ? "0" + value : value;
+}
+
+// 모달 닫는 함수
+function closeModal() {
+	$('#openModal').modal('hide');
 }
 </script>
 
