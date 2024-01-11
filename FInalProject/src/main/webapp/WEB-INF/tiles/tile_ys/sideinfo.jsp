@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
             sidebar.classList.add('hidden');
         }
     });
-});
+}); //마지막으로 레알 고침
 
 
 function showPopup() {
@@ -188,7 +188,7 @@ function showPopup() {
                 </ul>
             </li>
         </c:if>
-
+		
         <!-- 프로필 항목 추가 -->
         <li class="nav-item">
             <a href="<%= ctxPath %>/myinfo.gw">

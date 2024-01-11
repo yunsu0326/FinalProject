@@ -184,37 +184,30 @@ $(document).ready(function(){
 		     data:{"employee_id":employee_id},
 		     dataType:"json",
 		     success:function(json){
-		           //console.log(JSON.stringify(json));
+		           console.log(JSON.stringify(json));
 		           // {"empOneDetail":{"fk_department_id":"100","t_manager_name":"이요섭","salary":"100000000","t_manager_id":"10000","gradelevel":"5","t_manager_email":"leeys@naver.com","t_manager_job_name":"개발 부서장","manager_phone":"01097370275","manager_id":"9999","t_manager_phone":"01097370275","jubun":"8607191","email":"leeys@naver.com","fk_team_id":"1","address":"  ","idle":"0","department_name":"개발부","manager_job_name":"개발 부서장","hire_date":"2023-12-05 17:07:56","manager_name":"이요섭","job_name":"개발 부서장","phone":"01097370275","employee_id":"9999","name":"이요섭","basic_salary":"100000000","manager_email":"leeys@naver.com","status":"1"}}
 					if (json && json.empOneDetail) {
 				        const empData = json.empOneDetail;
 				
 				        // 모달에 데이터 삽입
-   				        const photoFileName = empData.photo; // 이미지 파일명을 가져오는 로직
-       					$("#modal_photo").html(`<img src="${imagePath}${photoFileName}">`);
-
+   				        
+       					$("#modal_photo").html("<img src='<%= ctxPath %>/resources/empImg/" + empData.photo + "'>");
+       					$("#modal_employee_id").text(empData.employee_id);
 				        $("#modal_department_name").text(empData.department_name);
 				        $("#modal_job_name").text(empData.job_name);
+				        $("#modal_team_name").text(empData.team_name);
 				        $("#modal_name").text(empData.name);
 				        $("#modal_email").text(empData.email);
+				        $("#modal_post_code").text(empData.postcode);
+				        $("#modal_address").text(empData.address);
 				        $("#modal_phone").text(empData.phone);
 				        $("#modal_hire_date").text(empData.hire_date);
-				        //$("#modal_postcode").text(empData.postcode);
-				        //$("#modal_address").text(empData.address);
+				        $("#modal_birthday").text(empData.birthday);
+				        $("#modal_gender").text(empData.gender);
 
 				        $("#modal_salary").text(empData.salary);
-				        $("#modal_bank_code").text(empData.bank_code);
-				        $("#modal_bank_name").text(empData.bank_name);
+				        $("#modal_bank_code").text(empData.bank_name + ", " +empData.bank_code);
 				        
-				        $("#modal_manager_job_name").text(empData.t_manager_job_name);
-				        $("#modal_manager_email").text(empData.t_manager_email);
-				        $("#modal_manager_name").text(empData.t_manager_name);
-				        //$("#modal_manager_phone").text(empData.t_manager_phone);
-				        
-				        $("#modal_t_manager_job_name").text(empData.t_manager_job_name);
-				        $("#modal_t_manager_email").text(empData.t_manager_email);
-				        $("#modal_t_manager_name").text(empData.t_manager_name);
-				        //$("#modal_t_manager_phone").text(empData.t_manager_phone);
 				        
 				        // 모달 열기
 				        $("#modal_member").modal("show");
@@ -230,7 +223,7 @@ $(document).ready(function(){
 		          
 		     });
  		
-    });
+    }); //$(document).on("click", "table#emptbl tr.empinfo", function (e) {
   	  
 		
 
@@ -333,74 +326,96 @@ $(document).ready(function(){
       
       <!-- Modal body -->
     <div class="modal-body">
- <table class="table table-bordered vertical-table">
-    <tbody>
-        <tr>
-            <th rowspan="7"><img src="<%= ctxPath%>/resources/images/files/<span id='modal_photo'></span>"></th>
-        </tr>
-        <tr>
-            <th>부서명</th>
-            <td><span id="modal_department_name"></span></td>
-        </tr>
-        <tr>
-            <th>직책</th>
-            <td><span id="modal_job_name"></span></td>
-        </tr>
-        <tr>
-            <th>이름</th>
-            <td><span id="modal_name"></span></td>
-        </tr>
-        <tr>
-            <th>이메일</th>
-            <td><span id="modal_email"></span></td>
-        </tr>
-        <tr>
-            <th>입사일</th>
-            <td><span id="modal_hire_date"></span></td>
-        </tr>
-        <tr>
-            <th>전화번호</th>
-            <td><span id="modal_phone"></span></td>
-        </tr>
-        <tr>
-            <th>급여</th>
-            <td><span id="modal_salary"></span></td>
-        </tr>
-        <tr>
-            <th>은행명</th>
-            <td><span id="modal_bank_name"></span></td>
-        </tr>
-        <tr>
-            <th>은행 코드</th>
-            <td><span id="modal_bank_code"></span></td>
-        </tr>
-        <tr>
-            <th>부서장 직책</th>
-            <td><span id="modal_manager_job_name"></span></td>
-        </tr>
-        <tr>
-            <th>부서장 이메일</th>
-            <td><span id="modal_manager_email"></span></td>
-        </tr>
-        <tr>
-            <th>부서장 이름</th>
-            <td><span id="modal_manager_name"></span></td>
-        </tr>
-        <tr>
-            <th>팀장 직책</th>
-            <td><span id="modal_t_manager_job_name"></span></td>
-        </tr>
-        <tr>
-            <th>팀장 이메일</th>
-            <td><span id="modal_t_manager_email"></span></td>
-        </tr>
-        <tr>
-            <th>팀장 이름</th>
-            <td><span id="modal_t_manager_name"></span></td>
-        </tr>
-        
-    </tbody>
-</table>
+<div style="display: flex; justify-content: center;">
+		
+		<div id="photo">
+			<img src="<%= ctxPath%>/resources/empImg/${requestScope.loginuser.photo}" />
+		</div>
+			
+		<table id="table1" class="myinfo_tbl">
+	 
+			<tr>
+				<th>성명</th>
+				<td id="modal_name"></td>
+			
+				<th>사원번호</th>
+				<td id="modal_employee_id"></td>
+			</tr>
+	 
+			<tr>
+				<th>부서명</th>
+				<td id="modal_department_name"></td>
+				<th>팀명</th>
+				<td id="modal_team_name"></td>
+			</tr>
+			
+			<tr>
+				<th>직급</th>
+				<td id="modal_job_name"></td>
+				<th>입사일자</th>
+				<td id="modal_hire_date"></td>
+			</tr>
+			
+		</table>
+		
+	</div>
+	
+	<table id="table2" class="myinfo_tbl">
+	
+		<tr>
+			<th>이메일</th>
+			<td id="modal_email"></td>
+			<th>연락처</th>
+			<td id="modal_phone"></td>
+		</tr>
+
+		<tr>
+			<th>생년월일</th>
+			<td id="modal_birthday"></td>
+			<th>성별</th>
+			<td id="modal_gender"></td>
+		</tr>
+		
+		<tr>
+			<th>우편번호</th>
+			<td id="modal_post_code"></td>
+			<th>주소 참고사항</th>
+			<td id="modal_address"></td>
+		</tr>
+		
+		<tr>
+			<th>연봉</th>
+			<td id="modal_salary"></td>
+			<th>계좌번호</th>
+			<td id="modal_bank_code"></td>
+		</tr>
+		
+	</table>
+
+	<table id="table3" class="myinfo_tbl">
+
+		<tr>
+			<th>연차</th>
+			<th>가족돌봄</th>
+			<th>군소집훈련</th>
+			<th>난임치료</th>
+			<th>배우자출산</th>
+			<th>결혼</th>
+			<th>포상</th>
+		</tr>
+		
+		<tr>
+			<td id="modal_ANNUAL"></td>
+			<td id="modal_FAMILY_CARE"></td>
+			<td id="modal_RESERVE_FORCES"></td>
+			<td id="modal_INFERTILITY_TREATMENT"></td>
+			<td id="modal_CHILDBIRTH"></td>
+			<td id="modal_MARRIAGE"></td>
+			<td id="modal_REWARD"></td>
+		</tr>
+		
+	</table>
+
 
 
 </div>

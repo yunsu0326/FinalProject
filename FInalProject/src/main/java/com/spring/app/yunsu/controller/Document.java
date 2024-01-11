@@ -77,6 +77,8 @@ public class Document {
 	@PostMapping("/registerDocument.gw")
 	public ModelAndView registerDocument(ModelAndView mav,DocumentVO documentvo, MultipartHttpServletRequest mrequest) {
 		
+		String ctxPath = mrequest.getContextPath();
+		
 		MultipartFile attach = documentvo.getAttach();
 		
 		if(attach != null) {
@@ -146,14 +148,15 @@ public class Document {
 			
 		  } catch (Exception e) {
 			  e.printStackTrace();
-		  }
+			  
+		}
 		
 		}
 		
 		int n = 0;
 		
 		n = service.insertDocument(documentvo);
-		String ctxPath = mrequest.getContextPath();
+		
 		if(n==1) {
 			
 			  String message = "문서 업로드를 성공 하였습니다.";
