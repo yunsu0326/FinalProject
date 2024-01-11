@@ -196,6 +196,8 @@
 				    	  
 				    	  select_department(); // 모든부서 출력해주기
 				    	  select_team();		// 모든 팀 출력해주기
+				    	  $("#departmentModal").modal("hide"); // 모달 끄기     
+
 				      }
 				 },
 				 error: function(request, status, error){
@@ -233,6 +235,7 @@
 				    	  
 				    	  select_department(); // 모든부서 출력해주기
 				    	  select_team(); // 모든팀 출력해주기
+				    	  $("#teamModal").modal("hide"); // 모달 끄기     
 				      }
 				 },
 				 error: function(request, status, error){
