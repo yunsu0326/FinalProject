@@ -331,7 +331,7 @@ import com.spring.app.yosub.service.*;
 			return new Gson().toJson(jsonArr);
 	 	}
 	 	
-	 	
+	 	// 부서별 최대 팀값 알아오기
 	 	@ResponseBody
 	 	@GetMapping(value = "/emp/team_id_max_by_department.gw", produces = "text/plain;charset=UTF-8")
 	 	public String team_id_max_by_department(@RequestParam(defaultValue = "") String department_id) {
@@ -344,6 +344,28 @@ import com.spring.app.yosub.service.*;
 			return new Gson().toJson(jsonObj);
 	 	}
 	 	
+	 	
+	 	// 부서별 팀 이름 및 번호알아오기
+	 	@ResponseBody
+	 	@GetMapping(value = "/emp/team_id_select_by_department.gw", produces = "text/plain;charset=UTF-8")
+	 	public String team_id_select_by_department(@RequestParam(defaultValue = "") String department_id) {
+	 	    
+	 		System.out.println(department_id);
+	 		List<Map<String, String>> team_id_select_by_department = service.team_id_select_by_department(department_id);
+
+	 		JsonArray jsonArr = new JsonArray(); // []
+			if(team_id_select_by_department != null && team_id_select_by_department.size() > 0) {
+				for(Map<String, String> map : team_id_select_by_department) {
+					JsonObject jsonObj = new JsonObject(); // {}
+					jsonObj.addProperty("team_id", map.get("team_id"));
+					jsonObj.addProperty("team_name", map.get("team_name"));
+					jsonObj.addProperty("t_manager_id", map.get("t_manager_id"));
+					jsonObj.addProperty("name", map.get("name"));
+					jsonArr.add(jsonObj); 
+				}// end of for-------------------------
+			}
+			return new Gson().toJson(jsonArr);
+	 	}
 	 	
 	 	
 	 	 // 신규부서 입력하기 
@@ -421,13 +443,27 @@ import com.spring.app.yosub.service.*;
 	 	@ResponseBody
 	 	@GetMapping(value = "/emp/department_del.gw", produces = "text/plain;charset=UTF-8")
 		public String department_del(String department_id) {
-	 		int n = service.department_del(department_id);
-			try {
-	 			return "{\"n\":1}";
-	 		} catch(Exception e) { // 부서번호 삭제시  department_id 컬럼에 Foreign Key 제약에 의해 자식 테이블인 employees 테이블에 사원들이 존재하는 경우  
-	 			return "{\"n\":0}";
+	 		 try {
+	             int result = service.department_del(department_id);
+	             return "{\"n\":" + result + "}";
+	         } catch (Exception e) {
+	             return "{\"n\":0}";
 	 		}
 	 	}
+	 	
+
+	 	
+		 // 부서삭제하기
+		 	@ResponseBody
+		 	@GetMapping(value = "/emp/team_del.gw", produces = "text/plain;charset=UTF-8")
+			public String team_del(String team_id) {
+		 		 try {
+		             int result = service.team_del(team_id);
+		             return "{\"n\":" + result + "}";
+		         } catch (Exception e) {
+		             return "{\"n\":0}";
+		 		}
+		 	}
 	 	
 	 	
 	 	

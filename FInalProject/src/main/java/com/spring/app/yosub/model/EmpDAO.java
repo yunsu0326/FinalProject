@@ -49,6 +49,10 @@ public interface EmpDAO {
 	List<Map<String, String>> get_team_info(String team_id);
 	// 부서 삭제하기
 	int department_del(String department_id);
+	// 부서번호에 따른 팀 가져오기
+	List<Map<String, String>> team_id_select_by_department(String department_id);
+	// 팀 삭제하기
+	int team_del(String team_id);
 
 
 

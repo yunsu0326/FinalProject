@@ -419,7 +419,20 @@
 		WHERE RNO BETWEEN 1 AND 5
 	</select>
 
+	<resultMap type="HashMap" id="team_id_select_by_department_Map">
+		<result property="team_id" 		column="team_id"  		javaType="String"/>
+		<result property="team_name" 	column="team_name"  	javaType="String"/>
+		<result property="t_manager_id" column="t_manager_id"  	javaType="String"/>
+		<result property="name" 		column="name"  			javaType="String"/>
+	</resultMap>
 
+	<!--  팀정보 가져오기 등록하기  -->
+	<select id="team_id_select_by_department" parameterType="String" resultMap="team_id_select_by_department_Map">
+         select T.team_id, team_name, T.t_manager_id, E.name
+         from tbl_team T
+         join tbl_employees E on T.t_manager_id = E.employee_id
+         where T.fk_department_id = #{department_id}
+	</select>
 
 
 

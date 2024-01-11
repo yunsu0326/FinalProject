@@ -631,8 +631,9 @@ function selectOneEmail(send_email_seq){
         },
         error: function(request, status, error){
             alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-        } 
-   });
+        }
+    });
+   
 }
 // 주어진 값이 10보다 작을 경우 그 앞에 0을 붙여서 두 자리 수로 만드는 함수
 function padZero(value) {
@@ -661,7 +662,7 @@ function getMyWorkTime(myWorkDate){
         },
         error: function(request, status, error){
             alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-        } 
+        }
 	});
 }
 </script>
