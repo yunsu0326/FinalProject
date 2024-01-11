@@ -653,6 +653,7 @@ function getMyWorkTime(myWorkDate){
 			
 			const startTimeVal = $("span#start_time").text();
 			const endTimeVal = $("span#end_time").text();
+			$("span#append_time").text("");
 			
 			if(startTimeVal != "00:00:00" && endTimeVal != "00:00:00") {
 				$("span#append_time").text(json.timeDiff);
@@ -712,15 +713,15 @@ function getMyWorkTime(myWorkDate){
             <table style='width: 100%;'>
 				<tr>
 					<th style='width: 45%;'>출근시간</th>
-					<td><span id='start_time'>00:00:00</span></td>
+					<td><span id='start_time'></span></td>
 				</tr>
 				<tr>	
 					<th>퇴근시간</th>
-					<td><span id='end_time'>00:00:00</span></td>
+					<td><span id='end_time'></span></td>
 				</tr>
 				<tr>	
 					<th>근무누적시간</th>
-					<td><span id='append_time'>00:00:00</span></td>
+					<td><span id='append_time'></span></td>
 				</tr>
 			</table>
             

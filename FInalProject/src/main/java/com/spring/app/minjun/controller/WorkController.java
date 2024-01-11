@@ -671,9 +671,9 @@ public class WorkController {
             jsonObj.put("timeDiff", timeDiff);
         }
         else {
-        	jsonObj.put("work_start_time", "00:00:00");
-            jsonObj.put("work_end_time", "00:00:00");
-            jsonObj.put("timeDiff", "00:00:00");
+        	jsonObj.put("work_start_time", " ");
+            jsonObj.put("work_end_time", " ");
+            jsonObj.put("timeDiff", " ");
         }
         return jsonObj.toString();
 	}
