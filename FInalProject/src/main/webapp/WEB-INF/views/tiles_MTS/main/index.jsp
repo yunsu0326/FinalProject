@@ -792,49 +792,51 @@ function getMyWorkTime(myWorkDate){
                   </table>
                </div>
                
-                  <div class='listContainer'>
-      <h5 class='mb-3'>결재 완료 문서</h5>
-
-      <table class="table" style="font-size: 9pt;">
-         <thead>
-            <tr class='tr'>
-               <th>결재상태</th>
-               <th>제목</th>
-               
-            </tr>
-         </thead>
-         <tbody>
-            <c:choose>
-                     <c:when test="${not empty processedDraftList}">
-                    <c:forEach items="${processedDraftList}" var="processed" >
-                        <tr>
-                     <td>
-                               <c:if test="${processed.draft_status == '1'}">
-                                  <span class="badge badge-secondary">완료</span>
-                               </c:if>
-                               <c:if test="${processed.draft_status == '2'}">
-                                  <span class="badge badge-danger">반려</span>
-                               </c:if>
-                            </td>
-                     <td>
-                            <a href='<%=ctxPath%>/approval/draftDetail.gw?draft_no=${processed.draft_no}&fk_draft_type_no=${processed.fk_draft_type_no}'>
-                            <c:if test="${processed.urgent_status == '1'}"><span style='font-size:x-small;' class="badge badge-pill badge-danger">긴급</span></c:if>
-                            ${processed.draft_subject}</a></td>
-                     
-                            
-                        </tr>
-                    </c:forEach>
-                   </c:when>
-                <c:otherwise>
-                    <tr>
-                        <td colspan='6' class='text-center'>진행 중인 문서가 없습니다.</td>
-                    </tr>
-                </c:otherwise>            
-            </c:choose>
-         </tbody>
-      </table>
-      
-   </div>
+               <div class='listContainer'>
+		      <h5 class='mb-3'>결재 완료 문서</h5>
+		
+		      <table class="table" style="font-size: 9pt;">
+		         <thead>
+		            <tr class='tr'>
+		               <th>결재상태</th>
+		               <th>제목</th>
+		               
+		            </tr>
+		         </thead>
+		         <tbody>
+		            <c:choose>
+		                     <c:when test="${not empty processedDraftList}">
+		                    <c:forEach items="${processedDraftList}" var="processed" >
+		                        <tr>
+		                     <td>
+                                <c:if test="${processed.draft_status == '1'}">
+                                   <span class="badge badge-secondary">완료</span>
+                                </c:if>
+                                <c:if test="${processed.draft_status == '2'}">
+                                   <span class="badge badge-danger">반려</span>
+                                </c:if>
+                             </td>
+		                     <td>
+	                            <a href='<%=ctxPath%>/approval/draftDetail.gw?draft_no=${processed.draft_no}&fk_draft_type_no=${processed.fk_draft_type_no}'>
+		                            <c:if test="${processed.urgent_status == '1'}"><span style='font-size:x-small;' class="badge badge-pill badge-danger">긴급</span></c:if>
+		                            ${processed.draft_subject}
+		                        </a>
+	                          </td>
+		                     
+		                            
+		                        </tr>
+		                    </c:forEach>
+		                   </c:when>
+		                <c:otherwise>
+		                    <tr>
+		                        <td colspan='6' class='text-center'>진행 중인 문서가 없습니다.</td>
+		                    </tr>
+		                </c:otherwise>            
+		            </c:choose>
+		         </tbody>
+		      </table>
+		      
+		   </div>
       
             </div>
             

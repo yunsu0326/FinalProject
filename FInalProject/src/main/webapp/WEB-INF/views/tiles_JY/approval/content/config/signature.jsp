@@ -3,6 +3,7 @@
 <% String ctxPath = request.getContextPath(); %>
 
 <style>
+
 #updateBtn {
 	background-color: #E0F8EB;
 	width: 90%;
@@ -29,10 +30,13 @@ img {
 	overflow: hidden;
 	border: 0;
 }
+
 </style>
 
 <script>
-$(()=>{
+
+$(document).ready(function() {
+	
 	$('a#signature').css('color','#03C75A');
 	$('.configMenu').show();
 	
@@ -42,21 +46,27 @@ $(()=>{
 	document.getElementById("attach").addEventListener('change', function(){
 		$(".submit").show(); // 저장버튼 표시하기
 	});
-});
+	
+});// end of $(document).ready(function){})---------------------
+
 
 // 서명 업데이트하기
-const updateSign = () => {
+function updateSign() {
 	
 	const frm = document.signatureFrm;
 	frm.method = "post";
 	frm.action = "<%=ctxPath%>/approval/config/signature/update.gw";
 	frm.submit();
-}
+	
+}// end of function updateSign()--------------------------------
+
 
 // 이미지 미리보기
 function readURL(input) {
   if (input.files && input.files[0]) {
+	  
     var reader = new FileReader();
+    
     reader.onload = function(e) {
       document.getElementById('preview').src = e.target.result;
     };
@@ -64,7 +74,9 @@ function readURL(input) {
   } else {
     document.getElementById('preview').src = "";
   }
-}
+  
+}// end of function readURL(input)------------------------------
+
 </script>
 
 <div style='margin: 1% 0 5% 1%'>
