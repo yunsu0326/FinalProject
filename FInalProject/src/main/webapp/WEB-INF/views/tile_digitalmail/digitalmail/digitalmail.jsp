@@ -70,13 +70,13 @@
       
       // 함수 정의 시작      
       
-      // 체크박스 전체 체크 해제 
-      function allCheckBox() {
+    // 체크박스 전체 체크 해제 
+    function allCheckBox() {
           
     	  var bool = $("#all_check").is(":checked");          
           $(".digitalmail_check").prop("checked", bool);
         
-      }// end of function allCheckBox()------------------------- 다했음
+    }// end of function allCheckBox()------------------------- 다했음
       
   	function selectOneEmail(send_email_seq){
 		
@@ -122,7 +122,7 @@
 		});
 	}
     
- // receipt_favorites update 하기
+ 	// receipt_favorites update 하기
 	function receipt_favorites_update(receipt_mail_seq){
 		$.ajax({
 			url:"<%= ctxPath%>/receipt_favorites_update.gw",
@@ -224,6 +224,143 @@
             }
 		});
 	};
+	
+	function goDel(){
+  		
+  		// alert("클릭했습니다.")
+  		const receipt_mail_seq_check = $("input:checkbox[name='receipt_mail_seq']:checked").length;
+  		// alert("empidcheck = >" + empidcheck);
+  		
+  		if(receipt_mail_seq_check < 1) {
+             alert("삭제할 이메일을 선택하세요");
+             return;
+        }
+		else {
+			const allCnt = $("input:checkbox[name='receipt_mail_seq']").length;      
+            const receipt_mail_seq_Arr = new Array();        
+			for(let i=0; i<allCnt; i++) {
+				if($("input:checkbox[name='receipt_mail_seq']").eq(i).prop("checked")) {
+  	            receipt_mail_seq_Arr.push($("input:checkbox[name='receipt_mail_seq']").eq(i).val() );
+  				} // end of if -----
+  	            
+			}// end of for---------------------------
+          
+          
+            console.log("삭제 이메일 번호: " + receipt_mail_seq_Arr);
+            const receipt_mail_seq_join = receipt_mail_seq_Arr.join();
+          
+            console.log("삭제 이메일 번호: " + receipt_mail_seq_join);
+  		
+            const bool = confirm("정말로 삭제하시겠습니까?");
+         
+          	if(bool) {   
+                $.ajax({
+              		url:"<%= ctxPath%>/email_del.gw",
+                  	type:"POST",
+                  	data:{
+                  		"receipt_mail_seq_join":receipt_mail_seq_join
+                  	},
+                  	dataType:"JSON",     
+                  	success:function(json){
+                  	
+      					if (json.delsuc) {
+      						alert("삭제를 완료했습니다.");	
+      						F5frm();
+      					} 
+      					else {
+      						alert("삭제를 실패했습니다.");	
+      					}
+      				},
+      				error: function(request, status, error){
+      					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+      				}
+              
+            
+          });
+           
+	} 
+          
+          
+          
+  	} // else { ----------------------------------------
+  	
+  	
+  	
+  	}
+  	
+	function total_email_receipt_read_count_update(readcount){
+  		
+		var readcnt = readcount;
+  		// alert("클릭했습니다.")
+  		const receipt_mail_seq_check = $("input:checkbox[name='receipt_mail_seq']:checked").length;
+  		// alert("empidcheck = >" + empidcheck);
+  		
+  		if(receipt_mail_seq_check < 1) {
+             alert("변경할 이메일을 선택하세요");
+             return;
+        }
+		else {
+			const allCnt = $("input:checkbox[name='receipt_mail_seq']").length;      
+            const receipt_mail_seq_Arr = new Array();        
+			for(let i=0; i<allCnt; i++) {
+				if($("input:checkbox[name='receipt_mail_seq']").eq(i).prop("checked")) {
+  	            receipt_mail_seq_Arr.push($("input:checkbox[name='receipt_mail_seq']").eq(i).val() );
+  				} // end of if -----
+  	            
+			}// end of for---------------------------
+          
+          
+            console.log("삭제 이메일 번호: " + receipt_mail_seq_Arr);
+            const receipt_mail_seq_join = receipt_mail_seq_Arr.join();
+          
+            console.log("삭제 이메일 번호: " + receipt_mail_seq_join);
+  		
+            const bool = confirm("정말로 삭제하시겠습니까?");
+         
+          	if(bool) {   
+                $.ajax({
+              		url:"<%= ctxPath%>/total_email_receipt_read_count_update.gw",
+                  	type:"POST",
+                  	data:{
+                  		"receipt_mail_seq_join":receipt_mail_seq_join,
+                  		"readcnt":readcnt
+                  	},
+                  	dataType:"JSON",     
+                  	success:function(json){
+                  	
+      					if (json.readCountcnt) {
+      						alert("업데이트 완료");
+      						F5frm();
+      					} 
+      					else {
+      						alert("업데이트 실패");	
+      					}
+      				},
+      				error: function(request, status, error){
+      					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+      				}
+              
+            
+          });
+           
+	} 
+          
+          
+          
+  	} // else { ----------------------------------------
+  	
+  	
+  	
+  	}
+	
+	function F5frm(){
+		
+		var F5frm = document.F5Frm;
+		F5frm.method = "get";
+		F5frm.action = "<%= ctxPath%>/digitalmail.gw";
+		F5frm.submit(); 
+	}
+	
       
   
   </script>
@@ -235,25 +372,30 @@
 	<!-- 메일함 리스트 세팅-->
 	
 	<div class="emailList_settings">
-		
+
 		<!--왼쪽 세팅-->
 		<div class="emailList_settingsLeft">
 	        <input type="checkbox" id="all_check" onclick="allCheckBox();">                        
-			<div class="icon_set ml-3 mr-3">
+			<div class="icon_set ml-3 mr-3" onclick="F5frm()">
 				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">redo</span>
 				<span class="icon_text">새로고침</span>
 			</div>
 			<div class="icon_set mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt; color: red;">favorite</span>
-				<span class="icon_text">즐겨찾기</span>
-			</div>						           
+				<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="total_email_receipt_read_count_update('1')" style="font-size: 24pt;">drafts</span>
+				<span class="icon_text">읽음</span>
+			</div>
 			<div class="icon_set mr-3">
+				<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="total_email_receipt_read_count_update('0')" style="color: red; font-size: 24pt;">mark_email_unread</span>
+				<span class="icon_text">안읽음</span>
+			</div>							           
+			<div class="icon_set mr-3" onclick="goDel();">
 				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">delete</span>
 				<span class="icon_text">휴지통</span>
 			</div>                        
 		</div>
         <!--왼쪽 세팅-->
-        
+        <form name="F5Frm">
+		</form>
         <!--오른쪽 세팅-->
         <div class="emailList_settingsRight">
 			${requestScope.pageBar}  
@@ -290,7 +432,7 @@
 					
 					<!-- 즐겨찾기 여부 -->
 					<div class="emailRow_options">
-						<input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
+						<input type="checkbox" type="checkbox" name="receipt_mail_seq" value="${emailVO.receipt_mail_seq}" class="digitalmail_check">
 		                <c:if test="${emailVO.receipt_favorites==0}">
 		                	<span id="${emailVO.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.receipt_mail_seq}')">favorite_border</span>
 		                </c:if>

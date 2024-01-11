@@ -1,5 +1,6 @@
 package com.spring.app.digitalmail.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -100,7 +101,9 @@ public class DigitalmailService_imple implements DigitalmailService {
 	public ModelAndView digitalmailview(ModelAndView mav, Map<String, String> paraMap) {
 		EmailVO emailVO = dao.SelectEmail(paraMap);
 		System.out.println("이거 떠야되는데 =>"+emailVO.getEmail_subject());
+		EmailVO emailVO2 = dao.getseqfav(paraMap);
 		mav.addObject("emailVO", emailVO);
+		mav.addObject("emailVO2", emailVO2);
 		mav.setViewName("digitalmailview/digitalmailview.tiles_digitalmail");
 		return mav;
 	}
@@ -236,6 +239,45 @@ public class DigitalmailService_imple implements DigitalmailService {
 		public int receipt_important_update(Map<String, String> paraMap) {
 			int n = dao.receipt_important_update(paraMap);
 			return n;
+		}
+		
+		// 답장하기 이메일 가져오기
+		@Override
+		public Map<String, String> getsenderEmail(String sender , String send_email_seq) {
+			
+			Map<String, String> paraMap = new HashMap<>();
+			String senderEmail = dao.getsenderEmail(sender);
+			EmailVO emailvo = dao.getSubjectandcontent(send_email_seq);
+			
+			paraMap.put("senderEmail",senderEmail);
+			paraMap.put("email_content",emailvo.getEmail_contents());
+			paraMap.put("email_subject",emailvo.getEmail_subject());
+			
+			System.out.println("email_content =>"+emailvo.getEmail_contents());
+			System.out.println("email_subject =>"+emailvo.getEmail_subject());
+			return paraMap;
+		}
+		@Override
+		public int email_del(Map<String, Object> receipt_mailMap) {
+			int del = dao.email_del(receipt_mailMap);
+			return del;
+		}
+		// 이메일 읽음 안읽음 처리
+		@Override
+		public int total_email_receipt_read_count_update(Map<String, Object> receipt_mailMap) {
+			int readcnt = dao.total_email_receipt_read_count_update(receipt_mailMap);
+			return readcnt;
+		}
+		//
+		@Override
+		public int onedel(String receipt_mail_seq) {
+			int n = dao.onedel(receipt_mail_seq);
+			return n;
+		}
+		@Override
+		public int emailstop_del(Map<String, Object> receipt_mailMap) {
+			int del = dao.emailstop_del(receipt_mailMap);
+			return del;
 		}
 	
 }

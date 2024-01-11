@@ -17,11 +17,22 @@ public class EmailStopVO {
 	String important;  							// E메일 전송시간
 	String category;  							// E메일 보낸사람 삭제 여부
 	String individual;  						// E메일 보낸사람 즐겨찾기 여부
-	
+	String stoptime;
 	// VO 메소드
+	
+	
+	
 	
 	public String getSend_emailstop_seq() {
 		return send_emailstop_seq;
+	}
+
+	public String getStoptime() {
+		return stoptime;
+	}
+
+	public void setStoptime(String stoptime) {
+		this.stoptime = stoptime;
 	}
 
 	public void setSend_emailstop_seq(String send_emailstop_seq) {
