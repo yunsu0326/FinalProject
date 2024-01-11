@@ -56,5 +56,17 @@ public interface DigitalmailService {
 
 	// receipt_important update 하기
 	int receipt_important_update(Map<String, String> paraMap);
+	
+	// 답장하기 이메일 가져오기
+	Map<String, String> getsenderEmail(String sender , String send_email_seq);
+	// 이메일 삭제하기
+	int email_del(Map<String, Object> receipt_mailMap);
+	int emailstop_del(Map<String, Object> receipt_mailMap);
+	
+	// 이메일 읽음 안읽음 처리
+	int total_email_receipt_read_count_update(Map<String, Object> receipt_mailMap);
+	// 이메일 한개 지우기
+	int onedel(String receipt_mail_seq);
+	
 
 }

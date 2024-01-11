@@ -83,6 +83,80 @@
     	alert(send_emailstop_seq);  
     	location.href="<%=ctxPath%>/digitalmailstopwrite.gw?send_emailstop_seq="+send_emailstop_seq;
 	}
+	
+	function goDel(){
+  		
+  		// alert("클릭했습니다.")
+  		const receipt_mail_seq_check = $("input:checkbox[name='receipt_mail_seq']:checked").length;
+  		// alert("empidcheck = >" + empidcheck);
+  		
+  		if(receipt_mail_seq_check < 1) {
+             alert("삭제할 이메일을 선택하세요");
+             return;
+        }
+		else {
+			const allCnt = $("input:checkbox[name='receipt_mail_seq']").length;      
+            const receipt_mail_seq_Arr = new Array();        
+			for(let i=0; i<allCnt; i++) {
+				if($("input:checkbox[name='receipt_mail_seq']").eq(i).prop("checked")) {
+  	            receipt_mail_seq_Arr.push($("input:checkbox[name='receipt_mail_seq']").eq(i).val() );
+  				} // end of if -----
+  	            
+			}// end of for---------------------------
+          
+          
+            console.log("삭제 이메일 번호: " + receipt_mail_seq_Arr);
+            const receipt_mail_seq_join = receipt_mail_seq_Arr.join();
+          
+            console.log("삭제 이메일 번호: " + receipt_mail_seq_join);
+  		
+            const bool = confirm("정말로 삭제하시겠습니까?");
+         
+          	if(bool) {   
+                $.ajax({
+              		url:"<%= ctxPath%>/emailstop_del.gw",
+                  	type:"POST",
+                  	data:{
+                  		"send_emailstop_seq":receipt_mail_seq_join
+                  	},
+                  	dataType:"JSON",     
+                  	success:function(json){
+                  	
+      					if (json.delsuc) {
+      						alert("삭제를 완료했습니다.");	
+      						F5frm();
+      					} 
+      					else {
+      						alert("삭제를 실패했습니다.");	
+      					}
+      				},
+      				error: function(request, status, error){
+      					alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+      				}
+              
+            
+          });
+           
+	} 
+          
+          
+          
+  	} // else { ----------------------------------------
+  	
+  	
+  	
+  	}
+  	
+	function F5frm(){
+		
+		var F5frm = document.F5Frm;
+		F5frm.method = "get";
+		F5frm.action = "<%= ctxPath%>/digitalmail.gw";
+		F5frm.submit(); 
+	}
+    
+      
+      
   
   </script>
 
@@ -97,15 +171,11 @@
 		<!--왼쪽 세팅-->
 		<div class="emailList_settingsLeft">
 	        <input type="checkbox" id="all_check" onclick="allCheckBox();">                        
-			<div class="icon_set ml-3 mr-3">
+			<div class="icon_set ml-3 mr-3" onclick="F5frm();">
 				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">redo</span>
 				<span class="icon_text">새로고침</span>
-			</div>
-			<div class="icon_set mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt; color: red;">favorite</span>
-				<span class="icon_text">즐겨찾기</span>
-			</div>						           
-			<div class="icon_set mr-3">
+			</div>					           
+			<div class="icon_set mr-3" onclick="goDel();">
 				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">delete</span>
 				<span class="icon_text">휴지통</span>
 			</div>                        
@@ -116,6 +186,8 @@
         <div class="emailList_settingsRight">
 			${requestScope.pageBar}  
 		</div>
+		<form name="F5Frm">
+		</form>
 		<!--오른쪽 세팅-->
 		
 	</div>
@@ -148,25 +220,11 @@
 					
 					<!-- 즐겨찾기 여부 -->
 					<div class="emailRow_options">
-						<input type="checkbox" type="checkbox" name="empid" class="digitalmail_check">
-		                <c:if test="${EmailStopVO.important==0}">
-		                	<span class="material-icons-outlined ml-2">favorite_border</span>
-		                </c:if>
-		                <c:if test="${EmailStopVO.important==1}">
-		                	<span class="material-icons-outlined ml-2" style="color: red;">favorite</span>
-		                </c:if>
+						<input type="checkbox" type="checkbox" name="receipt_mail_seq" value="${EmailStopVO.send_emailstop_seq}" class="digitalmail_check">
 					</div>
 					<!-- 즐겨찾기 여부 -->
 					
-					<!-- 읽음 여부 정보 -->
-					<c:if test="${EmailStopVO.individual==0}">
-	                	<span class="material-icons-outlined ml-2">mark_email_unread</span>
-	                </c:if>
-	                <c:if test="${EmailStopVO.individual==1}">
-	                	<span class="material-icons-outlined ml-2" style="color: red;">drafts</span>
-	                </c:if>		
-			        <!-- 읽음 여부 정보 -->
-			                
+	  
 					<!-- 수신자 정보 -->
 					<span class="emailRow_title ml-2">임시 저장 중인 메일</span>
 					<!-- 수신자 정보 -->
@@ -178,7 +236,7 @@
 					<!-- 제목 -->
 						
 					<!--전송시간-->
-					<span class="mr-3" onclick = "selectStoprEmail('${EmailStopVO.send_emailstop_seq}')"></span>
+					<span class="mr-3" onclick = "selectStoprEmail('${EmailStopVO.send_emailstop_seq}')">${EmailStopVO.stoptime}</span>
 					<!--전송시간-->
 				</div>
 			</c:forEach>

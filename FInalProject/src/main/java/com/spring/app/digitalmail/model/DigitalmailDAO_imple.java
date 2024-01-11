@@ -260,6 +260,54 @@ public class DigitalmailDAO_imple implements DigitalmailDAO {
 		int n = sqlsession.update("digitalmail.receipt_important_update", paraMap);
 		return n;
 	}
+	
+	// 답장 이메일 가져오기
+	@Override
+	public String getsenderEmail(String sender) {
+		String senderEmail = sqlsession.selectOne("digitalmail.getsenderEmail", sender);
+		System.out.println("senderEmail=>"+senderEmail);
+		return senderEmail;
+	
+	}
+	
+	
+	@Override
+	public EmailVO getSubjectandcontent(String send_email_seq) {
+		EmailVO emailvo = sqlsession.selectOne("digitalmail.getSubjectandcontent",send_email_seq);
+		return emailvo;
+	}
+	
+	// 이메일 삭제하기
+	@Override
+	public int email_del(Map<String, Object> receipt_mailMap) {
+		int del = sqlsession.update("digitalmail.email_del", receipt_mailMap);
+		return del;
+	}
+	// 이메일 읽음 안읽음 처리
+	@Override
+	public int total_email_receipt_read_count_update(Map<String, Object> receipt_mailMap) {
+		int readcnt = sqlsession.update("digitalmail.total_email_receipt_read_count_update", receipt_mailMap);
+		return readcnt;
+	}
+	
+	// 받은 이메일 번호 , 즐찾여부 알아오기
+	@Override
+	public EmailVO getseqfav(Map<String, String> paraMap) {
+		EmailVO emailVO2 = sqlsession.selectOne("digitalmail.getseqfav",paraMap);
+		return emailVO2;
+	}
+
+	@Override
+	public int onedel(String receipt_mail_seq) {
+		int n = sqlsession.update("digitalmail.onedel", receipt_mail_seq);
+		return n;
+	}
+
+	@Override
+	public int emailstop_del(Map<String, Object> receipt_mailMap) {
+		int del = sqlsession.delete("digitalmail.emailstop_del", receipt_mailMap);
+		return del;
+	}
 
 	
 	

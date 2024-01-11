@@ -21,9 +21,97 @@
               $('div.section').removeClass('section_selected');
 			  // 현재 클릭된 섹션에 'section_selected' 클래스 추가
               $(this).addClass('section_selected');
-	      });        	        
-      }); 
-        
+	      });  
+	   	  // 글쓰기 버튼
+	   	  $('button#replyWrite').click(function(){
+	   		  alert('확인 요청!');
+	 	     const frm = document.replyWriteFrm;
+		     
+		     frm.action = "<%= ctxPath%>/digitalmailwrite.gw";
+		     frm.method = "get";
+		     frm.submit();
+	   	  
+	   	  
+	   	  });
+      });
+      
+   // receipt_favorites update 하기
+  	function receipt_favorites_update(receipt_mail_seq){
+  		$.ajax({
+  			url:"<%= ctxPath%>/receipt_favorites_update.gw",
+  			type:"post",
+  			data:{"receipt_mail_seq":receipt_mail_seq},
+  			dataType:"json",
+  	        success:function(json){
+  	        //	console.log(json);
+  	        	// {"receipt_favorites":"0"}
+          		if(json.receipt_favorites === "1"){
+  	        		$("span#"+receipt_mail_seq+"fav").text("favorite");
+  	        		$("span#"+receipt_mail_seq+"fav").css("color", "red");
+  	        	}
+  	        	else{
+  	        		$("span#"+receipt_mail_seq+"fav").text("favorite_border");
+  	        		$("span#"+receipt_mail_seq+"fav").css("color", "black");
+  	        	}
+  	        },
+  	        error: function(request, status, error){
+                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+              }
+  		});
+  	};
+  	
+ 	// 메일 하나 삭제하기
+  	function onedel(receipt_mail_seq){
+  		$.ajax({
+  			url:"<%= ctxPath%>/onedel.gw",
+  			type:"post",
+  			data:{"receipt_mail_seq":receipt_mail_seq},
+  			dataType:"json",
+  	        success:function(json){
+				if(json.n == 1){
+					alert("삭제성공");
+					location.href="<%=ctxPath%>/digitalmail.gw";
+				}
+				else{
+					alert("삭제실패");
+				}
+          		
+  	        },
+  	        error: function(request, status, error){
+                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+              }
+  		});
+  	};
+  	
+	// receipt_important update 하기
+	function receipt_important_update(receipt_mail_seq){
+		$.ajax({
+			url:"<%= ctxPath%>/receipt_important_update.gw",
+			type:"post",
+			data:{"receipt_mail_seq":receipt_mail_seq},
+			dataType:"json",
+	        success:function(json){
+	        	console.log(json);
+	        	// {"receipt_favorites":"0"}
+        		if(json.receipt_important === "1"){
+	        		$("span#"+receipt_mail_seq+"imp").text("priority_high");
+	        		$("span#"+receipt_mail_seq+"imp").css("color", "orange");
+	        	}
+	        	else{
+	        		$("span#"+receipt_mail_seq+"imp").text("priority_high");
+	        		$("span#"+receipt_mail_seq+"imp").css("color", "black");
+	        	}
+	        },
+	        error: function(request, status, error){
+                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+		});
+	};
+      
+      
+      
+
+      
         
         
   </script>
@@ -108,17 +196,51 @@
 	 
 	 
 	 }
+	 
+	 .btn_set{
+	
+		display: flex; 
+		align-items: center; 
+		border-bottom-width: 2px; 
+		padding: 15px; 
+		min-width: 200px; 
+		color: black; 
+		border-width: 0; 
+		cursor: pointer;
+	}
+	
+	
   
   </style>
 	<div class="emailList_settings">
 	<!--왼쪽 세팅-->
 		<div class="emailList_settingsLeft">
+			<!-- 즐겨찾기 여부 -->
 			<div class="icon_set mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt; color: red;">favorite</span>
-				<span class="icon_text">즐겨찾기</span>
-			</div>						           
+                <c:if test="${requestScope.emailVO2.receipt_favorites==0}">
+                	<span id="${emailVO2.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO2.receipt_mail_seq}')" style="font-size: 24pt;">favorite_border</span>
+                	<span class="icon_text">즐겨찾기</span>
+                </c:if>
+                <c:if test="${requestScope.emailVO2.receipt_favorites==1}">
+                	<span id="${emailVO2.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO2.receipt_mail_seq}')" style="color: red; font-size: 24pt;">favorite</span>
+                	<span class="icon_text">즐겨찾기</span>
+                </c:if>
+			</div>
+			<!-- 즐겨찾기 여부 -->
+			<!-- 중요 여부 -->
 			<div class="icon_set mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">delete</span>
+					<c:if test="${requestScope.emailVO2.receipt_important==0}">
+	                	<span id="${requestScope.emailVO2.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO2.receipt_mail_seq}')" style="color: black; font-size: 24pt;"> priority_high </span>
+	                	<span class="icon_text">중요</span>
+	                </c:if>
+	                <c:if test="${requestScope.emailVO2.receipt_important==1}">
+	                	<span id="${requestScope.emailVO2.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO2.receipt_mail_seq}')" style="color: orange; font-size: 24pt;"> priority_high </span>
+	                	<span class="icon_text">중요</span>
+	                </c:if>	
+			</div>
+			<!-- 즐겨찾기 여부 -->						           
+			<div class="icon_set mr-3">
+				<span class="material-icons-outlined icon_img" style="font-size: 24pt;" onclick="onedel('${emailVO2.receipt_mail_seq}')">delete</span>
 				<span class="icon_text">휴지통</span>
 			</div>                        
 		</div>
@@ -142,6 +264,15 @@
     	<div class="section section_selected show">
         	<span class="material-icons-outlined" style="font-size:24px;"> inbox </span> 
 			<span class="list_name">메일보기</span>
+		</div>
+		<div class="ml-auto btn_set">
+			<button type="button" id="replyWrite" name="replyWrite" class="replyWrite">답장하기</button>
+			<form name="replyWriteFrm">
+				<input type="hidden" name="sender" value="${requestScope.emailVO.fk_sender_email}">
+				<!-- <input type="hidden" name="content" value="${requestScope.emailVO.email_contents}">  -->
+				<input type="hidden" name="subject" value="${requestScope.emailVO.email_subject}">
+				<input type="hidden" name="send_email_seq" value="${requestScope.emailVO.send_email_seq}">
+			</form>
 		</div>
 	</div> 
 	<!--셀렉션 세팅 끝-->
@@ -243,7 +374,7 @@
                             						<tr>
 								                    	<td align="left" style="padding:10px 25px;">
 								                        <div style="font-size:18px;font-weight:400;line-height:24px;text-align:left;color:#000000;">
-								                        	<h5 style="margin: 0; font-size: 20px; line-height: 40px; font-weight: 700;">제목 :${requestScope.emailVO.email_subject}</h5>
+								                        	<h5 style="margin: 0; font-size: 20px; line-height: 40px; font-weight: 700;">제목:&nbsp;${requestScope.emailVO.email_subject}</h5>
 								                        </div>        	
 								                        </td>       	
 								                    </tr>     	
