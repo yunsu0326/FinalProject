@@ -3,7 +3,6 @@
 <%
    String ctxPath = request.getContextPath();
 %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
 
@@ -27,6 +26,21 @@
   	  
       // 페이지 로딩 후 실행되는 함수
       $(document).ready(function(){
+    	  
+	      $('div.hidden').hide();
+		  // $('input#receievehiddenEmail').hide();
+		  $('#reservationTime').hide();
+		  $('#password').hide();
+		  $('div#categorybox').hide();
+    	  
+    	  
+          if (${not empty requestScope.emailstopVo.category}) {
+              $("#categoryck").prop("checked", true);
+              $("select#categoryval").val("${requestScope.emailstopVo.category}");
+              $('div#categorybox').show();
+          }
+    	  
+    	  
           var fileList = new Object();
 
       	  <%-- === 스마트 에디터 구현 시작 === --%>
@@ -121,14 +135,7 @@
 		        } else {
 		        	$('input#individualval').val(0); // 값을 문자열 "0"으로 설정합니다.
 		        }
-		  });
-
-	      $('div.hidden').hide();
-		  // $('input#receievehiddenEmail').hide();
-		  $('#reservationTime').hide();
-		  $('#password').hide();
-		  $('div#categorybox').hide();
-		  
+		  });		  
 		  // 눈 아이콘 클릭시 비밀번호 보이도록
 		  $('.fa-eye').on('click',function(){
 		        
@@ -201,8 +208,7 @@
 			   
 			<%-- === 글내용 유효성 검사(스마트 에디터 사용 할 경우) 시작 === --%>
 			var contentval = $("textarea#contents").val();
-           	alert("contentval=>"+contentval);
-			//contentval = contentval.replace(/&nbsp;/gi, ""); // 공백을 "" 으로 변환         
+           	//contentval = contentval.replace(/&nbsp;/gi, ""); // 공백을 "" 으로 변환         
             //contentval = contentval.substring(contentval.indexOf("<p>")+3);   // "             </p>"
             //contentval = contentval.substring(0, contentval.indexOf("</p>")); // "             "
              
@@ -227,8 +233,7 @@
             } 
              
             // 카테고리 검사 ----
-            var categoryno = "";
-             
+            var categoryno = "";            
             if($('#categorybox').is(':visible')){
           		categoryno = $("select#categoryval").val();
           		if(categoryno=="error"){
@@ -245,7 +250,7 @@
 		       
 		       impt = $("input#impt").val();
 		       individualval = $("input#individualval").val();
-		       
+		       var upsend_emailstop_seq = ${requestScope.emailstopVo.send_emailstop_seq};
 		       // 폼에 넣을 데이터 -----
 		       formData.append("contents",contentval);
 		       formData.append("subject",subject);
@@ -255,10 +260,13 @@
 		       formData.append("individualval",individualval);
 		       formData.append("impt",impt);
 		       formData.append("categoryno",categoryno);
+  		  	   // 폼에 넣을 데이터 -----
+  		  	  
+  		  	   formData.append("upsend_emailstop_seq",upsend_emailstop_seq);
 		  	   // 폼에 넣을 데이터 -----
 
 		   $.ajax({
-	            url : '<%= ctxPath%>/addMailStop.gw',
+	            url : '<%= ctxPath%>/addMailupdate.gw',
 	            data : formData,
 	            type:'POST',
 	            enctype:'multipart/form-data',
@@ -267,12 +275,12 @@
 	            dataType:'json',
 	            cache:false,
 	            success:function(json){
-	             	if(json.addStop == 1){
-	             		alert('메일발송에 성공하였습니다. 버튼을 누르면 보낸 메일함으로 이동합니다.');
-	             		location.href="<%=ctxPath%>/digitalmail.gw";
+	             	if(json.addupdate == 1){
+	             		alert('임시저장 업데이트 성공');
+	             		location.href="<%=ctxPath%>/emailaddstoplist.gw";
 	             	}
 	             	else{
-	            		alert('메일발송이 실패하셨습니다.');
+	            		alert('임시저장 업데이트 실패');
 	            		return false;
 	            	}
 	            	
@@ -281,8 +289,14 @@
 	            } 
 	        });
 		});
-		
-		
+		    
+		    
+		    
+		    
+		    
+		    
+		    
+		    
 		    
 		    
 		    
@@ -353,17 +367,18 @@
   			   
   			   <%-- === 글내용 유효성 검사(스마트 에디터 사용 할 경우) 시작 === --%>
   			   var contentval = $("textarea#contents").val();
-               // contentval = contentval.replace(/&nbsp;/gi, ""); // 공백을 "" 으로 변환         
-               // contentval = contentval.substring(contentval.indexOf("<p>")+3);   // "             </p>"
-               // contentval = contentval.substring(0, contentval.indexOf("</p>")); // "             "
-               alert("contentval=>"+contentval);
-               
+  			   console.log("contentval=>"+contentval);
+               //contentval = contentval.replace(/&nbsp;/gi, ""); // 공백을 "" 으로 변환         
+               //contentval = contentval.substring(contentval.indexOf("<p>")+3);   // "             </p>"
+               //contentval = contentval.substring(0, contentval.indexOf("</p>")); // "             "
+              
+            
                if(contentval.trim().length == 0) {
-            	   alert("글내용을 입력하세요!!");
+            	   alert("글내용을 입력하세요!! =>"+contentval);
+            	   alert("글내용을 입력하세요!! =>"+contentval.trim().length);
             	   return;
             	   
                }
-               
                console.log("contentval 내용물"+contentval);
                
                // 시간 검사
@@ -490,9 +505,11 @@
   		       formData.append("password",pwd);
   		       formData.append("fileSize",fileSizeStr);
   		  	   // 폼에 넣을 데이터 -----
+  		  	   var send_emailstop_seq = ${requestScope.emailstopVo.send_emailstop_seq};
+  		  	   formData.append("send_emailstop_seq",send_emailstop_seq);
 
   		   $.ajax({
-  	            url : '<%= ctxPath%>/addMail.gw',
+  	            url  :'<%= ctxPath%>/addMail.gw',
   	            data : formData,
   	            type:'POST',
   	            enctype:'multipart/form-data',
@@ -502,8 +519,8 @@
   	            cache:false,
   	            success:function(json){
   	             	if(json.lastsuc == 1){
-  	             		alert('메일발송에 성공하였습니다. 버튼을 누르면 보낸 메일함으로 이동합니다.');
-  	             		location.href="<%=ctxPath%>/digitalmail.gw";
+  	             		alert('임시저장 메일저장에 성공하였습니다. 버튼을 누르면 보낸 메일함으로 이동합니다.');
+  	             		location.href="<%=ctxPath%>/emailaddstoplist.gw";
   	             	}
   	             	else{
 	            		alert('메일발송이 실패하셨습니다.');
@@ -522,41 +539,111 @@
   		  // 받는사람 이메일 ----
   		  // 이메일 자동완성
   		  var emailList = ${requestScope.EmailList};
-		  // console.log("emailList=>"+emailList);
-		  var recipientEmailList =  ${requestScope.senderEmail};
+		  var recipientEmailList = ${requestScope.recipientEmailList};
+		  var referenceEmailList = ${requestScope.referenceEmailList};
+		  var hidden_referenceEmailList = ${requestScope.hidden_referenceEmailList};
 		  
-		  if(recipientEmailList != null){
-			  
-			  var emailStartIdx = recipientEmailList.indexOf("<")+2;
-			  var emailEndIdx = recipientEmailList.indexOf(">")-1;
-			  var emailOnly = recipientEmailList.substring(emailStartIdx, emailEndIdx);
-					
-			  if(emailOnly == '${sessionScope.loginuser.email}'){
-				  $("#recipient").append('<div class="emailinf o_span col-5 myMail">' +
-				  '<span class="removeEmail" name="removeEmail">' + recipientEmailList +			    			
-				  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
-
-				  $("#selfMail").prop("checked", true);
-			  }
-			  
-			  else{
-				  $("#recipient").append('<div class="emailinf o_span col-5">' +
-				  '<span class="removeEmail" name="removeEmail">' + recipientEmailList +
-				  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
-			  }
+			console.log("recipientEmailList=>"+recipientEmailList);
+		    console.log("emailList=>"+emailList);
+		    
+			console.log("referenceEmailList=>"+referenceEmailList);
+		    console.log("hidden_referenceEmailList=>"+hidden_referenceEmailList);
+			
+		    for(let i = 0; i < recipientEmailList.length; i++) {
+		    	
+		    	var emailStartIdx = recipientEmailList[i].indexOf("<")+2;
+				var emailEndIdx = recipientEmailList[i].indexOf(">")-1;
+				var emailOnly = recipientEmailList[i].substring(emailStartIdx, emailEndIdx);
 				
-			  receieveEmailList.push(emailOnly);
-			  console.log("receieveEmailList=>"+receieveEmailList);
-			  if(emailOnly == '${sessionScope.loginuser.email}'){
-			  	$("#selfMail").prop("checked", true);
-			  }  
-	
-		  }
-		  
-		  
-		  
-		  
-		
+				  if(emailOnly == '${sessionScope.loginuser.email}'){
+					  $("#recipient").append('<div class="emailinf o_span col-5 myMail">' +
+					  '<span class="removeEmail" name="removeEmail">' + recipientEmailList[i] +			    			
+					  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
+
+					  $("#selfMail").prop("checked", true);
+					}
+				  else{
+					  $("#recipient").append('<div class="emailinf o_span col-5">' +
+					  '<span class="removeEmail" name="removeEmail">' + recipientEmailList[i] +
+					  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
+				
+					}
+					
+				  	receieveEmailList.push(emailOnly);
+					console.log("receieveEmailList=>"+receieveEmailList);
+					if(emailOnly == '${sessionScope.loginuser.email}'){
+						$("#selfMail").prop("checked", true);
+					} 
+		    }
+		    
+		    if(referenceEmailList != null){
+		    	
+			    for(let i = 0; i < referenceEmailList.length; i++) {
+			    	
+			    	var emailStartIdx = referenceEmailList[i].indexOf("<")+2;
+					var emailEndIdx = referenceEmailList[i].indexOf(">")-1;
+					var emailOnly = referenceEmailList[i].substring(emailStartIdx, emailEndIdx);
+					
+					  if(emailOnly == '${sessionScope.loginuser.email}'){
+						  $("#recipientplus").append('<div class="emailinf o_span col-5 myMail">' +
+						  '<span class="removeEmail" name="removeEmail">' + referenceEmailList[i] +			    			
+						  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
+
+						  $("#selfMail").prop("checked", true);
+						}
+					  else{
+						  $("#recipientplus").append('<div class="emailinf o_span col-5">' +
+						  '<span class="removeEmail" name="removeEmail">' + referenceEmailList[i] +
+						  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
+					
+						}
+						
+					  	receieveplusEmailList.push(emailOnly);
+						console.log("receieveplusEmailList=>"+receieveplusEmailList);
+						if(emailOnly == '${sessionScope.loginuser.email}'){
+							$("#selfMail").prop("checked", true);
+						} 
+			    }
+			    
+		    }
+
+		    
+		    
+		    
+		    if(hidden_referenceEmailList != null){
+		    	
+		    	$("#plus").prop("checked", true);
+		    	$('div.hidden').show();
+			    for(let i = 0; i < hidden_referenceEmailList.length; i++) {
+			    	
+			    	var emailStartIdx = hidden_referenceEmailList[i].indexOf("<")+2;
+					var emailEndIdx = hidden_referenceEmailList[i].indexOf(">")-1;
+					var emailOnly = hidden_referenceEmailList[i].substring(emailStartIdx, emailEndIdx);
+					
+					  if(emailOnly == '${sessionScope.loginuser.email}'){
+						  $("#recipientplushidden").append('<div class="emailinf o_span col-5 myMail">' +
+						  '<span class="removeEmail" name="removeEmail">' + hidden_referenceEmailList[i] +			    			
+						  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
+
+						  $("#selfMail").prop("checked", true);
+						}
+					  else{
+						  $("#recipientplushidden").append('<div class="emailinf o_span col-5">' +
+						  '<span class="removeEmail" name="removeEmail">' + hidden_referenceEmailList[i] +
+						  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
+					
+						}
+						
+					  	receievehiddenEmailList.push(emailOnly);
+						console.log("receievehiddenEmailList=>"+receievehiddenEmailList);
+						if(emailOnly == '${sessionScope.loginuser.email}'){
+							$("#selfMail").prop("checked", true);
+						} 
+			    }
+		    	
+		    	
+		    }
+		    
 		  $("input[name='receieveEmail']").autocomplete({
 			  source : emailList,
 			  select: function(event, ui){
@@ -564,6 +651,7 @@
 			  },
 			  focus: function(event, ui){ return false;} // 사라짐 방지용 
 		  });
+		  
 		  
 		  // 받는사람 입력후 스페이스바나 엔터 누르면 한 단위로 묶기
 		  $("input[name='receieveEmail']").keydown(function(e){
@@ -578,6 +666,7 @@
 		                  oxEmail = true;
 		    	  	      break;
 		    	  	  }
+					  	  
 		    	  }
 				  var emailStartIdx = getEmail.indexOf("<")+2;
 				  var emailEndIdx = getEmail.indexOf(">")-1;
@@ -1067,13 +1156,7 @@
 						<span id="check_span">중요</span>
 						<input type="hidden" id="impt" name="impt" value="0"/>
 					</div>
-					
-					<c:if test="${requestScope.subject != 'null'}">
-		       			<input type="text" id="subject" style="width: 70%;" value="RE:&nbsp;${requestScope.subject}"/>
-		       		</c:if>	
-					<c:if test="${requestScope.subject == 'null'}">
-		       			<input type="text" id="subject" style="width: 70%;"/>
-		       		</c:if>	
+					<input type="text" id="subject" style="width: 70%;" value="${requestScope.emailstopVo.email_subject}"/>
 	    		</div>
 	    		
 	    		
@@ -1137,28 +1220,12 @@
 				</div>	
 	    									
 			</div>
-			
-			<div style="background-color: white; margin-top: 50px; margin-bottom: 50px;">
-				<c:if test="${requestScope.subject != 'null'}">
-					<textarea style=" width:100%; height: 612px;" name="contents" id="contents">
-					-----Original Message-----
-					<p>From:&nbsp;${requestScope.senderEmail}<p>
-					<p>To:&nbsp;${sessionScope.loginuser.email}&nbsp;${sessionScope.loginuser.name}<p>
-					<p>subject:&nbsp;;${requestScope.subject}<p>
-					<p><p>
-					<p>${requestScope.content}<p>
-					--------------------------
-				</textarea>
-				</c:if>
-				<c:if test="${requestScope.subject == 'null'}">
-					<textarea style=" width:100%; height: 612px;" name="contents" id="contents">
-					</textarea>
-				</c:if>
-				
+		
+			<div style="background-color: white; margin-top: 50px;">
+				<textarea style=" width:100%; height: 612px;" name="contents" id="contents">${requestScope.emailstopVo.email_contents}</textarea>
 			</div>
 			
 			</form>
-			<div></div>
 		</div>
 	</div>
 	<!--이메일 쓰기-->                

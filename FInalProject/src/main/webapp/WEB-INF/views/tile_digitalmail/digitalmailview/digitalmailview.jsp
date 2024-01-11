@@ -21,30 +21,226 @@
               $('div.section').removeClass('section_selected');
 			  // 현재 클릭된 섹션에 'section_selected' 클래스 추가
               $(this).addClass('section_selected');
-	      });        	        
-      }); 
-        
+	      });  
+	   	  // 글쓰기 버튼
+	   	  $('button#replyWrite').click(function(){
+	   		  alert('확인 요청!');
+	 	     const frm = document.replyWriteFrm;
+		     
+		     frm.action = "<%= ctxPath%>/digitalmailwrite.gw";
+		     frm.method = "get";
+		     frm.submit();
+	   	  
+	   	  
+	   	  });
+      });
+      
+   // receipt_favorites update 하기
+  	function receipt_favorites_update(receipt_mail_seq){
+  		$.ajax({
+  			url:"<%= ctxPath%>/receipt_favorites_update.gw",
+  			type:"post",
+  			data:{"receipt_mail_seq":receipt_mail_seq},
+  			dataType:"json",
+  	        success:function(json){
+  	        //	console.log(json);
+  	        	// {"receipt_favorites":"0"}
+          		if(json.receipt_favorites === "1"){
+  	        		$("span#"+receipt_mail_seq+"fav").text("favorite");
+  	        		$("span#"+receipt_mail_seq+"fav").css("color", "red");
+  	        	}
+  	        	else{
+  	        		$("span#"+receipt_mail_seq+"fav").text("favorite_border");
+  	        		$("span#"+receipt_mail_seq+"fav").css("color", "black");
+  	        	}
+  	        },
+  	        error: function(request, status, error){
+                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+              }
+  		});
+  	};
+  	
+ 	// 메일 하나 삭제하기
+  	function onedel(receipt_mail_seq){
+  		$.ajax({
+  			url:"<%= ctxPath%>/onedel.gw",
+  			type:"post",
+  			data:{"receipt_mail_seq":receipt_mail_seq},
+  			dataType:"json",
+  	        success:function(json){
+				if(json.n == 1){
+					alert("삭제성공");
+					location.href="<%=ctxPath%>/digitalmail.gw";
+				}
+				else{
+					alert("삭제실패");
+				}
+          		
+  	        },
+  	        error: function(request, status, error){
+                  alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+              }
+  		});
+  	};
+  	
+	// receipt_important update 하기
+	function receipt_important_update(receipt_mail_seq){
+		$.ajax({
+			url:"<%= ctxPath%>/receipt_important_update.gw",
+			type:"post",
+			data:{"receipt_mail_seq":receipt_mail_seq},
+			dataType:"json",
+	        success:function(json){
+	        	console.log(json);
+	        	// {"receipt_favorites":"0"}
+        		if(json.receipt_important === "1"){
+	        		$("span#"+receipt_mail_seq+"imp").text("priority_high");
+	        		$("span#"+receipt_mail_seq+"imp").css("color", "orange");
+	        	}
+	        	else{
+	        		$("span#"+receipt_mail_seq+"imp").text("priority_high");
+	        		$("span#"+receipt_mail_seq+"imp").css("color", "black");
+	        	}
+	        },
+	        error: function(request, status, error){
+                alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+            }
+		});
+	};
+      
+      
+      
+
+      
         
         
   </script>
-              
-	<!-- 결과물 시작하기 <div class="main_body"> -->
-	<!-- Inicio Email List  <div class="emailList"> -->
-	<!-- Inicio Email List Settings-->
-	<div class="emailList_settings">
+  
+  <style type="text/css">
+  	
+  	div.range{
+  		margin:0px auto;
+  		max-width:1000px;
+  	
+  	}
+  	
+  	div.main{
+  		background:#ffffff; 
+  		border-radius:8px;
+  	
+  	}
+  	
+  	td.tdsize{
+  		padding:20px 0; 
+  		text-align:center;
+  	}
+  	
+  	table.tablesize{
+  		margin: 0 auto; 
+  		width: 100%; 
+  		border-collapse: collapse; 
+  		background: #ffffff; 
+  		border-radius: 8px;" 
+  	}
+  	
+  	p.pline{
+  		border-top:solid 4px #f9f9f9;
+  		font-size:1px;
+  		margin:0px auto;
+  		width:100%;
+  	}
+  	
+  	div.title{
+  		font-size:16px;
+  		font-weight: bold;
+  		line-height:24px;
+  		text-align:left;
+  		color: black;"
+  	}
+  	
+  	div.Emailinfo{
+  	   display: inline-block;
+   	   float: left;
+  	}
+  	
+  	div.Emailinfotable {
+   		font-size: small;
+	}
+
+	.Emailinfotable th {
+	   background-color: #E0F8EB;
+	   vertical-align: middle;
+	   text-align: center;
+	}	
 	
-		<!--왼쪽 세팅-->
+	
+	.o_span{
+	     padding: 1px 5px;
+	     margin: 1px 5px;
+	     background-color: #E0F8EB;
+	     align-items: center;
+	     width: 33%;
+	     text-align: center;
+	     border-radius: 5px; 
+	 }
+	 
+	 div.file_span{
+	 
+	 	 padding: 1px 5px;
+	     margin: 1px 5px;
+	     background-color: #E0F8EB;
+	     align-items: center;
+	     width: 45%;
+	     text-align: center;
+	     border-radius: 5px; 
+	 
+	 
+	 }
+	 
+	 .btn_set{
+	
+		display: flex; 
+		align-items: center; 
+		border-bottom-width: 2px; 
+		padding: 15px; 
+		min-width: 200px; 
+		color: black; 
+		border-width: 0; 
+		cursor: pointer;
+	}
+	
+	
+  
+  </style>
+	<div class="emailList_settings">
+	<!--왼쪽 세팅-->
 		<div class="emailList_settingsLeft">
-			<div class="icon_set ml-3 mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">redo</span>
-				<span class="icon_text">새로고침</span>
+			<!-- 즐겨찾기 여부 -->
+			<div class="icon_set mr-3">
+                <c:if test="${requestScope.emailVO2.receipt_favorites==0}">
+                	<span id="${emailVO2.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO2.receipt_mail_seq}')" style="font-size: 24pt;">favorite_border</span>
+                	<span class="icon_text">즐겨찾기</span>
+                </c:if>
+                <c:if test="${requestScope.emailVO2.receipt_favorites==1}">
+                	<span id="${emailVO2.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO2.receipt_mail_seq}')" style="color: red; font-size: 24pt;">favorite</span>
+                	<span class="icon_text">즐겨찾기</span>
+                </c:if>
 			</div>
+			<!-- 즐겨찾기 여부 -->
+			<!-- 중요 여부 -->
 			<div class="icon_set mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt; color: red;">favorite</span>
-				<span class="icon_text">즐겨찾기</span>
-			</div>						           
+					<c:if test="${requestScope.emailVO2.receipt_important==0}">
+	                	<span id="${requestScope.emailVO2.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO2.receipt_mail_seq}')" style="color: black; font-size: 24pt;"> priority_high </span>
+	                	<span class="icon_text">중요</span>
+	                </c:if>
+	                <c:if test="${requestScope.emailVO2.receipt_important==1}">
+	                	<span id="${requestScope.emailVO2.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO2.receipt_mail_seq}')" style="color: orange; font-size: 24pt;"> priority_high </span>
+	                	<span class="icon_text">중요</span>
+	                </c:if>	
+			</div>
+			<!-- 즐겨찾기 여부 -->						           
 			<div class="icon_set mr-3">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">delete</span>
+				<span class="material-icons-outlined icon_img" style="font-size: 24pt;" onclick="onedel('${emailVO2.receipt_mail_seq}')">delete</span>
 				<span class="icon_text">휴지통</span>
 			</div>                        
 		</div>
@@ -57,211 +253,148 @@
 			<div class="icon_set">
 				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">chevron_right</span>
 				<span class="icon_text">다음</span>
-			</div>
-             	     
+			</div>     
 		</div>
 	</div>
 	<!--셀렉션 세팅-->
+	
+	
+	
 	<div class="emailList_sections">
     	<div class="section section_selected show">
         	<span class="material-icons-outlined" style="font-size:24px;"> inbox </span> 
 			<span class="list_name">메일보기</span>
 		</div>
-		<div class="section">
-			<span class="material-icons-outlined">quiz</span> 
-            <span class="list_name">답장하기</span>
-        </div>
-        <div class="section">
-			<span class="material-icons-outlined">quiz</span> 
-            <span class="list_name">전달하기</span>
-        </div>
+		<div class="ml-auto btn_set">
+			<button type="button" id="replyWrite" name="replyWrite" class="replyWrite">답장하기</button>
+			<form name="replyWriteFrm">
+				<input type="hidden" name="sender" value="${requestScope.emailVO.fk_sender_email}">
+				<!-- <input type="hidden" name="content" value="${requestScope.emailVO.email_contents}">  -->
+				<input type="hidden" name="subject" value="${requestScope.emailVO.email_subject}">
+				<input type="hidden" name="send_email_seq" value="${requestScope.emailVO.send_email_seq}">
+			</form>
+		</div>
 	</div> 
 	<!--셀렉션 세팅 끝-->
+	
 	<!--이메일 리스트-->                   
 	<div class="emailList_list">
   		<div style="background-color: #f4f5f6;">
-    		<div style="margin:0px auto;max-width:1000px;">
-      			<table style="margin: 0 auto; width: 100%; border-collapse: collapse;" role="presentation">
+    		<div class="range">
+      			<table class="tablesize">
         			<tbody>
           				<tr>
-            				<td style="direction:ltr;font-size:0px;padding:20px 0;padding-bottom:0px;text-align:center;">
-              				</td>
-          				</tr>
-        			</tbody>
-      			</table>
-    		</div>
-    		<div style="margin:0px auto;max-width:1000px;">
-      			<table style="margin: 0 auto; width: 100%; border-collapse: collapse;" role="presentation">
-        			<tbody>
-          				<tr>
-            				<td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
-								<div style="background:#ffffff; background-color:#ffffff; margin:0px auto; border-radius:8px; max-width:1000px;">
-                					<table style="margin: 0 auto; width: 100%; border-collapse: collapse; background: #ffffff; border-radius: 8px;" role="presentation">
-                  						<tbody>
-                    						<tr>
-					                        	<td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
-					                        		<div style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:middle;width:100%;">
-					                          			<table style="border: 0; cellpadding: 0; cellspacing: 0; vertical-align: middle; width: 100%;" role="presentation">
-					                            			<tr>
-                              									<td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                                									<table style="border: 0; cellpadding: 0; cellspacing: 0; border-collapse: collapse; border-spacing: 0;" role="presentation">
-                                  										<tbody>
-										                                    <tr>
-										                                    	<td style="width:150px;">
-										                                        	<img alt="Logo" height="auto" src="<%= ctxPath%>/resources/img/mailfooterlogo.png" style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:14px;" width="150">
-										                                    	</td>
-										                                    </tr>
-                                  										</tbody>
-                               										</table>
-                            									</td>
-                           									</tr>
-                            								<tr>
-                              									<td style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                                									<p style="border-top:solid 4px #f9f9f9;font-size:1px;margin:0px auto;width:100%;">
-                                									</p>
-                                								</td>
-                            								</tr>
-                         								</table>
-                        							</div>
+            				<td class="tdsize">
+            					<div class="range main">
+                				<table class="tablesize">
+                  				<tbody>
+                    				<tr>
+										<td class="tdsize">
+											<div class="range">
+											<table class="tablesize">
+												<tr>
+					                            	<td align="center" style="padding:10px 25px;">
+                                					<table>
+                                  						<tbody>
+															<tr>
+																<td style="width:200px;"><img style="border:0; display:block; height:auto; width:100%;" alt="Logo" src="<%= ctxPath%>/resources/img/logo.png"></td>
+															</tr>
+                                  						</tbody>
+                               						</table>
+                            						</td>
+                            									<%-- 상단 이미지 공간 --%>
+                           						</tr>
+                         					</table>
+                        					</div>
 
-                        							<div style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                          								<table style="border: 0; cellpadding: 0; cellspacing: 0; vertical-align:top; width: 100%;" role="presentation">
-                            								<tr>
-                            									<td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                                									<table style="border: 0; cellpadding: 0; cellspacing: 0; border-collapse:collapse;border-spacing:0px;" role="presentation">
-                                  										<tbody>
-                                   	 										<tr></tr>
-                                  										</tbody>
-                                									</table>
-                              									</td>
-                            								</tr>
-                            								<tr>
-                              									<td align="right" style="padding:10px 25px;">
-                                									<div style="font-size:14px;font-weight:400;line-height:24px;text-align:left;color:#000000;">발신자 : <a href="#" style="color: #428dfc; text-decoration: none; font-weight: bold;">${requestScope.emailVO.fk_sender_email}</a></div>
-                              										<div style="font-size:14px;font-weight:400;line-height:24px;text-align:left;color:#000000;">수신자 : <a href="#" style="color: #428dfc; text-decoration: none; font-weight: bold;">${requestScope.emailVO.fk_recipient_email}</a></div>
-                              										<div style="font-size:14px;font-weight:400;line-height:24px;text-align:left;color:#000000;">참조자 : <a href="#" style="color: #428dfc; text-decoration: none; font-weight: bold;">${requestScope.emailVO.fk_reference_email}</a></div>
-                              										<div style="font-size:14px;font-weight:400;line-height:24px;text-align:left;color:#000000;">숨은참조자 : <a href="#" style="color: #428dfc; text-decoration: none; font-weight: bold;">${requestScope.emailVO.fk_hidden_reference_email}</a></div>
-                              										<div style="font-size:14px;font-weight:400;line-height:24px;text-align:left;color:#000000;">숨은참조자 : <a href="#" style="color: #428dfc; text-decoration: none; font-weight: bold;">${requestScope.emailVO.filename}</a></div>
-                              										<div style="font-size:14px;font-weight:400;line-height:24px;text-align:left;color:#000000;">숨은참조자 : <a href="#" style="color: #428dfc; text-decoration: none; font-weight: bold;">${requestScope.emailVO.filesize}</a></div>
-                              										<div style="font-size:14px;font-weight:400;line-height:24px;text-align:left;color:#000000;">숨은참조자 : 아 이 우</div>
-                              										<div style="font-size:14px;font-weight:400;line-height:24px;text-align:left;color:#000000;">	
-                              											<c:forEach var="orgFileName" items="${emailVO.filename_split}" varStatus="status">
-																			<a href="<%= request.getContextPath()%>/downloadfile.gw?send_email_seq=${requestScope.emailVO.send_email_seq}&index=${status.index}">${emailVO.filename_split[status.index]}</a>&nbsp;&nbsp;<span style="color: #ccc; font-size: 6pt;">${emailVO.filesize_split[status.index]}</span>&nbsp;&nbsp;
-																		</c:forEach>
-																	</div>	
-                              									</td>
-                            								</tr>
-								                            <tr>
-								                                <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-								                                	<div style="font-size:18px;font-weight:400;line-height:24px;text-align:left;color:#000000;">
-								                                  		<h1 style="margin: 0; font-size: 32px; line-height: 40px; font-weight: 700;">${requestScope.emailVO.email_subject}</h1>
-								                                	</div>
-								                              	</td>
-								                            </tr>
-                            								<tr>
-                              									<td align="left" style="font-size:0px;padding:10px 25px;">
-                                									<div style="font-size:18px;font-weight:400;line-height:24px;text-align:left;color:#000000;">${requestScope.emailVO.email_contents}
-                                									<%--<a href="#" style="color: #428dfc; text-decoration: none; font-weight: bold;">이것저것 링크?</a> 본문이 들어갈 자리 끝 --%>
-                                									</div>
-                              									</td>
-                            								</tr>
-								                            <tr>
-								                            	<td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-								                                </td>
-								                            </tr>
-								                            <tr>															
-								                                <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word; vertical-align:middle; ">
-	                                								<table style="border: 0; cellpadding: 0; cellspacing: 0; border-collapse:separate; line-height:100%;" role="presentation">
-	                                  									<tr>
-	                                    									<td align="center" role="presentation" style="border:none;border-radius:3px;cursor:auto;mso-padding-alt:10px 25px;background:#428dfc;" valign="middle">
-	                                      										<%--
-	                                      										<a href="#" style="display: inline-block; background: #428dfc; color: #ffffff;  font-size: 14px; font-weight: bold; line-height: 30px; margin: 0; text-decoration: none; text-transform: uppercase; padding: 10px 25px; border-radius: 3px;"> 버튼 쓸거면 </a>
-	                                    										 --%>
-	                                    									</td>
-	                                  									</tr>
-	                                								</table>
-	                              								</td>
-								                            </tr>
-								                            <tr>
-								                              <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-								                              </td>
-								                            </tr>
-								                        </table>
-								                    </div>
-												</td>
-                    						</tr>
-                  						</tbody>
-                					</table>
-              					</div>
-              					<div style="margin:0px auto;max-width:1000px;">
-                					<table style="margin:0px auto; width:100%; border: 0; cellpadding: 0; cellspacing: 0;" role="presentation">
-                  						<tbody>
-                    						<tr>
-                      							<td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
-                        							<div style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                         								<table role="presentation" style="vertical-align:top; width:100%; border: 0; cellpadding: 0; cellspacing: 0;">
-                            								<tr>
-                            									<td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-								                                <%--
-								                                	<div style="font-family:Quattrocento;font-size:16px;font-weight:400;line-height:24px;text-align:center;color:#333333;">도움이 필요하시면 <a href="#" style="color: #428dfc; text-decoration: none; font-weight: bold;"> k8910275@naver.com </a> 으로 연락주세요</div>
-								                              	 --%>
-								                              	</td>
+                        					<div style="display:inline-block; vertical-align:top; width:100%;">
+                          						<table class="tablesize" >
+                          							<tr>
+                            							<td class="tdsize"><p class="pline"></p></td>
+                                					</tr>		
+                            						<tr>
+                              							<td style="padding:10px 25px;">
+												            <h5 class='text-left' style="margin: 0; font-size: 20px; line-height: 40px; font-weight: 700;">메일 정보</h5>
+															<h5 class='text-left' style="font-size: 10px;">시간 : ${requestScope.emailVO.send_time}</h5>
+														<table class='table Emailinfotable table-bordered text-left'>
+															<tr>
+																<th>보낸사람</th>
+																<td><div class="o_span">${requestScope.emailVO.fk_sender_email}</div></td>
+															</tr>
+											                <tr>
+											                    <th>받은사람</th>
+											                    <td>
+												                    <div style="display: flex; flex-wrap: wrap;">
+																	<c:forEach var="fk_recipient_email" items="${emailVO.fk_recipient_email_split}" varStatus="status">
+																	    <div class="o_span">${fk_recipient_email}</div>
+																	</c:forEach>   
+																    </div>
+											                    </td>
+										                    </tr>
+															<tr>
+																<th>참조자</th>
+																<td>
+																	<c:if test="${not empty emailVO.fk_reference_email}">
+																		<div style="display: flex; flex-wrap: wrap;">
+														                  	<c:forEach var="Fk_reference_email" items="${emailVO.fk_reference_email_split}" varStatus="status">
+																				<div class="o_span">${Fk_reference_email}</div>
+																			</c:forEach>
+																		</div>
+																	</c:if> 
+																</td>
+															</tr>              
+															<c:if test="${not empty emailVO.fk_hidden_reference_email}">
+											                	<c:forEach var="Fk_hidden_reference_email" items="${emailVO.fk_hidden_reference_email_split}" varStatus="status">
+															    	<c:if test="${Fk_hidden_reference_email == sessionScope.loginuser.email}">
+																		<tr>																																	               
+												                    		<th>숨은참조자</th>
+												               	    		<td><div class="o_span">${sessionScope.loginuser.email}</div></td>	
+																		</tr>
+																	</c:if>
+															    </c:forEach>
+															</c:if>
+															<tr>
+																<th>첨부파일</th>
+																<td>
+																<c:if test="${not empty emailVO.filename}">
+																	<div style="display: flex; flex-wrap: wrap;">
+														             	<c:forEach var="orgFileName" items="${emailVO.filename_split}" varStatus="status">
+																			<div class="file_span"><a href="<%= request.getContextPath()%>/email_downloadfile.gw?send_email_seq=${requestScope.emailVO.send_email_seq}&index=${status.index}">${emailVO.filename_split[status.index]}</a>&nbsp;&nbsp;<span style="font-size: 8pt;">${emailVO.filesize_split[status.index]}</span></div>
+																		 </c:forEach>
+																	  </div>
+																  </c:if>
+																</td>
 															</tr>
 														</table>
-													</div>
-							                    </td>
-						                    </tr>
-				                  	    </tbody>
-					                </table>
-				                </div>
-							</td>
-          				</tr>
-        			</tbody>
-      			</table>
-    		</div>
-
-    		<div style=" margin:0px auto; width: 80%;">
-    			<div class="section-title" style="margin-bottom: 30px;">
-        			<h5 style="	font-weight: 600;
-						line-height: 21px;
-						text-transform: uppercase;
-						padding-left: 20px;
-						position: relative; font-size: 18px;">간편답장하기</h5>
-      			</div>
-      			<form action="#">
-        			<textarea placeholder="왜 안나오노" style="width: 100%;
-								font-size: 15px;
-								color: #black;
-								padding-left: 20px;
-								padding-top: 12px;
-								height: 150px;
-								border: none;
-								border-radius: 5px;
-								resize: none;
-								margin-bottom: 24px;"></textarea>
-          			<button style="display: block;
-          					margin: 10px auto;
-          					font-size: 11px;
-							color: #ffffff;
-							font-weight: 700;
-							letter-spacing: 2px;
-							text-transform: uppercase;
-							background: #e53637;
-							border: none;
-							padding: 10px 15px;
-							border-radius: 2px;" type="submit"><i class="fa fa-location-arrow"></i> 보내기
-					</button>
-      			</form>
-      			
-      			<div><span style="color: #f4f5f6;">ddd</span></div>
-  			</div>
-	
-    		
-    		
-	    </div>
-	</div>
- 
-               
-
-
-<!-- 결과물 시작하기 -->
+														</td>
+                            						</tr>		                             								<tr>
+													<tr>
+                              							<td class="tdsize"><p class="pline"></p></td>
+                            						</tr>
+                            						<tr>
+								                    	<td align="left" style="padding:10px 25px;">
+								                        <div style="font-size:18px;font-weight:400;line-height:24px;text-align:left;color:#000000;">
+								                        	<h5 style="margin: 0; font-size: 20px; line-height: 40px; font-weight: 700;">제목:&nbsp;${requestScope.emailVO.email_subject}</h5>
+								                        </div>        	
+								                        </td>       	
+								                    </tr>     	
+								                    <tr>
+                              							<td align="left" style="font-size:0px;padding:10px 25px;">
+                                							<div style="font-size:18px;font-weight:400;line-height:24px;text-align:left;color:#000000;">${requestScope.emailVO.email_contents}
+                                							</div>		
+                              							</td>
+                            						</tr>        		
+                            					</table>		
+                            				</div>			
+								        </td>	                  
+								    </tr>                  
+                            	</tbody>							
+							</table>	                        
+						</div>		                   
+						</td>						
+                    </tr>						
+                </tbody>						
+               </table> 					
+              </div>					
+		</div>				
+	</div>			
