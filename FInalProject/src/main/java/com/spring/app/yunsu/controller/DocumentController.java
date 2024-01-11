@@ -23,13 +23,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 import com.spring.app.common.FileManager;
+import com.spring.app.common.Pagination;
 import com.spring.app.domain.DocumentVO;
 import com.spring.app.domain.EmployeesVO;
 import com.spring.app.yunsu.service.DocumentService;
 
 
 @Controller
-public class Document {
+public class DocumentController {
 	
 	@Autowired
 	private DocumentService service;
@@ -39,11 +40,43 @@ public class Document {
 	
 	// === 문서 시작 페이지 ===
 	@GetMapping("/document.gw")
-	public ModelAndView requiredLogin_showDocument(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) { 
+	public ModelAndView requiredLogin_showDocument(HttpServletRequest request, HttpServletResponse response, ModelAndView mav, Pagination pagination) { 
 		
-		List<Map<String,String>> documentList = service.selectDocument();
+		List<Map<String,String>> documentList = null;
+		Map<String, Object> paraMap = new HashMap<String, Object>();
+		
+		
+		if(pagination.getSearchWord() == null || "".equals(pagination.getSearchWord()) || pagination.getSearchWord().trim().isEmpty()) {
+			pagination.setSearchWord("");
+		}
+		
+		pagination.setSearchType("");
+		//System.out.println("a=>"+pagination.getStartRno());
+		//System.out.println("b=>"+pagination.getEndRno());
+		paraMap.put("pagination", pagination);
+		
+		// 문서 갯수 가져오기
+		int listCnt = service.getDocuSearchCnt(paraMap);
+		System.out.println(listCnt);
+		// startRno, endRno 구하기
+		// 구해 온 최대 글 개수를 파라미터로 넘긴다.
+		// 파라맵에 받아온 두개의 startrno와 endrno를 담아주어야 한다
+		pagination.setPageInfo(listCnt);
+		paraMap.put("pagination", pagination);
+		
+		// 한 페이지에 표시할 이용자 예약 내역 글 목록
+		documentList = service.getDocumentList(paraMap);
+		//System.out.println(documentList);
 		
 		mav.addObject("documentList", documentList);
+		
+		pagination.setQueryString("");
+		//System.out.println(pagination.getPagebar(request.getContextPath()+"/document.gw"));
+		mav.addObject("pagebar", pagination.getPagebar(request.getContextPath()+"/document.gw"));
+		
+		
+		mav.addObject("paraMap", paraMap);
+		
 		mav.setViewName("document/documentPage.tiles_MTS");
 		
 		return mav;

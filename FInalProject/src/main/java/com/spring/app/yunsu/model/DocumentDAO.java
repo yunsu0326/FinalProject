@@ -17,8 +17,7 @@ public interface DocumentDAO {
 	//문서 정보 넣기
 	int insertDocument(DocumentVO documentvo);
 	
-	// 문서 정보 가져오기
-	List<Map<String, String>> selectDocument();
+	
 	
 	// 삭제할 파일 이름 가져오기
 	String deleteDocumentSelect(String seq);
@@ -37,6 +36,12 @@ public interface DocumentDAO {
 	
 	//문서 테이블 업로드
 	int updateDocument(DocumentVO documentvo);
+	
+	//문서 갯수 가져오기
+	int getDocuSearchCnt(Map<String, Object> paraMap);
+	
+	//문서 내역 가져오기
+	List<Map<String, String>> getDocumentList(Map<String, Object> paraMap);
 	
 	
 

@@ -44,12 +44,6 @@ public class DocumentService_imple implements DocumentService {
 		return n;
 	}
 	
-	// 문서 정보 가져오기
-	@Override
-	public List<Map<String, String>> selectDocument() {
-		List<Map<String, String>> documentList =  dao.selectDocument();
-		return documentList;
-	}
 	
 	// 삭제할 문서 파일 이름 가져오기
 	@Override
@@ -107,6 +101,22 @@ public class DocumentService_imple implements DocumentService {
 		return n;
 		
 	}
+	
+	//문서 갯수 가져오기
+	@Override
+	public int getDocuSearchCnt(Map<String, Object> paraMap) {
+		int n = dao.getDocuSearchCnt(paraMap);
+		return n;
+	}
+	
+	// 문서 페이지 내역 가져오기
+	@Override
+	public List<Map<String, String>> getDocumentList(Map<String, Object> paraMap) {
+		List<Map<String, String>> documentList = dao.getDocumentList(paraMap);
+		return documentList;
+	}
+	
+	
 
 	
 	

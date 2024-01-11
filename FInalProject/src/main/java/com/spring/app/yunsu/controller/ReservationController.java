@@ -155,8 +155,8 @@ public class ReservationController {
 		paraMap.put("employee_id", employee_id);
 		paraMap.put("email", email);
 		
-		System.out.println("확인용"+paraMap.get("employee_id"));
-		System.out.println("확인용"+paraMap.get("email"));
+		//System.out.println("확인용"+paraMap.get("employee_id"));
+		//System.out.println("확인용"+paraMap.get("email"));
 		// 예약 내역 전체 개수 구하기
 		int listCnt = service.getResrvSearchCnt(paraMap);
 	//	System.out.println(listCnt);
@@ -171,9 +171,7 @@ public class ReservationController {
 		reservList = service.getResrvList(paraMap);
 		mav.addObject("reservList", reservList);
 		
-		for(Map<String, String> paMap:reservList) {
-			System.out.println(paMap.get("fk_employee_id"));
-		}
+		
 		
 		pagination.setQueryString("&startdate="+startdate+"&enddate="+enddate);
 		
@@ -251,7 +249,7 @@ public class ReservationController {
 
 		// 예약 내역 전체 개수 구하기
 		int listCnt = service.getResrvAdminSearchCnt(paraMap);
-	//	System.out.println(listCnt);
+		//	System.out.println(listCnt);
 		
 		// startRno, endRno 구하기
 		// 구해 온 최대 글 개수를 파라미터로 넘긴다.

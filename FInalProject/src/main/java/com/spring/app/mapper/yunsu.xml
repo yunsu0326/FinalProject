@@ -971,18 +971,6 @@
 	
 	</insert>
 	
-	
-	<!-- 문서 정보 가져오기 -->
-	<resultMap type="HashMap" id="selectDocument_map">
-		<result property="seq" 				column="seq" 				javaType="String" />
-		<result property="documentsubject" 	column="documentsubject"	javaType="String" />
-	</resultMap>
-	
-	<select id="selectDocument" resultMap="selectDocument_map">
-		select seq,documentsubject
-		from tbl_document
-	</select>
-	
 	<!-- 삭제할 문서 서버 파일 이름 가져오기 -->
 	<select id="deleteDocumentSelect" parameterType="String" resultType="String">
 		select fileName
@@ -1026,6 +1014,51 @@
 		where seq = #{seq}
 	</update>
 	
+	<!-- 문서 갯수 가져오기 -->
+	<select id="getDocuSearchCnt" parameterType="HashMap" resultType="int">
+    	SELECT COUNT(*)
+    	FROM (
+        SELECT row_number() over(order by seq desc) as rno
+        FROM tbl_document
+        WHERE 1=1
+        <if test="pagination.searchWord == ''">
+            
+        </if>
+        <if test="pagination.searchWord != ''">
+            AND (LOWER(documentsubject) LIKE '%' || LOWER(#{pagination.searchWord}) || '%')
+        </if>
+    	)
+    	
+	</select>
+	
+	<resultMap type="HashMap" id="getDocumentListMap">
+		<result property="seq" 				column="seq" 				javaType="String" />
+		<result property="documentsubject" 	column="documentsubject" 	javaType="String" />
+		
+	</resultMap>
+	<!-- 문서 내역 가져오기 -->
+	<select id="getDocumentList" parameterType="HashMap" resultMap="getDocumentListMap">
+		select seq, documentsubject
+		from
+		(
+		select row_number() over(order by seq desc) as rno,
+	        	seq, documentsubject 
+		from tbl_document 
+		where 1=1
+		
+		<!-- 검색타입과 검색어가 없는 경우 -->
+		<if test='pagination.searchType == "" and pagination.searchWord == ""'>
+		</if>
+		
+		<!--  검색 타입은 없고 검색어가 있는 경우 -->
+		<if test='pagination.searchType == "" and pagination.searchWord != ""'>
+			  and (lower(documentsubject) like '%'||lower(#{pagination.searchWord})||'%')
+		</if>
+		)
+		where rno between #{pagination.startRno} and #{pagination.endRno}
+			
+	</select>
+	
 	
 	<resultMap type="HashMap" id="meetingroomchart_map">
 		<result property="MeetingRoom" 	column="MeetingRoom" javaType="String" />
@@ -1037,7 +1070,6 @@
 		<result property="nowMonth1" 	column="nowMonth1" 	 javaType="String" />
 		
 	</resultMap>
-	
 	
 	<!-- 자원예약 회의실 차트 보기 -->
 	<select id="meetingroomchart" resultMap="meetingroomchart_map">

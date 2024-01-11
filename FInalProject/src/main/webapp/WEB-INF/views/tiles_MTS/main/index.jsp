@@ -394,7 +394,9 @@ $(document).ready(function(){
                                    }); // end of events.push({})---------
 	   		                                                                     
                                   
-                                 
+                      			 if(item.joinuser == null){
+                              	   item.joinuser = "";
+                                 }
                                   // 공유받은 캘린더(다른 사용자가 내캘린더로 만든 것을 공유받은 경우임)
                                    if (item.fk_lgcatgono==1 && item.fk_employee_id != "${sessionScope.loginuser.employee_id}" && (item.joinuser).indexOf("${sessionScope.loginuser.userid}") != -1 ){  
                                         
