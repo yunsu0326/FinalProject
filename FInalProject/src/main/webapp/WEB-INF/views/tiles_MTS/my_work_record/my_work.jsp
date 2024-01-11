@@ -356,7 +356,6 @@ function getMyWorkList() {
 									"<th class='col'>업무시작</th>"+
 									"<th class='col'>업무종료</th>"+
 									"<th class='col'>총근무시간</th>"+
-									"<th class='col'>비고</th>"+
 								"</tr>"+
 							"</thead>"+
 							"<tbody>";
@@ -375,7 +374,6 @@ function getMyWorkList() {
 			    				"<td class='col' id='work_start_time'>"+item.work_start_time+"</td>"+
 			    				"<td class='col endTime'>"+item.work_end_time+"</td>"+
 			    				"<td class='col'>"+item.timeDiff+"</td>"+
-			    				"<td class='col'>-</td>"+
 			    			"</tr>";
 					
 					if(index == 4) {
@@ -397,7 +395,6 @@ function getMyWorkList() {
 										"<th class='col'>업무시작</th>"+
 										"<th class='col'>업무종료</th>"+
 										"<th class='col'>총근무시간</th>"+
-										"<th class='col'>비고</th>"+
 									"</tr>"+
 								"</thead>"+
 								"<tbody>";
@@ -422,7 +419,6 @@ function getMyWorkList() {
 										"<th class='col'>업무시작</th>"+
 										"<th class='col'>업무종료</th>"+
 										"<th class='col'>총근무시간</th>"+
-										"<th class='col'>비고</th>"+
 									"</tr>"+
 								"</thead>"+
 								"<tbody>";
@@ -447,7 +443,6 @@ function getMyWorkList() {
 									"<th class='col'>업무시작</th>"+
 									"<th class='col'>업무종료</th>"+
 									"<th class='col'>총근무시간</th>"+
-									"<th class='col'>비고</th>"+
 								"</tr>"+
 							"</thead>"+
 							"<tbody>";
@@ -472,7 +467,6 @@ function getMyWorkList() {
 									"<th class='col'>업무시작</th>"+
 									"<th class='col'>업무종료</th>"+
 									"<th class='col'>총근무시간</th>"+
-									"<th class='col'>비고</th>"+
 								"</tr>"+
 							"</thead>"+
 							"<tbody>";
@@ -658,7 +652,7 @@ function closeModal() {
 				</li>
 				
 				<li class="nav-item">
-					<a class="nav-link ml-5" href="<%= ctxPath %>/my_work_manage.gw">근퇴관리</a>
+					<a class="nav-link ml-5" href="<%= ctxPath %>/my_work_manage.gw">근퇴신청관리</a>
 				</li>
 				
 				<c:if test="${sessionScope.loginuser.gradelevel >= 5}">
@@ -667,7 +661,7 @@ function closeModal() {
 					</li>
 				</c:if>
 				
-				<li class="ml-auto mt-2" style="margin-right: 13%;">
+				<li class="ml-auto mt-2" style="">
 					<button type="button" id="workRequestPlace" class="mr-3">근무신청</button>
 					<button id="goToWork" class="button" style="width: 50px;">출근</button>
                 	<button id="leaveWork" class="button ml-3" style="width: 50px;">퇴근</button>

@@ -227,7 +227,7 @@ public class WorkController {
 	public ModelAndView goToWorkUpdateWithExtendedIndex(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		
 		String fk_employee_id = request.getParameter("fk_employee_id");
-		String work_date = request.getParameter("work_date");
+		String work_date = request.getParameter("work_date_ex");
 		String extended_end_time = request.getParameter("extended_end_time");
 		
 		Map<String, String> paraMap = new HashMap<>();
@@ -343,7 +343,7 @@ public class WorkController {
 	public ModelAndView goToWorkUpdateIndex(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		
 		String fk_employee_id = request.getParameter("fk_employee_id");
-		String work_date = request.getParameter("work_date");
+		String work_date = request.getParameter("work_date_ex");
 		
 		Map<String, String> paraMap = new HashMap<>();
         
@@ -671,9 +671,9 @@ public class WorkController {
             jsonObj.put("timeDiff", timeDiff);
         }
         else {
-        	jsonObj.put("work_start_time", " ");
-            jsonObj.put("work_end_time", " ");
-            jsonObj.put("timeDiff", " ");
+        	jsonObj.put("work_start_time", "");
+            jsonObj.put("work_end_time", "");
+            jsonObj.put("timeDiff", "");
         }
         return jsonObj.toString();
 	}

@@ -214,6 +214,15 @@
             $("input:checkbox[name='checkNo']").prop('checked', $(this).prop('checked'));
         });
 		
+		// 개별 체크박스 클릭 시 전체선택 체크박스 해제
+		$("input:checkbox[name='checkNo']").click(function () {
+		    var checkboxLen = $("input:checkbox[name='checkNo']").length;
+		    
+		    var checkedLen = $("input:checkbox[name='checkNo']:checked").length;
+
+		    $("#selectAll").prop('checked', checkboxLen === checkedLen);
+		});
+		
 		var myGrade = $("input:hidden[id='myGradeLevel']").val(); // 로그인 한 유저의 gradelevel
 		
 		if(myGrade != 10) {
