@@ -226,6 +226,9 @@ $(document).ready(function(){
 
    const FullDate = year+"-"+month+"-"+day;     // 2023-12-27
    const FullTime = hour+":"+minute+":"+second; // 16:31:25
+   
+	// 출, 퇴근, 누적 시간 뿌리는 함수 호출
+	getMyWorkTime(FullDate);
     
     // 출근 버튼 클릭시  근무 테이블에 insert
     $("button#goToWork").click(function(){
@@ -636,6 +639,30 @@ function padZero(value) {
     return value < 10 ? "0" + value : value;
 }
 
+//출,퇴근 시간 뿌리는 함수
+function getMyWorkTime(myWorkDate){
+	
+	$.ajax({
+		url:"<%= ctxPath%>/getMyWorkTime.gw",
+		type:"post",
+		data:{"myWorkDate":myWorkDate},
+		dataType:"JSON",
+		success:function(json){
+			$("span#start_time").text(json.work_start_time);
+			$("span#end_time").text(json.work_end_time);	
+			
+			const startTimeVal = $("span#start_time").text();
+			const endTimeVal = $("span#end_time").text();
+			
+			if(startTimeVal != "00:00:00" && endTimeVal != "00:00:00") {
+				$("span#append_time").text(json.timeDiff);
+			}
+        },
+        error: function(request, status, error){
+            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+        } 
+	});
+}
 </script>
    
     
@@ -682,6 +709,20 @@ function padZero(value) {
                    <input type='hidden' id='todayST' value='${requestScope.myTodayStartTime}'/>
             </li>
             </ul>
+            <table style='width: 100%;'>
+				<tr>
+					<th style='width: 45%;'>출근시간</th>
+					<td><span id='start_time'>00:00:00</span></td>
+				</tr>
+				<tr>	
+					<th>퇴근시간</th>
+					<td><span id='end_time'>00:00:00</span></td>
+				</tr>
+				<tr>	
+					<th>근무누적시간</th>
+					<td><span id='append_time'>00:00:00</span></td>
+				</tr>
+			</table>
             
          </div>
         </div>
