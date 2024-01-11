@@ -92,7 +92,7 @@ public class Pagination {
 	public Map<String, Object> getPageRange(int listCnt) {
 
 		// 총 페이지 수 계산
-		System.out.println("listCnt =>"+listCnt);
+		//System.out.println("listCnt =>"+listCnt);
 		totalPage = (int) Math.ceil((double) listCnt / pageSize);
 		
 		currentPage = (currentPage > totalPage)? 1 : currentPage;
@@ -116,7 +116,7 @@ public class Pagination {
 	
 	// 인스턴스에 페이지 정보 설정하기
 	public void setPageInfo(int listCnt) {
-		System.out.println("listCnt =>" +listCnt);
+		//System.out.println("listCnt =>" +listCnt);
 		// 총 페이지 수 계산
 		totalPage = (int) Math.ceil((double) listCnt / pageSize);
 		

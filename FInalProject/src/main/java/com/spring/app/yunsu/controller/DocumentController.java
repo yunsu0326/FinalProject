@@ -57,7 +57,7 @@ public class DocumentController {
 		
 		// 문서 갯수 가져오기
 		int listCnt = service.getDocuSearchCnt(paraMap);
-		System.out.println(listCnt);
+		//System.out.println(listCnt);
 		// startRno, endRno 구하기
 		// 구해 온 최대 글 개수를 파라미터로 넘긴다.
 		// 파라맵에 받아온 두개의 startrno와 endrno를 담아주어야 한다
