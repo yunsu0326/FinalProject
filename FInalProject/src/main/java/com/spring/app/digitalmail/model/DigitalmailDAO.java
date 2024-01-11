@@ -68,6 +68,22 @@ public interface DigitalmailDAO {
 	// receipt_important update 하기
 	int receipt_important_update(Map<String, String> paraMap);
 	
+	// 답장 이메일 가져오기
+	String getsenderEmail(String sender);
+	
+	// 제목 컨텐츠 가져오기
+	EmailVO getSubjectandcontent(String send_email_seq);
+	
+	// 이메일 지우기
+	int email_del(Map<String, Object> receipt_mailMap);
+	// 이메일 읽음 안읽음 처리
+	int total_email_receipt_read_count_update(Map<String, Object> receipt_mailMap);
+	// 받은 이메일 번호 , 즐찾여부 알아오기
+	EmailVO getseqfav(Map<String, String> paraMap);
+	
+	int onedel(String receipt_mail_seq);
+	int emailstop_del(Map<String, Object> receipt_mailMap);
+	
 	
 	
 

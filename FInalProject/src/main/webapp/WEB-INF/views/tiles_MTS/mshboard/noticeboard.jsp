@@ -302,6 +302,15 @@
 			goSearch();
 		}); // end of $(document).on("click", "span.result", function(){----------------
 
+			
+		 $(document).on("click", "tr#empinfo", function (e) {
+	   		 var seqq = $(this).find('input').val();
+	   		 goView(seqq);
+	   	 });
+	    		
+			
+			
+			
     });// end of $(document).ready(function(){})-----------
 
   
@@ -340,9 +349,9 @@
 
 	<div style="display: flex;">
 		<div style="margin: auto; padding-left: 3%;">
-		<h2 style="margin-bottom: 30px;">공지사항 목록 </h2> 
+		<h2 style="margin-bottom: 30px;"><i class="fa-solid fa-bullhorn"></i> &nbsp;공지사항 목록 </h2> 
 			
-			<table style="width: 1400px" class="table table-bordered">
+			<table style="width: 1400px" class="table table-bordered" id="myTable">
 				<thead>   
 				     <tr>
 					 	<th style="width: 70px;  text-align: center;">글번호</th>
@@ -357,18 +366,20 @@
 				 <tbody>
 				    <c:if test="${not empty requestScope.boardList}">
 				         <c:forEach var="boardvo" items="${requestScope.boardList}"> 
-				         	<tr>
+				         	<tr class='sahan${boardvo.status}' id="empinfo">
 					            <td align="center">${boardvo.seq}</td>
 					        	<td align="left">
 					                <%-- === 공지사항 게시판 시작 === --%>
 					                <%-- 첨부파일이 없는 경우 시작 --%>
 					             	<c:if test="${boardvo.attachfile == 0}">
+					             		<input type='hidden' value='${boardvo.seq}' />
 									    <span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}</span>  
 								    </c:if>  
 				                	<%-- 첨부파일이 없는 경우 끝 --%>
 				                    
 				                	<%-- 첨부파일이 있는 경우 시작 --%>
 				                    <c:if test="${boardvo.attachfile == 1}">
+				                    	<input type='hidden' value='${boardvo.seq}' />
 										<span class="subject" onclick="goView('${boardvo.seq}')">${boardvo.subject}<span style="vertical-align: super;"></span></span>&nbsp;<img src="<%= ctxPath%>/resources/images/disk.gif" />             
 									</c:if>   
 				                    <%-- 첨부파일이 있는 경우 끝 --%>

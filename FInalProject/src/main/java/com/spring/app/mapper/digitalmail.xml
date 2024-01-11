@@ -168,9 +168,9 @@
 	<!-- 임시저장 이메일 입력 -->
 	<insert id="emailaddStop" parameterType="HashMap">
 		insert into tbl_emailstop(send_emailstop_seq, fk_sender_email, fk_recipient_email, email_subject , email_contents
-							 , important, individual , fk_reference_email, fk_hidden_reference_email
+							 , important, individual , stoptime ,  fk_reference_email, fk_hidden_reference_email
 							 , category)
-					values(#{send_emailstop_seq}, #{fk_sender_email} ,#{receieve_Email},#{subject},#{contents}, #{impt}, #{individualval},
+					values(#{send_emailstop_seq}, #{fk_sender_email} ,#{receieve_Email},#{subject},#{contents}, #{impt}, #{individualval}, default,
 		<choose>
 	    	<when test="receieveplus_Email == ''">
 	    	    null,
@@ -310,6 +310,18 @@
 		where send_email_seq = #{send_email_seq}
 	</select>
 	
+	<!-- 메일 하나 가져오기 -->
+	<select id="getseqfav" parameterType="HashMap" resultType="com.spring.app.digitalmail.domain.EmailVO"> 
+		select receipt_favorites , receipt_mail_seq , receipt_important 
+		from tbl_receipt_email
+		where fk_send_email_seq = #{send_email_seq}
+		AND (
+       	    fk_recipient_email = #{MyEmail} 
+            OR fk_reference_email = #{MyEmail}  
+            OR fk_hidden_reference_email = #{MyEmail}
+    	)
+	</select>
+	
 	<!-- 임시저장된 리스트 갯수 채번 --> 
 	<select id="addstopCount" parameterType="HashMap" resultType="int">
 		select count(*) 
@@ -320,7 +332,7 @@
 	<!-- 페이징 처리된 내가 받은 총 메일 보기  --> 	   
 	<select id="SelectMyStopEmail_withPaging" parameterType="HashMap" resultType="com.spring.app.digitalmail.domain.EmailStopVO">
 	    SELECT T.send_emailstop_seq, T.fk_sender_email, T.fk_recipient_email, T.fk_reference_email,
-	           T.fk_hidden_reference_email, T.email_subject, T.email_contents, T.important, T.category, T.individual
+	           T.fk_hidden_reference_email, T.email_subject, T.email_contents, T.important, T.category, T.individual, T.stoptime
 	    FROM (
 	        SELECT rownum AS RNO, V.*
 	        FROM (
@@ -425,6 +437,7 @@
 	        email_contents = #{contents},
 	        important = #{impt},
 	        individual = #{individualval},
+	        stoptime = sysdate,
 	        fk_reference_email =
 	            <choose>
 	                <when test="receieveplus_Email == ''">null</when>
@@ -499,5 +512,63 @@
            </choose>
        where receipt_mail_seq = #{receipt_mail_seq}
    </update>
+   
+   	<select id="getsenderEmail" resultType="String" parameterType="String"> 
+   		select '"'||t.team_name||' '||j.job_name||' '||e.name||'<![CDATA[<]]>'||e.email||'<![CDATA[>]]>'||'"' as empinfo , t.team_name, d.department_name
+   		from tbl_employees e
+   		left join tbl_jobs j
+   		on e.FK_JOB_ID = j.job_id
+   		left join tbl_department d
+   		on e.FK_DEPARTMENT_ID = d.DEPARTMENT_ID
+   		left join tbl_team t
+   		on e.fk_team_id = t.team_id
+   		where e.employee_id != 7777
+   		and e.email = '${sender}'
+	</select>
+	
+	<select id="getSubjectandcontent" resultType="com.spring.app.digitalmail.domain.EmailVO" parameterType="String"> 
+		select *
+		from tbl_email
+		where send_email_seq = ${send_email_seq}
+	</select>
+	
+	<!-- 임시저장 이메일 입력 -->
+	<update id="email_del" parameterType="HashMap">
+	    update tbl_receipt_email set receipt_delete = 1
+	    where receipt_mail_seq in
+	 	<if test="receipt_mail_seq_arr != null">
+	   		<foreach collection="receipt_mail_seq_arr" index="i" open="(" separator="," close=")">
+	   			'${receipt_mail_seq_arr[i]}'
+			</foreach>
+		</if>
+	</update>
+	
+		<!-- 임시저장 이메일 입력 -->
+	<update id="total_email_receipt_read_count_update" parameterType="HashMap">
+	    update tbl_receipt_email set email_receipt_read_count = ${readcnt}
+	    where receipt_mail_seq in
+	 	<if test="receipt_mail_seq_arr != null">
+	   		<foreach collection="receipt_mail_seq_arr" index="i" open="(" separator="," close=")">
+	   			'${receipt_mail_seq_arr[i]}'
+			</foreach>
+		</if>
+	</update>
+	
+	   <!-- receipt_important update 하기 -->
+   <update id="onedel" parameterType="HashMap">
+       update tbl_receipt_email set receipt_delete = 1
+       where receipt_mail_seq = #{receipt_mail_seq}
+   </update>
+   
+   	<delete id="emailstop_del" parameterType="HashMap">
+		delete from tbl_emailstop
+		<if test="receipt_mail_seq_arr != null">
+	     WHERE send_emailSTOP_seq IN
+	        <foreach collection="receipt_mail_seq_arr" index="i" open="(" separator="," close=")">
+	            '${receipt_mail_seq_arr[i]}'
+	        </foreach>
+	    </if>		
+	</delete>
+	
 	
 </mapper>

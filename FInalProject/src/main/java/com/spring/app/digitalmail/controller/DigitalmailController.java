@@ -212,8 +212,35 @@ public class DigitalmailController {
     @GetMapping(value="/digitalmailwrite.gw", produces="text/plain;charset=UTF-8")
     public ModelAndView requiredLogin_digitalmailwrite(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
     	
-    	mav = service.digitalmailwrite(mav);
-	    return mav;
+    	String sender = request.getParameter("sender");
+    	String send_email_seq = request.getParameter("send_email_seq");
+    	//String content = request.getParameter("content");
+    	
+    	String senderEmail = null;
+    	//String subject = request.getParameter("subject");
+    	
+    	//System.out.println("sender + send_email_seq" + sender + send_email_seq);
+    	
+    	
+    	if(sender == null) {
+    		mav.addObject("senderEmail","null");
+    		mav.addObject("content","null");
+    		mav.addObject("subject","null");
+    		mav = service.digitalmailwrite(mav);
+    	}
+    	else {
+    		Map<String, String> paraMap = new HashMap<>();
+    		paraMap = service.getsenderEmail(sender,send_email_seq);
+    		mav.addObject("senderEmail",paraMap.get("senderEmail"));
+    		mav.addObject("content",paraMap.get("email_content"));
+    		mav.addObject("subject",paraMap.get("email_subject"));
+    		mav = service.digitalmailwrite(mav);
+    	}
+    	
+    	
+    	
+	    
+    	return mav;
 	    
     }// end of public ModelAndView home(ModelAndView mav)
     
@@ -563,7 +590,7 @@ public class DigitalmailController {
 		Map<String, String> paraMap = new HashMap<>();
 		
 		paraMap.put("send_email_seq", send_email_seq);
-		paraMap.put("split_Email", loginuser.getEmail());
+		paraMap.put("MyEmail", loginuser.getEmail());
     			
     	mav = service.digitalmailview(mav,paraMap);
     	
@@ -851,6 +878,127 @@ public class DigitalmailController {
 		return jsonObj.toString();
 	}
     
+	// receipt_favorites update 하기
+	@ResponseBody
+	@PostMapping(value="/email_del.gw", produces="text/plain;charset=UTF-8")
+	public String email_del(HttpServletRequest request) {
+		
+		String receipt_mail_seq_join = request.getParameter("receipt_mail_seq_join");
+    	System.out.println(receipt_mail_seq_join);
+		
+    	String[] receipt_mail_seq_arr = receipt_mail_seq_join.split("\\,");
+    	
+    	Map<String, Object> receipt_mailMap = new HashMap<>();
+    	receipt_mailMap.put("receipt_mail_seq_arr",receipt_mail_seq_arr);
+	    int del = service.email_del(receipt_mailMap);
+		
+	    boolean delsuc = false;
+	    
+	    if(del == receipt_mail_seq_arr.length) {
+	    	delsuc = true;
+    	}
+    	else {
+    		delsuc = false;
+    	}
+    	
+	    JSONObject jsonObj = new JSONObject();  // {}
+		jsonObj.put("delsuc", delsuc);      
+    	String json = jsonObj.toString();       
+    	
+    	System.out.println(json);
+    	
+    	return jsonObj.toString();
+		
+	}
+	
+	// receipt_favorites update 하기
+	@ResponseBody
+	@PostMapping(value="/emailstop_del.gw", produces="text/plain;charset=UTF-8")
+	public String emailstop_del(HttpServletRequest request) {
+		
+		String receipt_mail_seq_join = request.getParameter("send_emailstop_seq");
+    	System.out.println(receipt_mail_seq_join);
+		
+    	String[] receipt_mail_seq_arr = receipt_mail_seq_join.split("\\,");
+    	
+    	Map<String, Object> receipt_mailMap = new HashMap<>();
+    	receipt_mailMap.put("receipt_mail_seq_arr",receipt_mail_seq_arr);
+	    int del = service.emailstop_del(receipt_mailMap);
+		
+	    boolean delsuc = false;
+	    
+	    if(del == receipt_mail_seq_arr.length) {
+	    	delsuc = true;
+    	}
+    	else {
+    		delsuc = false;
+    	}
+    	
+	    JSONObject jsonObj = new JSONObject();  // {}
+		jsonObj.put("delsuc", delsuc);      
+    	String json = jsonObj.toString();       
+    	
+    	System.out.println(json);
+    	
+    	return jsonObj.toString();
+		
+	}
+	
+	// receipt_favorites update 하기
+	@ResponseBody
+	@PostMapping(value="/total_email_receipt_read_count_update.gw", produces="text/plain;charset=UTF-8")
+	public String total_email_receipt_read_count_update(HttpServletRequest request) {
+		
+		String receipt_mail_seq_join = request.getParameter("receipt_mail_seq_join");
+    	System.out.println(receipt_mail_seq_join);
+    	String readcnt = request.getParameter("readcnt");
+    	String[] receipt_mail_seq_arr = receipt_mail_seq_join.split("\\,");
+    	
+    	Map<String, Object> receipt_mailMap = new HashMap<>();
+    	receipt_mailMap.put("receipt_mail_seq_arr",receipt_mail_seq_arr);
+    	receipt_mailMap.put("readcnt",readcnt);
+	    int readCountcnt = service.total_email_receipt_read_count_update(receipt_mailMap);
+		
+	    boolean readcntsuc = false;
+	    
+	    if(readCountcnt == receipt_mail_seq_arr.length) {
+	    	readcntsuc = true;
+    	}
+    	else {
+    		readcntsuc = false;
+    	}
+    	
+	    JSONObject jsonObj = new JSONObject();  // {}
+		jsonObj.put("readCountcnt", readCountcnt);      
+    	String json = jsonObj.toString();       
+    	
+    	System.out.println(json);
+    	
+    	return jsonObj.toString();
+		
+	}
+	
+	
+	@ResponseBody
+	@PostMapping(value="/onedel.gw", produces="text/plain;charset=UTF-8")
+	public String onedel(HttpServletRequest request) {
+		
+		String receipt_mail_seq = request.getParameter("receipt_mail_seq");
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+
+		int n = service.onedel(receipt_mail_seq);
+		
+		System.out.println("onedel n =>"+n);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", n);
+		
+		return jsonObj.toString();
+	}
+	
+	
 
 	
 	

@@ -31,6 +31,8 @@ public interface EmpService {
 	List<Map<String, String>> T_manager_id();
 	// 부서에 따른 최대 팀값 구하기
 	int team_id_max_by_department(String department_id);
+	// 부서에 따른 팀값 구하기
+	List<Map<String, String>> team_id_select_by_department(String department_id);
 	// 팀 생성하기
 	String team_add(Map<String, String> paraMap);
 
@@ -40,6 +42,9 @@ public interface EmpService {
 	List<Map<String, String>> get_team_info(String team_id);
 	// 부서 삭제하기
 	int department_del(String department_id);
+	// 팀 삭제하기
+	int team_del(String team_id);
+	
 	
 	
 	

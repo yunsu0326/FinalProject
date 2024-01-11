@@ -310,5 +310,21 @@
 		where fk_employee_id = #{fk_employee_id}
 		and work_date = to_char(sysdate, 'yyyy-mm-dd')
 	</select>
+	
+	<!-- 출근한 날짜를 가져와 출근한 시간 가져오기 -->
+	<resultMap type="HashMap" id="getMyWorkTime_Map">
+		<result property="work_start_time"   column="work_start_time"   javaType="String" />
+		<result property="work_end_time" 	 column="work_end_time" 	javaType="String" />
+		<result property="timeDiff" 	 	 column="timeDiff" 			javaType="String" />
+	</resultMap>
+	<select id="getMyWorkTime" parameterType="HashMap" resultMap="getMyWorkTime_Map">
+		select work_start_time, work_end_time,
+		       LPAD(FLOOR((to_date(work_end_time, 'hh24:mi:ss') - to_date(work_start_time, 'hh24:mi:ss')) * 24), 2, '0') || ':'
+		    || LPAD(FLOOR(MOD((to_date(work_end_time, 'hh24:mi:ss') - to_date(work_start_time, 'hh24:mi:ss')) * 24 * 60, 60)), 2, '0') || ':'
+		    || LPAD(FLOOR(MOD((to_date(work_end_time, 'hh24:mi:ss') - to_date(work_start_time, 'hh24:mi:ss')) * 24 * 60 * 60, 60)), 2, '0') AS timeDiff
+		from tbl_work
+		where fk_employee_id = #{employee_id}
+		and work_date = #{myWorkDate}
+	</select>
 
 </mapper>

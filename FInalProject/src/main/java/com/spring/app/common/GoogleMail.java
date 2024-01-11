@@ -33,6 +33,8 @@ public class GoogleMail {
     	
     	prop.put("mail.smtp.ssl.enable", "true");
     	prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+    	prop.put("mail.smtp.ssl.protocols", "TLSv1.2"); // MAC 에서도 이메일 보내기 가능하도록 한것임. 또한 만약에 SMTP 서버를 google 대신 naver 를 사용하려면 이것을 해주어야 함.
+
     	
     	
     	Authenticator smtpAuth = new MySMTPAuthenticator();
@@ -45,7 +47,7 @@ public class GoogleMail {
     	MimeMessage msg = new MimeMessage(ses);
 
     	// 제목 설정
-    	String subject = "localhost:9090/MyMVC/index.up 회원님의 비밀번호를 찾기위한 인증코드 발송";
+    	String subject = "그룹웨어 회원님의 회원가입을 위한 메일 발송";
     	msg.setSubject(subject);
     	        
     	// 보내는 사람의 메일주소
@@ -90,8 +92,8 @@ public class GoogleMail {
         
         prop.put("mail.smtp.ssl.enable", "true");
         prop.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-          
-        
+    	prop.put("mail.smtp.ssl.protocols", "TLSv1.2"); // MAC 에서도 이메일 보내기 가능하도록 한것임. 또한 만약에 SMTP 서버를 google 대신 naver 를 사용하려면 이것을 해주어야 함.
+                  
         Authenticator smtpAuth = new MySMTPAuthenticator();
         Session ses = Session.getInstance(prop, smtpAuth); 
            

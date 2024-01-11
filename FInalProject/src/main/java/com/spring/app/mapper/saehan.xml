@@ -29,6 +29,9 @@
 		</choose>
 	</select>
 	
+	
+	
+	
 
 	<!-- 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한 것) -->
 	<select id="boardListSearch_withPaging" parameterType="HashMap" resultType="com.spring.app.domain.BoardVO"> 
@@ -202,29 +205,10 @@
 	    WHERE T2.seq = #{seq}
 	</select>
 	
-
-	<!-- === 첨부파일 없는 1개글 수정하기 === -->
-	<update id="edit" parameterType="com.spring.app.domain.BoardVO">
-	    update tbl_freeboard set subject = #{subject}
-	                           , content = #{content}
-
-	    where seq = #{seq}
-	</update>
-	
 	<!-- === 자유게시판 수정할떄 첨부파일 삭제하기 === -->
 	<update id="delete_file" parameterType="com.spring.app.domain.BoardVO">
 	    update tbl_freeboard set filename = null
 
-	    where seq = #{seq}
-	</update>
-	
-	<!-- === 첨부파일 있는 1개글 수정하기 === -->
-	<update id="edit_withFile" parameterType="com.spring.app.domain.BoardVO">
-	    update tbl_freeboard set subject = #{subject}
-	                           , content = #{content}
-	                           , filename = #{fileName}
-	                           , orgFilename = #{orgFilename}
-   							   , fileSize = #{fileSize}
 	    where seq = #{seq}
 	</update>
 	
@@ -287,11 +271,6 @@
 	    update tbl_freeboard set commentCount = commentCount + 1
 	    where seq = #{parentSeq}
 	</update>
-	
-	<select id="Take_seq_One" resultType="int">  
-		select freeboard_Seq.nextval 
-		from dual
-	</select>
 	
 	
 	<!-- === 파일첨부가 되어진 댓글 1개에서 서버에 업로드되어진 파일명과 오리지널파일명을 조회해주는 것 === -->  
@@ -379,38 +358,37 @@
 	
 	<!-- 페이징 처리한 공지사항 목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한 것) -->
 	<select id="noticeListSearch_withPaging" parameterType="HashMap" resultType="com.spring.app.domain.NoticeboardVO"> 
-SELECT rno, seq, T.fk_emp_id, T.name, T.subject, T.read_Count, T.reg_Date, T.attachfile, D.department_name
-FROM (
-    SELECT rownum AS RNO, seq, fk_emp_id, name, subject, read_Count, TO_CHAR(reg_Date, 'yyyy-mm-dd hh24:mi:ss') AS reg_Date, Attachfile
-    FROM (
-        SELECT seq, fk_emp_id, name, subject, read_Count, reg_Date, Attachfile
-        FROM tbl_noticeboard
-        WHERE status = 1
-        <choose>
-            <when test='searchType == "subject" and searchWord != ""'>
-                AND LOWER(subject) LIKE '%'||LOWER(#{searchWord})||'%'
-            </when>
-            <when test='searchType == "content" and searchWord != ""'>
-                AND LOWER(content) LIKE '%'||LOWER(#{searchWord})||'%'
-            </when>
-            <when test='searchType == "subject_content" and searchWord != ""'>
-                AND (LOWER(subject) LIKE '%'||LOWER(#{searchWord})||'%' OR LOWER(content) LIKE '%'||LOWER(#{searchWord})||'%')
-            </when>
-            <when test='searchType == "name" and searchWord != ""'>
-                AND LOWER(name) LIKE '%'||LOWER(#{searchWord})||'%'
-            </when>
-            <otherwise>
-            </otherwise>
-        </choose>
-        ORDER BY seq DESC
-    ) V
-) T
-LEFT JOIN
-    tbl_EMPLOYEES E ON T.fk_emp_id = E.EMPLOYEE_id
-JOIN
-    tbl_department D ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
-WHERE RNO BETWEEN #{startRno} AND #{endRno}
-
+	SELECT rno, seq, T.fk_emp_id, T.name, T.subject, T.read_Count, T.reg_Date, T.attachfile, D.department_name
+	FROM (
+	    SELECT rownum AS RNO, seq, fk_emp_id, name, subject, read_Count, TO_CHAR(reg_Date, 'yyyy-mm-dd hh24:mi:ss') AS reg_Date, Attachfile
+	    FROM (
+	        SELECT seq, fk_emp_id, name, subject, read_Count, reg_Date, Attachfile
+	        FROM tbl_noticeboard
+	        WHERE status = 1
+	        <choose>
+	            <when test='searchType == "subject" and searchWord != ""'>
+	                AND LOWER(subject) LIKE '%'||LOWER(#{searchWord})||'%'
+	            </when>
+	            <when test='searchType == "content" and searchWord != ""'>
+	                AND LOWER(content) LIKE '%'||LOWER(#{searchWord})||'%'
+	            </when>
+	            <when test='searchType == "subject_content" and searchWord != ""'>
+	                AND (LOWER(subject) LIKE '%'||LOWER(#{searchWord})||'%' OR LOWER(content) LIKE '%'||LOWER(#{searchWord})||'%')
+	            </when>
+	            <when test='searchType == "name" and searchWord != ""'>
+	                AND LOWER(name) LIKE '%'||LOWER(#{searchWord})||'%'
+	            </when>
+	            <otherwise>
+	            </otherwise>
+	        </choose>
+	        ORDER BY seq DESC
+	    ) V
+	) T
+	LEFT JOIN
+	    tbl_EMPLOYEES E ON T.fk_emp_id = E.EMPLOYEE_id
+	JOIN
+	    tbl_department D ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
+	WHERE RNO BETWEEN #{startRno} AND #{endRno}
 
 	</select>
 	
@@ -490,23 +468,7 @@ WHERE RNO BETWEEN #{startRno} AND #{endRno}
 	    where seq = #{seq}
 	</delete>
 	
-	<!-- === 공지사항 1개글 수정하기 === -->
-	<update id="notice_edit" parameterType="com.spring.app.domain.NoticeboardVO">
-	    update tbl_noticeboard 
-	    set subject = #{subject}
-          , content = #{content}
-	    where seq = #{seq}
-	</update>
 	
-	<!-- === 첨부파일 있는 공지사항 1개글 수정하기 === -->
-	<update id="notice_edit_withFile" parameterType="com.spring.app.domain.NoticeboardVO">
-	    update tbl_noticeboard set subject = #{subject}
-	                             , content = #{content}
-	                             , file_name = #{file_Name}
-	                             , org_Filename = #{org_Filename}
-	                             , file_Size = #{file_Size}
-	    where seq = #{seq}
-	</update>
 	
 	<!-- 검색어 입력시 자동글 완성하기 -->
 	<select id="notice_wordSearchShow" parameterType="HashMap" resultType="String"> 
@@ -538,13 +500,6 @@ WHERE RNO BETWEEN #{startRno} AND #{endRno}
 		   </otherwise>
 		</choose> 
 	</select>
-	
-	<!-- === 공지사항 게시판 수정할떄 첨부파일 삭제하기 === -->
-	<delete id="notice_delete_file" parameterType="com.spring.app.domain.NoticeboardFileVO">
-	     delete from TBL_NOTICEBOARD_FILE
-	     where fileno = #{fileno}
-	</delete>
-	
 	
 	<!--  자유게시판 글번호 얻어오기   -->
 	<select id="getfreeboardSeq" resultType="String"> select max(seq) from tbl_freeboard </select>
@@ -597,6 +552,12 @@ WHERE RNO BETWEEN #{startRno} AND #{endRno}
 		where seq = #{seq} 
 	</update>
 
+	<!-- === 공지사항 게시판 수정할떄 첨부파일 삭제하기 === -->
+	<delete id="notice_delete_file" parameterType="com.spring.app.domain.NoticeboardFileVO">
+	     delete from TBL_NOTICEBOARD_FILE
+	     where fileno = #{fileno}
+	</delete>
+	
 	
 	<delete id="file_delete" parameterType="String">
 	    delete from TBL_FREEBOARD_FILE

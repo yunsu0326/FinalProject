@@ -386,7 +386,6 @@ import com.spring.app.seungwoo.service.*;
 	    boolean delsuc = false;
 	    
 	    if(del == gradelevel_arr.length) {
-    		
 	    	delsuc = true;
     	}
     	else {

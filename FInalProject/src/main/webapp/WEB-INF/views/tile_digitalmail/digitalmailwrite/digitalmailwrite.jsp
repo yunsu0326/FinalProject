@@ -3,6 +3,7 @@
 <%
    String ctxPath = request.getContextPath();
 %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
 
@@ -200,9 +201,10 @@
 			   
 			<%-- === 글내용 유효성 검사(스마트 에디터 사용 할 경우) 시작 === --%>
 			var contentval = $("textarea#contents").val();
-           	contentval = contentval.replace(/&nbsp;/gi, ""); // 공백을 "" 으로 변환         
-            contentval = contentval.substring(contentval.indexOf("<p>")+3);   // "             </p>"
-            contentval = contentval.substring(0, contentval.indexOf("</p>")); // "             "
+           	alert("contentval=>"+contentval);
+			//contentval = contentval.replace(/&nbsp;/gi, ""); // 공백을 "" 으로 변환         
+            //contentval = contentval.substring(contentval.indexOf("<p>")+3);   // "             </p>"
+            //contentval = contentval.substring(0, contentval.indexOf("</p>")); // "             "
              
             if(contentval.trim().length == 0) {
           		alert("글내용을 입력하세요!!");
@@ -279,14 +281,8 @@
 	            } 
 	        });
 		});
-		    
-		    
-		    
-		    
-		    
-		    
-		    
-		    
+		
+		
 		    
 		    
 		    
@@ -357,9 +353,10 @@
   			   
   			   <%-- === 글내용 유효성 검사(스마트 에디터 사용 할 경우) 시작 === --%>
   			   var contentval = $("textarea#contents").val();
-               contentval = contentval.replace(/&nbsp;/gi, ""); // 공백을 "" 으로 변환         
-               contentval = contentval.substring(contentval.indexOf("<p>")+3);   // "             </p>"
-               contentval = contentval.substring(0, contentval.indexOf("</p>")); // "             "
+               // contentval = contentval.replace(/&nbsp;/gi, ""); // 공백을 "" 으로 변환         
+               // contentval = contentval.substring(contentval.indexOf("<p>")+3);   // "             </p>"
+               // contentval = contentval.substring(0, contentval.indexOf("</p>")); // "             "
+               alert("contentval=>"+contentval);
                
                if(contentval.trim().length == 0) {
             	   alert("글내용을 입력하세요!!");
@@ -524,8 +521,41 @@
   		  
   		  // 받는사람 이메일 ----
   		  // 이메일 자동완성
-  		  var emailList = ${requestScope.EmailList}
+  		  var emailList = ${requestScope.EmailList};
 		  // console.log("emailList=>"+emailList);
+		  var recipientEmailList =  ${requestScope.senderEmail};
+		  
+		  if(recipientEmailList != null){
+			  
+			  var emailStartIdx = recipientEmailList.indexOf("<")+2;
+			  var emailEndIdx = recipientEmailList.indexOf(">")-1;
+			  var emailOnly = recipientEmailList.substring(emailStartIdx, emailEndIdx);
+					
+			  if(emailOnly == '${sessionScope.loginuser.email}'){
+				  $("#recipient").append('<div class="emailinf o_span col-5 myMail">' +
+				  '<span class="removeEmail" name="removeEmail">' + recipientEmailList +			    			
+				  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
+
+				  $("#selfMail").prop("checked", true);
+			  }
+			  
+			  else{
+				  $("#recipient").append('<div class="emailinf o_span col-5">' +
+				  '<span class="removeEmail" name="removeEmail">' + recipientEmailList +
+				  '<span class="material-icons-outlined x_icon">clear</span></span></div>');
+			  }
+				
+			  receieveEmailList.push(emailOnly);
+			  console.log("receieveEmailList=>"+receieveEmailList);
+			  if(emailOnly == '${sessionScope.loginuser.email}'){
+			  	$("#selfMail").prop("checked", true);
+			  }  
+	
+		  }
+		  
+		  
+		  
+		  
 		
 		  $("input[name='receieveEmail']").autocomplete({
 			  source : emailList,
@@ -1037,7 +1067,13 @@
 						<span id="check_span">중요</span>
 						<input type="hidden" id="impt" name="impt" value="0"/>
 					</div>
-					<input type="text" id="subject" style="width: 70%;"/>
+					
+					<c:if test="${requestScope.subject != 'null'}">
+		       			<input type="text" id="subject" style="width: 70%;" value="RE:&nbsp;${requestScope.subject}"/>
+		       		</c:if>	
+					<c:if test="${requestScope.subject == 'null'}">
+		       			<input type="text" id="subject" style="width: 70%;"/>
+		       		</c:if>	
 	    		</div>
 	    		
 	    		
@@ -1101,12 +1137,28 @@
 				</div>	
 	    									
 			</div>
-		
-			<div style="background-color: white; margin-top: 50px;">
-				<textarea style=" width:100%; height: 612px;" name="contents" id="contents"></textarea>
+			
+			<div style="background-color: white; margin-top: 50px; margin-bottom: 50px;">
+				<c:if test="${requestScope.subject != 'null'}">
+					<textarea style=" width:100%; height: 612px;" name="contents" id="contents">
+					-----Original Message-----
+					<p>From:&nbsp;${requestScope.senderEmail}<p>
+					<p>To:&nbsp;${sessionScope.loginuser.email}&nbsp;${sessionScope.loginuser.name}<p>
+					<p>subject:&nbsp;;${requestScope.subject}<p>
+					<p><p>
+					<p>${requestScope.content}<p>
+					--------------------------
+				</textarea>
+				</c:if>
+				<c:if test="${requestScope.subject == 'null'}">
+					<textarea style=" width:100%; height: 612px;" name="contents" id="contents">
+					</textarea>
+				</c:if>
+				
 			</div>
 			
 			</form>
+			<div></div>
 		</div>
 	</div>
 	<!--이메일 쓰기-->                
