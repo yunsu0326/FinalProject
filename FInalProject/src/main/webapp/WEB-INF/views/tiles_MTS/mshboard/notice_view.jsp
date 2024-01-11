@@ -57,7 +57,42 @@
 		height:15px;
 	}
 
+	#showList{	
+	   font-size: 17px;
+	   color: #ffffff;
+	   font-weight: 700;
+	   letter-spacing: 2px;
+	   text-transform: uppercase;
+	   border: none;
+	   padding: 10px 15px;
+	   border-radius: 2px;
+	   background-color:#4F6F52;
+	}
 	
+	#del_button{
+	   font-size: 17px;
+	   color: #ffffff;
+	   font-weight: 700;
+	   letter-spacing: 2px;
+	   text-transform: uppercase;
+	   border: none;
+	   padding: 10px 15px;
+	   border-radius: 2px;
+	   background-color:#739072;
+	}
+	
+	
+	#edit_button{
+	   font-size:17px;
+	   color: #ffffff;
+	   font-weight: 700;
+	   letter-spacing: 2px;
+	   text-transform: uppercase;
+	   border: none;
+	   padding: 10px 15px;
+	   border-radius: 2px;
+	   background-color:#86A789;
+	}
 	
 </style>
 
@@ -155,21 +190,16 @@ $(document).ready(function(){
 				</c:if> 
 				<%-- 버튼 모음 시작 --%>
 				<div style="text-align: right;">
-					<c:if test="${not empty sessionScope.loginuser && sessionScope.loginuser.employee_id == requestScope.boardvo.fk_emp_id}">
-						<button type="button" id="showList" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>${requestScope.goBackURL}'">검색 결과 보기</button>
-					</c:if> 
-				
-					<c:if test="${empty sessionScope.loginuser || sessionScope.loginuser.employee_id != requestScope.boardvo.fk_emp_id}">
-						  <button type="button" id="not_writer_showList" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>${requestScope.goBackURL}'">검색 결과 보기</button>
-					</c:if>
+						<button type="button" id="showList" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>${requestScope.goBackURL}'"><i class="fa-solid fa-list"></i>&nbsp;목록 보기</button>
+
 					
 					<c:if test="${not empty sessionScope.loginuser && (sessionScope.loginuser.employee_id == requestScope.boardvo.fk_emp_id or sessionScope.loginuser.gradelevel == 10)}">
-						  <button type="button" class="btn btn-secondary btn-sm mr-3" id = "del_button" onclick="javascript:location.href='<%= ctxPath%>/notice_del.gw?seq=${requestScope.boardvo.seq}'">글 삭제하기</button>	
+						  <button type="button" class="btn btn-danger btn-sm mr-3" id = "del_button" onclick="javascript:location.href='<%= ctxPath%>/notice_del.gw?seq=${requestScope.boardvo.seq}'"><i class="fa-solid fa-trash"></i>&nbsp;글 삭제하기</button>	
 					</c:if> 
 
 					<%-- 글수정, 삭제 버튼은 작성자만 보임 --%>	
 					<c:if test="${not empty sessionScope.loginuser && sessionScope.loginuser.employee_id == requestScope.boardvo.fk_emp_id}">
-						<button type="button" id = "edit_button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/notice_edit.gw?seq=${requestScope.boardvo.seq}'">글 수정하기</button>
+						<button type="button" id = "edit_button" class="btn btn-success btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/notice_edit.gw?seq=${requestScope.boardvo.seq}'"><i class="fa-solid fa-wrench"></i>&nbsp;글 수정하기</button>
 					</c:if>
 				</div>
 				<%-- 버튼 모음 끝 --%>

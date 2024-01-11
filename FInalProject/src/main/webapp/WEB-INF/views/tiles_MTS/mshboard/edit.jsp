@@ -150,7 +150,7 @@
 	        $(this).css("background-color", "#fff");
 	    }).on("drop", function(e){     
 	        e.preventDefault();
-	
+	        
 		var files = e.originalEvent.dataTransfer.files;  
 		        
 		if(files != null && files != undefined){
@@ -277,7 +277,6 @@
 	}); // end of $(document).ready() =====================================================
 
 
-
 	// 기존 첨부파일 조회 
 	function getExistingFiles(){
 		
@@ -396,7 +395,7 @@
 					<div style="width:940px; class="dropBox mt-2">
 						<div class=row id="dropzone" style="margin-left:-1.5%; display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
 					    	<div style="margin-right:710px; ">여기에 첨부 파일을 끌어 오세요</div>
-					        <div id="file" name="file" style="display: inline-block; border: solid 2px; margin-right:90px; width:850px; height:80px; background-color:white;"></div>
+					        <div id="file" name="file" style="display: inline-block; border: solid 2px; margin-right:90px; width:850px; height:80px; background-color:white; overflow-y: auto;"></div>
 					         </div>
 						</div>
 					</div>

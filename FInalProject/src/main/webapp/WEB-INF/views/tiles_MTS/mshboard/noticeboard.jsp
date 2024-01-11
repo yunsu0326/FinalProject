@@ -349,7 +349,7 @@
 
 	<div style="display: flex;">
 		<div style="margin: auto; padding-left: 3%;">
-		<h2 style="margin-bottom: 30px;">공지사항 목록 </h2> 
+		<h2 style="margin-bottom: 30px;"><i class="fa-solid fa-bullhorn"></i> &nbsp;공지사항 목록 </h2> 
 			
 			<table style="width: 1400px" class="table table-bordered" id="myTable">
 				<thead>   

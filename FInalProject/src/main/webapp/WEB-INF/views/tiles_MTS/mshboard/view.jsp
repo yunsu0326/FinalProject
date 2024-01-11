@@ -257,6 +257,61 @@
 		bottom:15px;
 		font-size:13px;
 	}
+	
+	
+	
+	#showList{
+		font-size: 17px;
+		   color: #ffffff;
+		   font-weight: 700;
+		   letter-spacing: 2px;
+		   text-transform: uppercase;
+		   border: none;
+		   padding: 10px 15px;
+		   border-radius: 2px;
+		   background-color:#4F6F52;
+	}
+	
+	
+	#reply-write{
+		font-size: 17px;
+		   color: #ffffff;
+		   font-weight: 700;
+		   letter-spacing: 2px;
+		   text-transform: uppercase;
+		   border: none;
+		   padding: 10px 15px;
+		   border-radius: 2px;
+		   background-color:#4F6F52;
+	}
+	
+	
+	#delete{
+		font-size: 17px;
+	    color: #ffffff;
+	    font-weight: 700;
+	    letter-spacing: 2px;
+	    text-transform: uppercase;
+	    border: none;
+	    padding: 10px 15px;
+	    border-radius: 2px;
+	    background-color:#4F6F52;
+	}
+	
+	#edit-button{
+		font-size: 17px;
+	    color: #ffffff;
+	    font-weight: 700;
+	    letter-spacing: 2px;
+	    text-transform: uppercase;
+	    border: none;
+	    padding: 10px 15px;
+	    border-radius: 2px;
+		background-color:#4F6F52;
+	}
+	
+	
+	
 	</style>
 
 <script type="text/javascript">
@@ -693,6 +748,7 @@ $(document).ready(function(){
 	<div style="margin: auto; padding-left: 3%;">	
 		<c:if test="${not empty requestScope.boardvo}">
 			
+	
 			<div class="text-left" style="margin-top: 80px;">
 		      <div name="subject_name" style="font-weight: bold; font-size: 30px;">${requestScope.boardvo.subject}<br>
 			  	<div style="margin-bottom:20px;"></div>
@@ -730,15 +786,15 @@ $(document).ready(function(){
 				
 				<%-- 버튼 모음 시작 --%>
 				<div style="text-align: right;">
-					<button type="button" id="showList" class="btn btn-secondary btn-sm mr-3"  onclick="javascript:location.href='<%= ctxPath%>${requestScope.goBackURL}'">목록 보기</button>
-					<button type="button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/add.gw?subject=${requestScope.boardvo.subject}&groupno=${requestScope.boardvo.groupno}&fk_seq=${requestScope.boardvo.seq}&depthno=${requestScope.boardvo.depthno}'">답변글쓰기</button>
+					<button type="button" id="showList" class="btn btn-secondary btn-sm mr-3"  onclick="javascript:location.href='<%= ctxPath%>${requestScope.goBackURL}'"><i class="fa-solid fa-list"></i>&nbsp;목록 보기</button>
+					<button type="button" id="reply-write" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/add.gw?subject=${requestScope.boardvo.subject}&groupno=${requestScope.boardvo.groupno}&fk_seq=${requestScope.boardvo.seq}&depthno=${requestScope.boardvo.depthno}'"><i class="fa-solid fa-pen-fancy"></i>&nbsp;답변글쓰기</button>
 					<c:if test="${(sessionScope.loginuser.email == requestScope.boardvo.fk_email or sessionScope.loginuser.gradelevel == 10)}">
-						<button type="button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/del.gw?seq=${requestScope.boardvo.seq}'">글삭제하기</button>
+						<button type="button" id="delete" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/del.gw?seq=${requestScope.boardvo.seq}'"><i class="fa-solid fa-trash"></i>&nbsp;글삭제하기</button>
 					</c:if> 
 					
 					<%-- 글수정, 삭제 버튼은 작성자만 보임 --%>	
 					<c:if test="${sessionScope.loginuser.email == requestScope.boardvo.fk_email}">
-					    <button type="button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/edit.gw?seq=${requestScope.boardvo.seq}'">글수정하기</button>
+					    <button type="button" id="edit-button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/edit.gw?seq=${requestScope.boardvo.seq}'"><i class="fa-solid fa-wrench"></i>&nbsp;글수정하기</button>
 					</c:if> 
 				
 					<c:if test="${empty requestScope.boardvo}">
@@ -752,14 +808,14 @@ $(document).ready(function(){
 				<div>
 				    <div id="nextPost" style="margin-bottom: 1%;">
 				        <i style='vertical-align: bottom;' class="fas fa-sort-up"></i> 다음글제목&nbsp;&nbsp;
-				        <span class="move" onclick="goView('${requestScope.boardvo.nextseq}')">${requestScope.boardvo.nextsubject}</span>
+				        <span class="move" onclick="goView('${requestScope.boardvo.previousseq}')">${requestScope.boardvo.previoussubject}</span>
 				    </div>
 				</div>
 				
 				<div>
 				    <div id="previousPost" style="margin-bottom: 1%;">
 				        <i style='vertical-align: top;' class="fas fa-sort-down"></i> 이전글제목&nbsp;&nbsp;
-				        <span class="move" onclick="goView('${requestScope.boardvo.previousseq}')">${requestScope.boardvo.previoussubject}</span>
+				        <span class="move" onclick="goView('${requestScope.boardvo.nextseq}')">${requestScope.boardvo.nextsubject}</span>
 				    </div>
 				</div>
 		    <hr style="border-top: solid 1.2px black">
