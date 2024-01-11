@@ -293,7 +293,7 @@
    <input type="hidden" id="to" placeholder="귓속말대상웹소켓.getId()"/>
    
    
-   <br><br>
+   
        <span style="font-weight:bold; font-size:20px; color:black;">현재접속자명단 : </span>
        <span id="userList" style="font-weight:bold; font-size:20px; color:black;"></span>
    <div id="connectingUserList" style=" max-height: 100px; overFlow: auto;"></div>
