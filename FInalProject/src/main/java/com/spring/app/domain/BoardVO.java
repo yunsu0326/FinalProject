@@ -25,28 +25,9 @@ public class BoardVO {
 	
 	// === 답변글쓰기 게시판을 위한 필드 추가하기
 	private String groupno;
-	/*
-	      답변글쓰기에 있어서 그룹번호 
-             원글(부모글)과 답변글은 동일한 groupno 를 가진다.
-             답변글이 아닌 원글(부모글)인 경우 groupno 의 값은 groupno 컬럼의 최대값(max)+1 로 한다.
-	 */
-	
 	private String fk_seq;
-	/*
-	    fk_seq 컬럼은 절대로 foreign key가 아니다.!!!!!!
-        fk_seq 컬럼은 자신의 글(답변글)에 있어서 
-               원글(부모글)이 누구인지에 대한 정보값이다.
-               답변글쓰기에 있어서 답변글이라면 fk_seq 컬럼의 값은 
-               원글(부모글)의 seq 컬럼의 값을 가지게 되며,
-               답변글이 아닌 원글일 경우 0 을 가지도록 한다. 
-	 */
-	
 	private String depthno;
-	/*
-	       답변글쓰기에 있어서 답변글 이라면
-              원글(부모글)의 depthno + 1 을 가지게 되며,
-              답변글이 아닌 원글일 경우 0 을 가지도록 한다. 
-	*/
+
 
 	private MultipartFile attach;
 	//form 태그에서 type="file" 인 파일을 받아서 저장되는 필드이다. 

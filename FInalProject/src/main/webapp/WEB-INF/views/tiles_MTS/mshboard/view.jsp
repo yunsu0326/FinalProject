@@ -61,16 +61,6 @@
 		white-space : nowrap;
 	
 	}
-	<%--
-	#content{
-	width:450px;
-	height:150px;
-	}
-	
-	#commentContent{
-	width:1100px;
-	}
-	--%>
 	
 	#delbutton,
 	#commonbutton{
@@ -80,8 +70,7 @@
 
 	#mycontent > div > div > div:nth-child(9) > div,
 	#mycontent > div > div > div:nth-child(10) > div{
-		text-align:right;
-	
+		text-align:left;
 	}
 	
 	#content{
@@ -89,189 +78,186 @@
 		height:55px;
 	}
 	
-	#mycontent > div > div > button:nth-child(8){
-		margin-left:960px;
-	}
-
-	#mycontent > div > div > button:nth-child(8),
-	#mycontent > div > div > button:nth-child(9),
-	#mycontent > div > div > button:nth-child(10),
-	#mycontent > div > div > button:nth-child(11){
-		position:relative;
-		left:15px;
-		top:10px;
+	#downfile{
+		margin-left:650px;
 	}
 	
-#commentDisplay > div:nth-child(1) > div > h6 > span,
-#commentDisplay > div:nth-child(1)~* > div > h6 > span{
-	margin-left:20px;
-}
-
-#delbutton{
-	margin-right:700px;
-	position:relative;
-	bottom:61px;
-	background-color:white;
-	color:black;
-	border:none;
-	font-weight:bold;
-}
-
-#commonbutton{
-	position:relative;
-	bottom:61px;
-	right:707px;
-	background-color:white;
-	color:black;
-	border:none;
-	font-weight:bold;
-}
-
-#btnReviewUpdate_OK{
-	margin-left:60px;
-	position:relative;
-	bottom:95px;
-}
-
-#btnReviewUpdate_NO{
-	margin-left:1px;
-	position:relative;
-	bottom:95px;
-}
-
-
-	#showList{
-	margin-left:1150px;
-	position:relative;
-		left:15px;
-		top:10px;
-	}
-
-	#mycontent > div > div > div:nth-child(10) > div{
-	padding-right:1170px;
-	}
-
-	#mycontent > div > div > button:nth-child(7){
+	#delbutton{
+		margin-right:700px;
 		position:relative;
-		left:15px;
-		top:10px;
+		bottom:61px;
+		background-color:white;
+		color:black;
+		border:none;
+		font-weight:bold;
+	}
+	
+	#commonbutton{
+		position:relative;
+		bottom:61px;
+		right:696px;
+		background-color:white;
+		color:black;
+		border:none;
+		font-weight:bold;
+	}
+	
+	#btnReviewUpdate_OK{
+		margin-left:60px;
+		position:relative;
+		bottom:95px;
+	}
+	
+	#btnReviewUpdate_NO{
+		margin-left:1px;
+		position:relative;
+		bottom:95px;
+	}
+	
+	#nextPost{
+		padding-right:1170px;
 	}
 
-#commentDisplay > div:nth-child(1) > div > h6 > a{
-	position:relative;
-		left:900px;
-}
+	.anime__details__review {
+	   margin-bottom: 55px;
+	}
 	
-</style>
+	
+	.section-title h4,
+	.section-title h5 {
+	   color: #black;
+	   font-weight: 600;
+	   line-height: 21px;
+	   text-transform: uppercase;
+	   padding-left: 20px;
+	   position: relative;
+	}
+	
+	.section-title h4:after,
+	.section-title h5:after {
+	   position: absolute;
+	   left: 0;
+	   top: -6px;
+	   height: 32px;
+	   width: 4px;
+	   background: rgb(3, 199, 90);
+	   content: "";
+	}
+	
+	.comment_bubble {
+	   overflow: hidden;
+	   margin-bottom: 15px;
+	}
+	
+	.comment_bubble__pic {
+	   float: left;
+	   margin-right: 20px;
+	   position: relative;
+	}
+	
+	.comment_bubble__pic:before {
+	   position: absolute;
+	   right: -30px;
+	   top: 15px;
+	   border-top: 15px solid transparent;
+	   border-left: 15px solid #1d1e39;
+	   content: "";
+	   transform: rotate(45deg);
+	}
+	
+	
+	.comment_bubble__text {
+	   overflow: hidden;
+	   background: #ccc;
+	   padding: 18px 30px 16px 20px;
+	   border-radius: 10px;
+	}
+	
+	.comment_bubble__text h6 {
+	   color: #ffffff;
+	   font-weight: 700;
+	   margin-bottom: 10px;
+	}
+	
+	.comment_bubble__text h6 span {
+	   color: #b7b7b7;
+	   font-weight: 400;
+	}
+	
+	.comment_bubble__text p {
+	   color: #b7b7b7;
+	   line-height: 23px;
+	   margin-bottom: 0;
+	}
+	
+	.anime__details__form form textarea {
+	   width: 100%;
+	   font-size: 15px;
+	   color: #b7b7b7;
+	   padding-left: 20px;
+	   padding-top: 12px;
+	   height: 110px;
+	   border: none;
+	   border-radius: 5px;
+	   resize: none;
+	   margin-bottom: 24px;
+	}
+	
+	.anime__details__form form button {
+	   font-size: 11px;
+	   color: #ffffff;
+	   font-weight: 700;
+	   letter-spacing: 2px;
+	   text-transform: uppercase;
+	   background: #e53637;
+	   border: none;
+	   padding: 10px 15px;
+	   border-radius: 2px;
+	}
+	       
+	
+	#addWriteFrm > p > button:nth-child(2){
+		margin-right:-40px;
+		position:relative;
+		bottom:10px;
+		font-size:15px;
+		text-align:center;
+	}
+	
+	#addWriteFrm > p > button:nth-child(1){
+		position:relative;
+		bottom:10px;
+		font-size:15px;
+		text-align:center;
+		background-color:#9b4949
+	}
+	
+	
+	
+	#commentContent{
+		margin-top:15px;
+	}
 
-
-<style type="text/css">
-   
-.anime__details__review {
-   margin-bottom: 55px;
-}
-.section-title {
-   margin-bottom: 30px;
-}
-
-.section-title h4,
-.section-title h5 {
-   color: #black;
-   font-weight: 600;
-   line-height: 21px;
-   text-transform: uppercase;
-   padding-left: 20px;
-   position: relative;
-}
-
-.section-title h4:after,
-.section-title h5:after {
-   position: absolute;
-   left: 0;
-   top: -6px;
-   height: 32px;
-   width: 4px;
-   background: rgb(3, 199, 90);
-   content: "";
-}
-
-.comment_bubble {
-   overflow: hidden;
-   margin-bottom: 15px;
-}
-
-.comment_bubble__pic {
-   float: left;
-   margin-right: 20px;
-   position: relative;
-}
-
-.comment_bubble__pic:before {
-   position: absolute;
-   right: -30px;
-   top: 15px;
-   border-top: 15px solid transparent;
-   border-left: 15px solid #1d1e39;
-   content: "";
-   transform: rotate(45deg);
-}
-
-
-.comment_bubble__text {
-   overflow: hidden;
-   background: #ccc;
-   padding: 18px 30px 16px 20px;
-   border-radius: 10px;
-}
-
-.comment_bubble__text h6 {
-   color: #ffffff;
-   font-weight: 700;
-   margin-bottom: 10px;
-}
-
-.comment_bubble__text h6 span {
-   color: #b7b7b7;
-   font-weight: 400;
-}
-
-.comment_bubble__text p {
-   color: #b7b7b7;
-   line-height: 23px;
-   margin-bottom: 0;
-}
-
-.anime__details__form form textarea {
-   width: 100%;
-   font-size: 15px;
-   color: #b7b7b7;
-   padding-left: 20px;
-   padding-top: 12px;
-   height: 110px;
-   border: none;
-   border-radius: 5px;
-   resize: none;
-   margin-bottom: 24px;
-}
-
-.anime__details__form form button {
-   font-size: 11px;
-   color: #ffffff;
-   font-weight: 700;
-   letter-spacing: 2px;
-   text-transform: uppercase;
-   background: #e53637;
-   border: none;
-   padding: 10px 15px;
-   border-radius: 2px;
-}
-       
-
-
-
-
-
-</style>
+	#attach{
+		margin-right:840px;
+			position:relative;
+		bottom:10px;
+	}
+	
+	#addWriteFrm > div.text-right > button:nth-child(2){
+		background-color:#6d1313;
+		position:relative;
+		bottom:15px;
+		font-size:13px;
+	}
+	
+	#addWriteFrm > div.text-right > button:nth-child(3){
+		background-color:#F44336;
+		position:relative;
+		bottom:15px;
+		font-size:13px;
+	}
+	</style>
 
 <script type="text/javascript">
   
@@ -332,27 +318,26 @@ $(document).ready(function(){
     
 });// end of $(document).ready(function(){})-------------
 
-  
-  // Function Declaration
-  // == 댓글쓰기 == 
-  function goAddWrite() {
-	  const comment_content = $("textarea[name='content']").val().trim();
-	  if(comment_content == "") {
-	      alert("댓글 내용을 입력하세요!!");
-		  return; // 종료
-	  }
+  	// Function Declaration
+  	// == 댓글쓰기 == 
+	function goAddWrite() {
+		const comment_content = $("textarea[name='content']").val().trim();
+	  	if(comment_content == "") {
+	    	alert("댓글 내용을 입력하세요!!");
+			return; // 종료
+	 	 }
 	  
-	  if($("input:file[name='attach']").val() == "") {
-		  // 첨부파일이 없는 댓글쓰기인 경우 
-		  goAddWrite_noAttach();
-	  }
+	  	if($("input:file[name='attach']").val() == "") {
+			// 첨부파일이 없는 댓글쓰기인 경우 
+			goAddWrite_noAttach();
+	     }
 	  
-	  else {
+	    else {
 		  // 첨부파일이 있는 댓글쓰기인 경우
 		  goAddWrite_withAttach();
-	  }
-	  
-  }// end of function goAddWrite(){}------------------
+	  	}
+	  	
+	}// end of function goAddWrite(){}------------------
   
 	// 첨부파일이 없는 댓글쓰기인 경우 
 	function goAddWrite_noAttach() {
@@ -379,7 +364,7 @@ $(document).ready(function(){
   // ==== 파일첨부가 있는 댓글쓰기  시작==== // 
     function goAddWrite_withAttach() {
 	  
-	    const queryString = $("form[name='addWriteFrm']").serialize();
+    	const queryString = $("form[name='addWriteFrm']").serialize();
 	  
 	    $("form[name='addWriteFrm']").ajaxForm({
 	        url:"<%= ctxPath%>/addComment_withAttach.gw",
@@ -388,7 +373,6 @@ $(document).ready(function(){
 		    enctype:"multipart/form-data",
 		    dataType:"json",
 		    success:function(json){
-		      
 			    goViewComment(1); // 페이징 처리한 댓글 읽어오기
 
 			    $("textarea[name='content']").val("");
@@ -416,44 +400,21 @@ $(document).ready(function(){
 	  
 		    success:function(json){
 
-                
-
-            
 			     let v_html = "";
 			     if(json.length > 0) {
 				     $.each(json, function(index, item){
-					     v_html += " <div class='comment_bubble'>"; 
-					     v_html +=    "<div class='comment_bubble__text' style='background-color:white; height:120px;' ><h6 style='color:black;'>"+(item.name)+"<span>"+item.regdate+"</span>";
+				    	 v_html += " <div class='comment_bubble'>";
+				    	 v_html += " <div class='comment_bubble__text' style='background-color:white; height:120px;'><h6 style='color:black;'>" + (item.name) + "&nbsp;&nbsp;<span>" + item.regdate + "</span>";
 					     
 					     if(${sessionScope.loginuser != null}) {
-					         v_html += "<a href='<%= ctxPath%>/downloadComment.gw?seq="+item.seq+"'>"+ item.orgFilename +"</a></h6>";   
+					    	 v_html += "<a id='downfile' href='<%= ctxPath%>/downloadComment.gw?seq=" + item.seq + "'>" + item.orgFilename + "</a></h6>";
 					     }
 					     else {
 					         v_html += "</h6>";
 					     }
-					     v_html += 	  "<p id='review" + item.seq + "'>"  +
+					     	v_html += "<p style='color:black;' id='review" + item.seq + "'>" +
 					     				item.content +"</p>"; 
-							              <%--
-					     				  item.content.substring(0, 30)  + "<br>" +
-							              item.content.substring(30, 60) + "<br>" +
-							              item.content.substring(60, 90) + "<br>" +
-							              item.content.substring(90, 100)
-							              --%>
-					     <%-- === 첨부파일 기능이 추가된 경우 시작 === --%>  
-					     <%--
-					     if(${sessionScope.loginuser != null}) {
-					         v_html += "<div style='white-space : nowrap; width:30%;'><a href='<%= ctxPath%>/downloadComment.gw?seq="+item.seq+"'>"+ item.orgFilename +"</a></div>";   
-					     }
-					     else {
-					         v_html += "<div style='width:30%; word-wrap: break-word;'>"+ item.orgFilename +"</div>";
-					     }
-					     --%>         
-					     
-					     <%-- === 첨부파일 기능이 추가된 경우 끝 === --%>
-					              
-					    
-					     // v_html += "<div class='comment' style='color:#a6a6a6; height:20px; white-space : nowrap; width:20%;' >" + item.regdate + "</div>";
-					     v_html += "<div id='review2"+item.seq+"' style='width:1%;'>"+ "     "+ "</div>";
+					     	v_html += "<div id='review2"+item.seq+"' style='width:1%;'>"+ "     "+ "</div>";
 					          
 					     if (${sessionScope.loginuser != null} && "${sessionScope.loginuser.email}" == item.fk_email) {
 						      if(item.orgFilename.trim() != ""){
@@ -468,7 +429,7 @@ $(document).ready(function(){
 					     }
 					      
 					     else{
-					            v_html += "<br></br><br></br>";
+					            v_html += "<div></div>";
 					     }
 					    v_html += "</div><br></br>";	            
 				 	});
@@ -496,7 +457,7 @@ $(document).ready(function(){
     function updateMyReview(seq) {
     	
     	 /////////////////////////////////////////////
-    	    $("button[name^='update']").hide();
+    	$("button[name^='update']").hide();
     	 /////////////////////////////////////////////
     	let comt = $("input#one_review").val();
     	$("button[name='delbtn"+seq+"']").hide();
@@ -536,10 +497,7 @@ $(document).ready(function(){
 	
 	       // ===== 수정취소 버튼 클릭시 =====
 	     $(document).on("click", "button#btnReviewUpdate_NO", function(){
-	         //////////////////////////////////////////////////////////
-	         //$("button[name^='update']").show();
-	         //////////////////////////////////////////////////////////
-	    	 
+
 	    	 $("td#review"+seq).html(previousContent);  // 원래의 제품후기 엘리먼트로 복원하기
 	         $("button[name='no_update"+seq+"']").hide();
 	         $("button[name='ok_update"+seq+"']").hide();
@@ -551,10 +509,7 @@ $(document).ready(function(){
 
 	   // ===== 수정완료 버튼 클릭시 =======
 	      $(document).on("click", "button#btnReviewUpdate_OK", function () {
-	          //var form_data = $("form[name=review_update_Frm]").serialize();
-	         // var formData = new FormData($("form[name='review_update_Frm']").get(0));
-	          //console.log(formData);
-		  alert(seq);
+		 
 	          $.ajax({
 	              url:"<%= ctxPath%>/reviewUpdate.gw",
 	              type:"post",
@@ -735,172 +690,124 @@ $(document).ready(function(){
 
 
 <div style="display: flex;">
-<div style="margin: auto; padding-left: 3%;">
-<div class='container'>
-
-</div>		
+	<div style="margin: auto; padding-left: 3%;">	
 		<c:if test="${not empty requestScope.boardvo}">
-		
+			
 			<div class="text-left" style="margin-top: 80px;">
 		      <div name="subject_name" style="font-weight: bold; font-size: 30px;">${requestScope.boardvo.subject}<br>
-			  <div style="margin-bottom:20px;"></div>
-		      	<div>
+			  	<div style="margin-bottom:20px;"></div>
+		      		<div>
+				  		<span style="font-size: 15.5px; font-weight:bold; margin-bottom: 10px;">작성자 &nbsp; ${requestScope.boardvo.name}</span>
+			      		<span style="font-size: 15.5px; margin-bottom: 10px;"><i class="far fa-eye mx-2"></i>${requestScope.boardvo.readCount}</span>
+			      		<span style="font-size: 15.5px; margin-bottom: 10px;"><i class="far fa-clock mx-2"></i> ${requestScope.boardvo.regDate}</span>
+		    		</div>
+		   		 </div>
+			  
 			
-				  	
-				  <span style="font-size: 15.5px; font-weight:bold; margin-bottom: 10px;">작성자 &nbsp; ${requestScope.boardvo.name}</span>
-			      <span style="font-size: 15.5px; margin-bottom: 10px;"><i class="far fa-eye mx-2"></i>${requestScope.boardvo.readCount}</span>
-			      <span style="font-size: 15.5px; margin-bottom: 10px;"><i class="far fa-clock mx-2"></i> ${requestScope.boardvo.regDate}</span>
-		    	</div>
-		    </div>
-		  
-		
-	    <hr style="border-top: solid 1.2px black">
-			
-		<%-- 글수정, 삭제 버튼은 작성자만 보임 --%>		
-		
-		
-		<!-- 글 내용 -->
-		</div>
-			<p>${requestScope.boardvo.content}</p>
-			<div style="height:220px;"></div>
-		</c:if>  		
-			<!-- 첨부파일 -->		
-			<p style='margin-top: 30px;' class='text-small text-right'>
-				<span>첨부파일: </span>
-	
-						<c:if test="${sessionScope.loginuser != null}">
-					    <a href="<%= ctxPath%>/download.gw?seq=${requestScope.boardvo.seq}">${requestScope.fileboardvo.orgFilename}</a>  
-					</c:if>
-					<c:if test="${sessionScope.loginuser == null}">
-					    ${requestScope.fileboardvo.orgFilename}
-					</c:if>
-					<c:forEach items="${fileList}" var="file" varStatus="sts">
-					<a href="<%= ctxPath%>/download.gw?fileno=${file.fileno}">${file.orgFilename}</a>
-					<c:if test="${sts.count != fn:length(fileList) }">,</c:if>
-				    </c:forEach>
+		    <hr style="border-top: solid 1.2px black">
 
-			</p>
-
-
-			<button type="button" id="showList" class="btn btn-secondary btn-sm mr-3"  onclick="javascript:location.href='<%= ctxPath%>${requestScope.goBackURL}'">검색된 결과 보기</button>
-	
-			<c:if test="${not empty sessionScope.loginuser}">
-				<button type="button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/add.gw?subject=${requestScope.boardvo.subject}&groupno=${requestScope.boardvo.groupno}&fk_seq=${requestScope.boardvo.seq}&depthno=${requestScope.boardvo.depthno}'">답변글쓰기</button>
-			</c:if> 
-			<%-- 글수정, 삭제 버튼은 작성자만 보임 --%>	
-			<c:if test="${not empty sessionScope.loginuser && sessionScope.loginuser.email == requestScope.boardvo.fk_email}">
-			    <button type="button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/edit.gw?seq=${requestScope.boardvo.seq}'">글수정하기</button>
-			    
-			</c:if> 
-			
-			<c:if test="${not empty sessionScope.loginuser && (sessionScope.loginuser.email == requestScope.boardvo.fk_email or sessionScope.loginuser.gradelevel == 10)}">
-				<button type="button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/del.gw?seq=${requestScope.boardvo.seq}'">글삭제하기</button>
-			</c:if> 
-
-		
-		<c:if test="${empty requestScope.boardvo}">
-			<div style="padding: 20px 0; font-size: 16pt; color: red;" >존재하지 않습니다</div> 
-		</c:if>
-								
-			<div style='margin-top: 30px;'>
-			  	<div style="display: inline-block; float:right"> 
-			  		<%-- === #126. 특정글을 조회한 후 "검색된결과목록보기" 버튼을 클릭했을 때 돌아갈 페이지를 만들기 위함. === --%>
-				  
-			    </div>
+			<!-- 글 내용 -->
 			</div>
-		
-	
-	    <hr style="border-top: solid 1.2px black">
-	    	<div>
-	    	<div style="margin-bottom: 1%;"><i style='vertical-align: bottom;' class="fas fa-sort-up"></i> 다음글제목&nbsp;&nbsp;
-	    	<span class="move" onclick="goView('${requestScope.boardvo.nextseq}')">${requestScope.boardvo.nextsubject}</span></div>
-	    	</div>
-	    	<div>
-	    	<div style="margin-bottom: 1%;"><i style='vertical-align: top;' class="fas fa-sort-down"></i> 이전글제목&nbsp;&nbsp;
-	    	<span class="move" onclick="goView('${requestScope.boardvo.previousseq}')">${requestScope.boardvo.previoussubject}</span></div>
-	    	</div>
-	    <hr style="border-top: solid 1.2px black">
-	    
-		<%-- ==== 댓글쓰기 폼 추가 시작 ==== --%>
-		<c:if test="${not empty sessionScope.loginuser}">
-		    
-		    <div class="anime__details__form">
-				<div class="section-title">
-					<h5>댓글쓰기</h5>
-				</div>
-				<form name="addWriteFrm" id="addWriteFrm">
-					<input type="hidden" name="fk_email" id="fk_email" value="${sessionScope.loginuser.email}" />
-					<input type="hidden" name="name" id="name" value="${sessionScope.loginuser.name}" />
-					<textarea style="color:black;" name="content" id="commentContent" placeholder="댓글을 입력하세요"></textarea>
-                    <input type="hidden" name="parentSeq" id="parentSeq" value="${requestScope.boardvo.seq}" readonly />
-                    <button type="button" onclick="goAddWrite()"><i class="fa fa-location-arrow"></i> 댓글쓰기</button>
-                    <button type="reset">댓글취소</button>
-                    <input type="file" name="attach" id="attach" />
-				</form>
-			</div>
-		    
-		    
-		    
-		    <%--
-		    <h3 style="margin-top: 50px;">댓글쓰기</h3>
-			
-			<form name="addWriteFrm" id="addWriteFrm" style="margin: 20px 0 0 40px"> 
+				<p>${requestScope.boardvo.content}</p>
+				<div style="height:220px;"></div>
+			</c:if>  		
+				<!-- 첨부파일 -->	
+				<c:if test="${requestScope.boardvo.attachfile == 1}">	
+					<p style='margin-top: 30px; margin-right:15px;' class='text-small text-right'>
+						<span>첨부파일: </span>
+							<c:if test="${sessionScope.loginuser != null}">
+							    <a href="<%= ctxPath%>/download.gw?seq=${requestScope.boardvo.seq}">${requestScope.fileboardvo.orgFilename}</a>  
+							</c:if>
+							<c:if test="${sessionScope.loginuser == null}">
+							    ${requestScope.fileboardvo.orgFilename}
+							</c:if>
+							<c:forEach items="${fileList}" var="file" varStatus="sts">
+							<a href="<%= ctxPath%>/download.gw?fileno=${file.fileno}">${file.orgFilename}</a>
+							<c:if test="${sts.count != fn:length(fileList) }">,</c:if>
+						    </c:forEach>
+					</p>
+				</c:if> 
 				
-				<table class="table" name="inputs" style="width: 1500px; background-color: #f8f8f9" >
-					<tr style="height: 35px">
-					   <td colspan="2"><i class="fa fa-user" style="font-size: 18pt; color:gray"></i>
-					   	  <input type="hidden" name="fk_email" id="fk_email" value="${sessionScope.loginuser.email}" />
-					   	  <input type="hidden" name="name" id="name" value="${sessionScope.loginuser.name}" />
-					   	  ${sessionScope.loginuser.name}
-					   </td>
-					</tr>
-					<tr style="height: 35px">
-					   <td style="border-top: none; width:77%">
-					   	  <textarea name="content" id="commentContent" style="margin-left:37px; border:none; height: 100px;" size="100" placeholder="&nbsp;댓글을 입력하세요."></textarea> 
-					   	  <input type="hidden" name="parentSeq" id="parentSeq" value="${requestScope.boardvo.seq}" readonly />
-					   </td>
-					   <td style="border-top: none;">
-					   	  <button type="button" class="btn btn-lg mr-3 " onclick="goAddWrite()" style="background-color: white; color:#0070C0; font-size: 14pt;">등록</button> 			   	 
-					   	  <button type="reset" class="btn btn-lg mr-3 " style="background-color: white; color:#0070C0; font-size: 14pt;">취소</button>
-					 </td>
-					</tr>
-					<tr style="height: 30px;">
-				        <th>파일첨부 <input type="file" name="attach" id="attach" /></th>
-				   </tr>	
-				</table>
-			</form>
- 			 --%>		
-		</c:if>
-		<%-- ==== 댓글쓰기 폼 추가 끝 ==== --%>
+				<%-- 버튼 모음 시작 --%>
+				<div style="text-align: right;">
+					<button type="button" id="showList" class="btn btn-secondary btn-sm mr-3"  onclick="javascript:location.href='<%= ctxPath%>${requestScope.goBackURL}'">목록 보기</button>
+					<button type="button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/add.gw?subject=${requestScope.boardvo.subject}&groupno=${requestScope.boardvo.groupno}&fk_seq=${requestScope.boardvo.seq}&depthno=${requestScope.boardvo.depthno}'">답변글쓰기</button>
+					<c:if test="${(sessionScope.loginuser.email == requestScope.boardvo.fk_email or sessionScope.loginuser.gradelevel == 10)}">
+						<button type="button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/del.gw?seq=${requestScope.boardvo.seq}'">글삭제하기</button>
+					</c:if> 
+					
+					<%-- 글수정, 삭제 버튼은 작성자만 보임 --%>	
+					<c:if test="${sessionScope.loginuser.email == requestScope.boardvo.fk_email}">
+					    <button type="button" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/edit.gw?seq=${requestScope.boardvo.seq}'">글수정하기</button>
+					</c:if> 
+				
+					<c:if test="${empty requestScope.boardvo}">
+						<div style="padding: 20px 0; font-size: 16pt; color: red;" >존재하지 않습니다</div> 
+					</c:if>
+				</div>
+									
+					<%-- 버튼 모음 끝 --%>
 		
-		<%-- ===== 댓글 내용 보여주기 시작 ==== --%>
-		
-		
+		    	<hr style="border-top: solid 1.2px black ">
+				<div>
+				    <div id="nextPost" style="margin-bottom: 1%;">
+				        <i style='vertical-align: bottom;' class="fas fa-sort-up"></i> 다음글제목&nbsp;&nbsp;
+				        <span class="move" onclick="goView('${requestScope.boardvo.nextseq}')">${requestScope.boardvo.nextsubject}</span>
+				    </div>
+				</div>
+				
+				<div>
+				    <div id="previousPost" style="margin-bottom: 1%;">
+				        <i style='vertical-align: top;' class="fas fa-sort-down"></i> 이전글제목&nbsp;&nbsp;
+				        <span class="move" onclick="goView('${requestScope.boardvo.previousseq}')">${requestScope.boardvo.previoussubject}</span>
+				    </div>
+				</div>
+		    <hr style="border-top: solid 1.2px black">
+		    
+			<%-- ==== 댓글쓰기 폼 추가 시작 ==== --%>
+			<c:if test="${not empty sessionScope.loginuser}">
+			    
+			    <div class="anime__details__form">
+					<div class="section-title">
+						<h5>댓글쓰기</h5>
+					</div>
+					<form name="addWriteFrm" id="addWriteFrm">
+					
+						<input type="hidden" name="fk_email" id="fk_email" value="${sessionScope.loginuser.email}" />
+						<input type="hidden" name="name" id="name" value="${sessionScope.loginuser.name}" />
+						<textarea style="color:black;" name="content" id="commentContent" placeholder="댓글을 입력하세요"></textarea>
+						
+	                    <input type="hidden" name="parentSeq" id="parentSeq" value="${requestScope.boardvo.seq}" readonly />
+	                    
+	                   	<div class='text-right'>
+	                   		<input type="file" name="attach" id="attach" />
+		                    <button type="button" onclick="goAddWrite()"><i class="fa fa-location-arrow"></i> 댓글쓰기</button>
+		                    <button type="reset">댓글취소</button>
+		                     
+		                 </div>
+					</form>
+				</div>
+			    
+			</c:if>
+			<%-- ==== 댓글쓰기 폼 추가 끝 ==== --%>
+			
+			<%-- ===== 댓글 내용 보여주기 시작 ==== --%>
 			<div class="row mt-5">
-                <div class="col-lg-8">
-                    <div class="anime__details__review">
-                        <div class="section-title"><h5>Reviews</h5></div>
-                        <div style="width: 1400px;" id="commentDisplay"></div>
-                    </div>
-                    
-                </div>
-            </div>
+               <div class="col-lg-8">
+                   <div class="anime__details__review">
+                       <div class="section-title"><h5>Reviews</h5></div>
+                       <div style="width: 1400px;" id="commentDisplay"></div>
+                   </div>
+                   
+               </div>
+           </div>
+			<%-- ===== 댓글 내용 보여주기 끝 ==== --%>
 			
-			
-			
-			
-			<%-- 
-			<table class="table" style="width: 1400px; margin-top: 2%; margin-bottom: 3%;">
-				<tbody id="commentDisplay"></tbody>
-			</table> 
-			--%>
-		<%-- ===== 댓글 내용 보여주기 끝 ==== --%>
-		
 		<%-- === 댓글 페이지바 === --%>
 		<div style="display: flex; margin-bottom: 50px;">
 			<div id="pageBar" style="margin: auto; text-align: center;"></div>
 		</div>
-</div>
+	</div>
 </div>	
 	
 

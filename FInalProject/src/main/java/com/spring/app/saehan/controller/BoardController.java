@@ -62,10 +62,7 @@ public class BoardController {
 		String searchType = request.getParameter("searchType");
 		String searchWord = request.getParameter("searchWord");
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
-	
 
-
-		
 		if (searchType == null) {
 			searchType = "";
 		}
@@ -102,7 +99,7 @@ public class BoardController {
 				if (currentShowPageNo < 1 || currentShowPageNo > totalPage) {
 					currentShowPageNo = 1;
 				}
-			} catch (NumberFormatException e) {
+			}catch (NumberFormatException e) {
 				currentShowPageNo = 1;
 			}
 		} // end of else{------------------------
@@ -113,20 +110,15 @@ public class BoardController {
 		paraMap.put("startRno", String.valueOf(startRno));
 		paraMap.put("endRno", String.valueOf(endRno));
 
-		
-		
 		boardList = service.boardListSearch_withPaging(paraMap);
 		// 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한 것)
-		
-		
-		
+
 		mav.addObject("boardList", boardList);
 		
 		if ("subject".equals(searchType) || "content".equals(searchType) || "subject_content".equals(searchType)
-				|| "name".equals(searchType)) {
-
+			|| "name".equals(searchType)) {
+		
 			mav.addObject("paraMap", paraMap);
-
 		}
 
 		// ===== 페이지바 만들기 ===== //
@@ -213,7 +205,7 @@ public class BoardController {
 		}
 
 		return jsonArr.toString();
-	}
+	}//end of public String wordSearchShow(HttpServletRequest request) {-------------------------
 	// ===== 검색어 입력시 자동글 완성하기 끝 ===== //
 
 	// ===== 글쓰기 페이지 요청 시작 ===== ///
@@ -240,7 +232,7 @@ public class BoardController {
 
 		return mav;
 	}// end of public ModelAndView requiredLogin_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) { ------------
-		// ===== 글쓰기 페이지 요청 끝 ===== //
+	// ===== 글쓰기 페이지 요청 끝 ===== //
 
 	// ====== 게시판 글쓰기 완료 요청 ======= //
 	
@@ -262,7 +254,7 @@ public class BoardController {
 
 		return jsonObj.toString();
 
-	}
+	}//end of public String nofile_addEnd(Map<String, String> paraMap, BoardVO boardvo) {----------
 
 	//파일 있는 자유게시판 글쓰기
 	@ResponseBody
@@ -292,8 +284,6 @@ public class BoardController {
 	        }
 
 	        for (MultipartFile mtfile : mrequest.getFiles("file_arr")) {
-	            //System.out.println("파일명 : " + mtfile.getOriginalFilename() + " / 파일 크기 : " + mtfile.getSize());
-
 	            String filename = "";
 	            String originalFilename = "";
 	            byte[] bytes = null;
@@ -320,14 +310,13 @@ public class BoardController {
 	                
 	                // 첨부파일 리스트에 추가
 	                fileList.add(nvo);
-	                
-	                
-	                
+ 
 	            } catch (Exception e) {
 	                e.printStackTrace();
 	            }
-	        }
-	    }
+	        }//end of for (MultipartFile mtfile : mrequest.getFiles("file_arr")) {------------
+	   
+	    }//end of if (mrequest.getFiles("file_arr") != null) {------------------
 
 	    paraMap.put("fileList", fileList);
 
@@ -335,62 +324,57 @@ public class BoardController {
 
 	    JSONObject jsonObj = new JSONObject();
 	    jsonObj.put("result", result);
-	    //System.out.println("!!!"+jsonObj.toString());
 	    return jsonObj.toString();
-	}
+	}// end of public ModelAndView addEnd(Map<String, String> paraMap, ModelAndView mav, BoardVO boardvo, MultipartHttpServletRequest mrequest) { ----------
 
-	// end of public ModelAndView addEnd(Map<String, String> paraMap, ModelAndView mav, BoardVO boardvo, MultipartHttpServletRequest mrequest) { ----------
+	
 	// ====== 게시판 글쓰기 완료 요청 끝======= //
 
 	// ====== 스마트에디터. 드래그앤드롭을 사용한 다중사진 파일 업로드 시작 ====== //
-	@PostMapping(value = "/image/multiplePhotoUpload.action")
-	public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) {
-		HttpSession session = request.getSession();
-
-		String root = session.getServletContext().getRealPath("/");
-		String path = root + "resources" + File.separator + "photo_upload";
-
-		File dir = new File(path);
-
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
-
-		try {
-			String filename = request.getHeader("file-name");
-
-			InputStream is = request.getInputStream(); // is는 네이버 스마트 에디터를 사용하여 사진첨부하기 된 이미지 파일임.
-
-			String newFilename = fileManager.doFileUpload(is, filename, path);
-
-			int width = fileManager.getImageWidth(path + File.separator + newFilename);
-
-			if (width > 600) {
-				width = 600;
-			}
-
-			// 이미지 불러오는 경우
-			String ctxPath = request.getContextPath();
-
-			String strURL = "";
-			strURL += "&bNewLine=true&sFileName=" + newFilename;
-			strURL += "&sWidth=" + width;
-			strURL += "&sFileURL=" + ctxPath + "/resources/photo_upload/" + newFilename;
-
-			// === 웹브라우저 상에 사진 이미지를 쓰기 === //
-			PrintWriter out = response.getWriter();
-			out.print(strURL);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			
-		}
-		
-		
-		
-
-	}// end of public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) { -------------------
-		// ====== 스마트에디터. 드래그앤드롭을 사용한 다중사진 파일 업로드 끝====== //
+	// 스마트에디터, 드래그앤드롭을 사용한 다중사진 파일 업로드
+	@RequestMapping(value="/approval/image/multiplePhotoUpload.gw")
+    public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) {    
+	      // WAS의 webapp의 절대경로
+	      HttpSession session = request.getSession();
+	      String root = session.getServletContext().getRealPath("/");
+	      String path = root + "resources"+File.separator+"board_photo_upload";
+	      
+	      File dir = new File(path);
+	      
+	      if(!dir.exists()) {
+	         dir.mkdirs();
+	      }
+	      
+	      try {
+	         String filename = request.getHeader("file-name"); // 파일명(문자열) - 일반 원본파일명
+	            
+	         InputStream is = request.getInputStream(); // is는 네이버 스마트 에디터를 사용하여 사진첨부하기 된 이미지 파일임.
+	            
+	         String newFilename = fileManager.doFileUpload(is, filename, path);
+	            
+	         int width = fileManager.getImageWidth(path+File.separator+newFilename);
+	            
+	         if(width > 600) {
+	            width = 600;
+	         }
+	             
+	         String ctxPath = request.getContextPath(); //  /board
+	         
+	         String strURL = "";
+	         strURL += "&bNewLine=true&sFileName="+newFilename; 
+	         strURL += "&sWidth="+width;
+	         strURL += "&sFileURL="+ctxPath+"/resources/board_photo_upload/"+newFilename;
+	         
+	         // === 웹브라우저 상에 사진 이미지를 쓰기 === //
+	         PrintWriter out = response.getWriter();
+	         out.print(strURL);
+	            
+	      } catch(Exception e) {
+	         e.printStackTrace();
+	      }
+	      
+	   }//end of public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) { -------
+	// ====== 스마트에디터. 드래그앤드롭을 사용한 다중사진 파일 업로드 끝====== //
 
 	// ===== 글을 수정하는 페이지 요청 시작 ===== //
 	@GetMapping("/edit.gw")
@@ -465,11 +449,9 @@ public class BoardController {
 		Map<String, Object> paraMap = new HashMap<>();
 		Map<String, String> paraMap2 = new HashMap<>();
 		
-		
 		paraMap.put("boardvo", boardvo);
 		paraMap2.put("fk_seq", boardvo.getSeq());
-		
-		int n = service.edit(boardvo);
+
 		HttpSession session = mrequest.getSession();
 		
 		// service로 넘길 파일정보가 담긴 리스트
@@ -484,8 +466,6 @@ public class BoardController {
 	        }
 
 	        for (MultipartFile mtfile : mrequest.getFiles("file_arr")) {
-	            //System.out.println("파일명 : " + mtfile.getOriginalFilename() + " / 파일 크기 : " + mtfile.getSize());
-
 	            String filename = "";
 	            String originalFilename = "";
 	            byte[] bytes = null;
@@ -512,20 +492,17 @@ public class BoardController {
 	                
 	                // 첨부파일 리스트에 추가
 	                fileList.add(nvo);
-	                
-	                
-	                
+
 	            } catch (Exception e) {
 	                e.printStackTrace();
 	            }
-	        }
-	    }
+	        }//end of for (MultipartFile mtfile : mrequest.getFiles("file_arr")) {---------------
+	    }//end of if (mrequest.getFiles("file_arr") != null) {----------------
 
 	    paraMap.put("fileList", fileList);
 
 	    boolean result = service.freeboard_edit(paraMap);
 
-	    
 	    String attachfile = service.freeboard_update_attachfile(boardvo.getSeq()); 	
 		  
 	    int a = 0;
@@ -540,55 +517,11 @@ public class BoardController {
 	    
 	    JSONObject jsonObj = new JSONObject();
 	    jsonObj.put("result", result);
-	    jsonObj.put("n", n);
 	    return jsonObj.toString();
 			
 	}
 	
 
-	@ResponseBody
-	@PostMapping(value = "/exist_file_editEnd.gw" , produces = "text/plain;charset=UTF-8")
-	public String exist_file_editEnd(HttpServletRequest request,Map<String, String> paraMap) {
-		int n = 0;
-		String seq = request.getParameter("seq");
-		paraMap.put("seq", seq);
-		
-		try {
-			n = service.getfreeboard_filename_add(paraMap);
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		
-		JSONObject jsonObj = new JSONObject(); // {}
-		jsonObj.put("n", n);
-
-		return jsonObj.toString();
-
-	}
-	
-	@ResponseBody
-	@PostMapping(value = "/nofile_editEnd.gw" , produces = "text/plain;charset=UTF-8")
-	public String nofile_editEnd(HttpServletRequest request,Map<String, String> paraMap) {
-		int n = 0;
-		String seq = request.getParameter("seq");
-		paraMap.put("seq", seq);
-		
-		try {
-			n = service.getfreeboard_filename_clear(paraMap);
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		
-		JSONObject jsonObj = new JSONObject(); // {}
-		jsonObj.put("n", n);
-
-		return jsonObj.toString();
-
-	}
-	
-	
-	
-	
 	//글 수정다음에 띄어줘야할 페이지
 	@GetMapping("/editAfter_view.gw")
 	public ModelAndView editAfter_view(ModelAndView mav, BoardVO boardvo, HttpServletRequest request) {
@@ -642,7 +575,6 @@ public class BoardController {
 			if (searchWord == null) {
 				searchWord = "";
 			}
-			System.out.println("넘어온다"+searchType);
 			// === 검색으로 조회된 글을 볼 때 view.jsp 에서 이전글제목 및 다음글제목 클릭시 사용하기 위한 것임. 끝 ===
 		}
 
@@ -700,123 +632,116 @@ public class BoardController {
 		
 		// 파일 테이블에서 파일삭제
 		boolean result = service.deleteFile(fileno, path);
-		//int a = service.getfreeboard_filename_clear(paraMap1);
-	
 		
 		JSONObject json = new JSONObject();
 		json.put("result", result);
 		return String.valueOf(json);
 	}	
-
-// ========== 글을 수정하는 페이지에서 첨부파일 삭제 끝 =============//
+	// ========== 글을 수정하는 페이지에서 첨부파일 삭제 끝 =============//
 	
 	
 	// ===== 글을 삭제하는 페이지 시작===== //
-		@GetMapping("/del.gw")
-		public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+	@GetMapping("/del.gw")
+	public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 
-			// 삭제해야 할 글번호 가져오기
-			String seq = request.getParameter("seq");
-			String fileno = request.getParameter("fileno");
-			String message = "";
-			List<BoardFileVO> fileList = null;
-			try {
-				Integer.parseInt(seq);
-				
-				Map<String, String> paraMap = new HashMap<>();
-				paraMap.put("seq", seq);
-				
-				
-				BoardVO boardvo = service.getView_no_increase_readCount(paraMap);
-				fileList= service.getView_files(seq);
-				// 글조회수(readCount) 증가 없이 단순히 글 1개만 조회해주는 것이다.
-				
-				if (boardvo == null) {
-					message = "글 삭제가 불가합니다";
-				} else {
-					HttpSession session = request.getSession();
-					EmployeesVO loginuser = (EmployeesVO) session.getAttribute("loginuser");
-
-					mav.addObject("fileList", fileList);
-					mav.addObject("boardvo", boardvo);
-					mav.setViewName("mshboard/del.tiles_MTS");
-
-					return mav;
-				} // end of try {----------------
-			} catch (NumberFormatException e) {
-				message = "글 삭제가 불가합니다!!!";
-			} // end of else{-------------
-
-			String loc = "javascript:history.back()";
-			mav.addObject("message", message);
-			mav.addObject("loc", loc);
-
-			mav.setViewName("msg");
-
-			return mav;
-		}// end of public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {---
-			// ===== 글을 삭제하는 페이지 요청하기 끝 ===== //
-
-		// ====== 글을 삭제하는 페이지 완료하기 시작====== //
-		@PostMapping("/delEnd.gw")
-		public ModelAndView delEnd(ModelAndView mav, HttpServletRequest request) {
-
-			String seq = request.getParameter("seq");
-			String fileno = request.getParameter("fileno");
-			
+		// 삭제해야 할 글번호 가져오기
+		String seq = request.getParameter("seq");
+		String fileno = request.getParameter("fileno");
+		String message = "";
+		List<BoardFileVO> fileList = null;
+		try {
 			Integer.parseInt(seq);
 			
 			Map<String, String> paraMap = new HashMap<>();
 			paraMap.put("seq", seq);
+
+			BoardVO boardvo = service.getView_no_increase_readCount(paraMap);
+			fileList= service.getView_files(seq);
+			// 글조회수(readCount) 증가 없이 단순히 글 1개만 조회해주는 것이다.
 			
-			// === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 시작 === //
-			paraMap.put("searchType", "");
-			paraMap.put("searchWord", "");
+			if (boardvo == null) {
+				message = "글 삭제가 불가합니다";
+			} 
+			else {
+				HttpSession session = request.getSession();
+				EmployeesVO loginuser = (EmployeesVO) session.getAttribute("loginuser");
 
-			BoardVO boardvo = service.getView(paraMap);
-			List<BoardFileVO> fileList = service.getView_files(seq);
+				mav.addObject("fileList", fileList);
+				mav.addObject("boardvo", boardvo);
+				mav.setViewName("mshboard/del.tiles_MTS");
 
-	
-
-			int n = 0;
-			int n2 = 0;
-			int n3 = 0;
-
-			
-			    HttpSession session = request.getSession();
-			    String root = session.getServletContext().getRealPath("/");
-			    String path = root + "resources" + File.separator + "filename";
-
-			    for (BoardFileVO fileVO : fileList) {
-			        String fileName1 = fileVO.getFileName();
-			        String fileno1 = fileVO.getFileno();
-			        paraMap.put("path", path); // 삭제해야할 파일이 저장된 경로
-			        paraMap.put("fileName", fileName1); // 삭제해야할 파일명
-			        paraMap.put("fileno", fileno1);
-			        n = service.del_attach(paraMap);
-			    }
-
-			    if (n == 1) {
-			        n2 = service.del(paraMap);
-			    }
-			
-			    // 파일이 첨부되지 않은 경우에도 n3에 값을 대입한다.
-			    n3 = service.del(paraMap);
-		
-			// === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 끝 === //
-
-			if (n3 == 1 || n2 == 1) {
-			    mav.addObject("message", "글 삭제 성공!!");
-			    mav.addObject("loc", request.getContextPath() + "/freeboard.gw");
-			    mav.setViewName("msg");
+				return mav;
 			}
+		} catch (NumberFormatException e) {
+			message = "글 삭제가 불가합니다!!!";
+		} 
 
-			return mav;
-		}// end of public ModelAndView delEnd(ModelAndView mav, HttpServletRequest request) {------
-		// ====== 글을 삭제하는 페이지 완료하기 끝===== //
+		String loc = "javascript:history.back()";
+		mav.addObject("message", message);
+		mav.addObject("loc", loc);
+
+		mav.setViewName("msg");
+
+		return mav;
+	}// end of public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {---
+	// ===== 글을 삭제하는 페이지 요청하기 끝 ===== //
+
+	// ====== 글을 삭제하는 페이지 완료하기 시작====== //
+	@PostMapping("/delEnd.gw")
+	public ModelAndView delEnd(ModelAndView mav, HttpServletRequest request) {
+
+		String seq = request.getParameter("seq");
+		String fileno = request.getParameter("fileno");
+		
+		Integer.parseInt(seq);
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("seq", seq);
+		
+		// === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 시작 === //
+		paraMap.put("searchType", "");
+		paraMap.put("searchWord", "");
+
+		BoardVO boardvo = service.getView(paraMap);
+		List<BoardFileVO> fileList = service.getView_files(seq);
+
+		int n = 0;
+		int n2 = 0;
+		int n3 = 0;
+
+		HttpSession session = request.getSession();
+		String root = session.getServletContext().getRealPath("/");
+		String path = root + "resources" + File.separator + "filename";
+
+	    for (BoardFileVO fileVO : fileList) {
+	        String fileName1 = fileVO.getFileName();
+	        String fileno1 = fileVO.getFileno();
+	        paraMap.put("path", path); // 삭제해야할 파일이 저장된 경로
+	        paraMap.put("fileName", fileName1); // 삭제해야할 파일명
+	        paraMap.put("fileno", fileno1);
+	        n = service.del_attach(paraMap);
+	    }
+
+	    if (n == 1) {
+	        n2 = service.del(paraMap);
+	    }
+	
+	    // 파일이 첨부되지 않은 경우에도 n3에 값을 대입한다.
+	    n3 = service.del(paraMap);
+	    // === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 끝 === //
+
+		if (n3 == 1 || n2 == 1) {
+		    mav.addObject("message", "글 삭제 성공!!");
+		    mav.addObject("loc", request.getContextPath() + "/freeboard.gw");
+		    mav.setViewName("msg");
+		}
+
+		return mav;
+	}// end of public ModelAndView delEnd(ModelAndView mav, HttpServletRequest request) {------
+	// ====== 글을 삭제하는 페이지 완료하기 끝===== //
 
 	// ====== 글1개를 보여주는 페이지 요청하기 시작 ====== //
-	@RequestMapping("/view.gw") // ==== 특정글을 조회한 후 "검색된결과목록보기" 버튼을 클릭했을 때 돌아갈 페이지를 만들기 위함.
+	@RequestMapping("/view.gw") 
 	public @ResponseBody ModelAndView view(ModelAndView mav, HttpServletRequest request) {
 		String seq = "";
 		String goBackURL = "";
@@ -824,7 +749,6 @@ public class BoardController {
 		String searchWord = "";
 
 		Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
-		// redirect 되어서 넘어온 데이터가 있는지 꺼내어 와본다.
 
 		if (inputFlashMap != null) {
 
@@ -834,10 +758,8 @@ public class BoardController {
 			searchType = redirect_map.get("searchType");
 
 			try {
-				searchWord = URLDecoder.decode(redirect_map.get("searchWord"), "UTF-8"); // 한글데이터가 포함되어 있으면 반드시 한글로
-																							// 복구주어야 한다.
-				goBackURL = URLDecoder.decode(redirect_map.get("goBackURL"), "UTF-8"); // 한글데이터가 포함되어 있으면 반드시 한글로 복구주어야
-																						// 한다.
+				searchWord = URLDecoder.decode(redirect_map.get("searchWord"), "UTF-8"); 
+				goBackURL = URLDecoder.decode(redirect_map.get("goBackURL"), "UTF-8"); 
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
@@ -895,18 +817,13 @@ public class BoardController {
 				// 글목록보기인 /freeboard.gw 페이지를 클릭한 다음에 특정글을 조회해온 경우이다.
 
 				boardvo = service.getView(paraMap);
-				// 글조회수 증가와 함께 글1개를 조회를 해주는 것
-				
-				 fileList = service.getView_files(seq);
+				fileList = service.getView_files(seq);
 				session.removeAttribute("readCountPermission");
 			}
 
 			else {
-				// 글목록에서 특정 글제목을 클릭하여 본 상태에서 웹브라우저에서 새로고침(F5)을 클릭한 경우이다.
 				boardvo = service.getView_no_increase_readCount(paraMap);
-				// 글조회수 증가는 없고 단순히 글1개만 조회를 해주는 것
-				
-				 fileList = service.getView_files(seq);
+				fileList = service.getView_files(seq);
 			}
 	
 			mav.addObject("boardvo", boardvo);
@@ -914,8 +831,7 @@ public class BoardController {
 			mav.addObject("fileList", fileList);
 			
 		} catch (NumberFormatException e) {
-			// 이전글제목 또는 다음글제목을 클릭하여 본 상태에서
-			// 웹브라우저에서 새로고침(F5)을 클릭한 경우이다.
+
 			mav.setViewName("redirect:/freeboard.gw");
 			return mav;
 		}
@@ -969,8 +885,6 @@ public class BoardController {
 	public void requiredLogin_download(HttpServletRequest request, HttpServletResponse response) {
 
 		String fileno = request.getParameter("fileno");
-		// 첨부파일이 있는 글번호
-		//System.out.println("ㅎㅇㅎㅇ"+fileno);
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("fileno", fileno);
 		paraMap.put("searchType", "");
@@ -986,34 +900,32 @@ public class BoardController {
 		
 			if (filevo == null || (filevo != null &&  filevo.getFileName() == null)) {
 				out = response.getWriter();
-				out.println(
-						"<script type='text/javascript'>alert('존재하지 않는 글번호 이거나 첨부파일이 없으므로 파일다운로드가 불가합니다.'); history.back();</script>");
+				out.println("<script type='text/javascript'>alert('존재하지 않는 글번호 이거나 첨부파일이 없으므로 파일다운로드가 불가합니다.'); history.back();</script>");
 				return;
-			} else { // 정상적으로 다운로드를 할 경우
+			} 
+			else { // 정상적으로 다운로드를 할 경우
 				String fileName = filevo.getFileName();
-				System.out.println("File Name: " + fileName);
 				String orgFilename = filevo.getOrgFilename();
 				HttpSession session = request.getSession();
 				String root = session.getServletContext().getRealPath("/");
 				String path = root + "resources" + File.separator + "Filename";
 
 				// ***** file 다운로드 하기 ***** //
-				boolean flag = false; // file 다운로드 성공, 실패인지 여부를 알려주는 용도
+				boolean flag = false; 
 				flag = fileManager.doFileDownload(fileName, orgFilename, path, response);
 				// file 다운로드 성공시 flag 는 true, 실패시 flag 는 false 를 가진다.
 				if (!flag) {
-					// 다운로드가 실패한 경우 메시지를 띄워준다.
 					out = response.getWriter();
 					out.println("<script type='text/javascript'>alert('파일다운로드가 실패되었습니다.'); history.back();</script>");
 				}
 			}
 
-		} catch (NumberFormatException | IOException e) {
-				e.printStackTrace();
+		}catch (NumberFormatException | IOException e) {
+			e.printStackTrace();
 			try {
 				out = response.getWriter();
 				out.println("<script type='text/javascript'>alert('파일다운로드가 불가합니다.'); history.back();</script>");
-			} catch (IOException e2) {
+			}catch (IOException e2) {
 				e2.printStackTrace();
 			}
 		}
@@ -1044,7 +956,7 @@ public class BoardController {
 
 		return jsonArr.toString();
 	}// public String readComment(HttpServletRequest request) {-------------------
-		// ====== 원게시물에 딸린 댓글들을 조회해오기(Ajax 로 처리) 끝 ====== //
+	// ====== 원게시물에 딸린 댓글들을 조회해오기(Ajax 로 처리) 끝 ====== //
 
 	// ====== 댓글쓰기(Ajax 로 처리) 시작 =======//
 	@ResponseBody
@@ -1054,7 +966,6 @@ public class BoardController {
 		int n = 0;
 		try {
 			n = service.addComment(commentvo);
-			// 댓글쓰기(insert) 및 원게시물(tbl_board 테이블)에 댓글의 개수 증가(update 1씩 증가)하기
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -1065,7 +976,7 @@ public class BoardController {
 
 		return jsonObj.toString();
 	} // end of public String addComment(CommentVO commentvo) {----------
-		// ====== 댓글쓰기(Ajax 로 처리) 끝=======//
+	// ====== 댓글쓰기(Ajax 로 처리) 끝=======//
 
 	// ====== 댓글쓰기에 첨부파일이 있는 경우 시작======//
 	@ResponseBody
@@ -1122,7 +1033,6 @@ public class BoardController {
 	public void requiredLogin_downloadComment(HttpServletRequest request, HttpServletResponse response) {
 
 		String seq = request.getParameter("seq");
-		// 첨부파일이 있는 댓글의 글번호
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = null;
 
@@ -1132,10 +1042,10 @@ public class BoardController {
 
 			if (commentvo == null || (commentvo != null && commentvo.getFileName() == null)) {
 				out = response.getWriter();
-				out.println(
-						"<script type='text/javascript'>alert('존재하지 않는 댓글번호 이거나 첨부파일이 없으므로 파일다운로드가 불가합니다.'); history.back();</script>");
+				out.println("<script type='text/javascript'>alert('존재하지 않는 댓글번호 이거나 첨부파일이 없으므로 파일다운로드가 불가합니다.'); history.back();</script>");
 				return;
-			} else {// 정상적으로 다운로드를 할 경우
+			} 
+			else {// 정상적으로 다운로드를 할 경우
 
 				String fileName = commentvo.getFileName();
 
@@ -1146,7 +1056,7 @@ public class BoardController {
 				String path = root + "resources" + File.separator + "files";
 
 				// ***** file 다운로드 하기 ***** //
-				boolean flag = false; // file 다운로드 성공, 실패인지 여부를 알려주는 용도
+				boolean flag = false;
 				flag = fileManager.doFileDownload(fileName, orgFilename, path, response);
 				// file 다운로드 성공시 flag 는 true, file 다운로드 실패시 flag 는 false 를 가진다.
 
@@ -1167,7 +1077,7 @@ public class BoardController {
 		}
 
 	}// end of public void requiredLogin_downloadComment(HttpServletRequest request, HttpServletResponse response) {--------
-		// ====== 파일첨부가 있는 댓글쓰기에서 파일 다운로드 받기 끝====== //
+	// ====== 파일첨부가 있는 댓글쓰기에서 파일 다운로드 받기 끝====== //
 	
 	// ====== 댓글을 수정하기 시작====== //
 	@ResponseBody
@@ -1177,7 +1087,6 @@ public class BoardController {
 		String seq = request.getParameter("seq");
 		String content = request.getParameter("content");
 
-		System.out.println(seq);
 		// 글 수정해야할 글1개 내용가져오기
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("seq", seq);
@@ -1187,12 +1096,9 @@ public class BoardController {
 		// 단순히 댓글 1개만 조회해주는 것이다.
 
 		int n = service.getupdate_review(paraMap, commentvo);
-	
-
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("n", n);
 		String json = jsonObj.toString();
-		System.out.println(json);
 		return jsonObj.toString();
 	}// end of public String reviewUpdate(HttpServletRequest request) {--------------
 		// ====== 댓글을 수정하기 끝====== //
@@ -1236,19 +1142,17 @@ public class BoardController {
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("success", success);
 		String json = jsonObj.toString();
-		System.out.println(json);
 
 		return jsonObj.toString();
-	}
-	// end of public String comment_Del(ModelAndView mav, HttpServletRequest request) {-----
+	}// end of public String comment_Del(ModelAndView mav, HttpServletRequest request) {-----
 	// ===== 첨부 파일 있는 댓글을 삭제하기 끝 ===== ///
 
 	// ===== 첨부 파일 없는 댓글을 삭제하기 시작 ===== ///
 	@ResponseBody
 	@PostMapping(value = "/comment_Del_nofile.gw", produces = "text/plain;charset=UTF-8")
 	public String comment_Del_nofile(ModelAndView mav, HttpServletRequest request, CommentVO commentvo) {
+		
 		String seq = request.getParameter("seq");
-
 		Map<String, String> paraMap = new HashMap<>();
 
 		paraMap.put("seq", seq);
@@ -1270,12 +1174,11 @@ public class BoardController {
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("success_nofile", success_nofile);
 		String json = jsonObj.toString();
-		System.out.println(json);
 
 		return jsonObj.toString();
 
 	}// end of public String comment_Del_nofile(ModelAndView mav, HttpServletRequest request, CommentVO commentvo) {
-		// ===== 첨부 파일 없는 댓글을 삭제하기 끝 ===== ///
+	// ===== 첨부 파일 없는 댓글을 삭제하기 끝 ===== ///
 
 	// ===== 원게시물에 딸린 댓글들을 페이징 처리해서 조회해오기(Ajax 로 처리) 시작===== //
 	@ResponseBody
@@ -1320,7 +1223,7 @@ public class BoardController {
 		}
 		return jsonArr.toString();
 	}// end of public String commentList(HttpServletRequest request) { -------------
-		// ===== 원게시물에 딸린 댓글들을 페이징 처리해서 조회해오기(Ajax 로 처리) 끝 ===== //
+	// ===== 원게시물에 딸린 댓글들을 페이징 처리해서 조회해오기(Ajax 로 처리) 끝 ===== //
 
 	// === 원게시물에 딸린 댓글의 totalPage 수 알아오기(JSON 으로 처리) 시작 === //
 	@ResponseBody
@@ -1342,7 +1245,7 @@ public class BoardController {
 
 		return jsonObj.toString();
 	} // end of public String CommentTotalPage(HttpServletRequest request) {------------
-		// === 원게시물에 딸린 댓글의 totalPage 수 알아오기(JSON 으로 처리) 끝 === //
+	// === 원게시물에 딸린 댓글의 totalPage 수 알아오기(JSON 으로 처리) 끝 === //
 	
 	//////////////////////////////////다시시작//////////////////////////////////////////////
 	
@@ -1413,9 +1316,7 @@ public class BoardController {
 
 		if ("subject".equals(searchType) || "content".equals(searchType) || "subject_content".equals(searchType)
 				|| "name".equals(searchType)) {
-
 			mav.addObject("paraMap", paraMap);
-
 		}
 
 		// ===== 페이지바 만들기 ===== //
@@ -1476,13 +1377,40 @@ public class BoardController {
 	} // end of public ModelAndView mainboard(ModelAndView mav,HttpServletRequest request) {-----------
 
 	// ========== 공지사항 리스트 페이지 만들기 끝 =============
+	
+	// ===== 검색어 입력시 자동글 완성하기 시작 ===== //
+	@ResponseBody
+	@GetMapping(value = "/notice_wordSearchShow.gw", produces = "text/plain;charset=UTF-8")
+	public String notice_wordSearchShow(HttpServletRequest request) {
 
+		String searchType = request.getParameter("searchType");
+		String searchWord = request.getParameter("searchWord");
+
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("searchType", searchType);
+		paraMap.put("searchWord", searchWord);
+
+		List<String> wordList = service.notice_wordSearchShow(paraMap);
+
+		JSONArray jsonArr = new JSONArray(); // []
+
+		if (wordList != null) {
+			for (String word : wordList) {
+				JSONObject jsonObj = new JSONObject(); // {}
+				jsonObj.put("word", word);
+				jsonArr.put(jsonObj); // [{},{},{}]
+			} // end of for------------
+		}
+
+		return jsonArr.toString();
+	}
+	// ===== 검색어 입력시 자동글 완성하기 끝 ===== //
+	
+	
 	// ===== 공지사항 쓰기 페이지 요청 시작 ===== ///
 	@GetMapping("/noticeadd.gw")
 	public ModelAndView notice_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
-
 		mav.setViewName("mshboard/noticeadd.tiles_MTS");
-		
 		return mav;
 	}// end of public ModelAndView notice_add(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) { ------------
 	// ===== 공지사항 쓰기 페이지 요청 끝 ===== //
@@ -1516,9 +1444,7 @@ public class BoardController {
 	        }
 
 	        for (MultipartFile mtfile : mrequest.getFiles("file_arr")) {
-	            //System.out.println("파일명 : " + mtfile.getOriginalFilename() + " / 파일 크기 : " + mtfile.getSize());
 
-	            //String filename = "";
 	            String originalFilename = "";
 	            byte[] bytes = null;
 	            long filesize = 0;
@@ -1548,20 +1474,19 @@ public class BoardController {
 	            } catch (Exception e) {
 	                e.printStackTrace();
 	            }
-	        }
-	    }
+	        }//end of for (MultipartFile mtfile : mrequest.getFiles("file_arr")) {-----------------
+	    }//end of  if (mrequest.getFiles("file_arr") != null) {----------------------------
 
 	    paraMap.put("fileList", fileList);
 
 	    boolean result = service.notice_addEnd(paraMap);
-	    // System.out.println(result); true
 	    JSONObject jsonObj = new JSONObject();
 	    jsonObj.put("result", result);
-	    System.out.println("!!!"+jsonObj.toString());
 	    return jsonObj.toString();
 	} // end of public ModelAndView addEnd(Map<String, String> paraMap, ModelAndView mav, BoardVO boardvo, MultipartHttpServletRequest mrequest) { ----------
 	// ====== 게시판 글쓰기 완료 요청 끝======= //
 	
+	//첨부파일 없는 공지사항 글쓰기
 	@ResponseBody
 	@PostMapping(value = "/nofile_notice_add.gw" , produces = "text/plain;charset=UTF-8")
 	public String nofile_notice_add(Map<String, String> paraMap, NoticeboardVO boardvo) {
@@ -1660,7 +1585,6 @@ public class BoardController {
 			List<NoticeboardFileVO> fileList = null;
 			
 			if ("yes".equals((String) session.getAttribute("readCountPermission"))) {
-				// 글목록보기인 /freeboard.gw 페이지를 클릭한 다음에 특정글을 조회해온 경우이다.
 				boardvo = service.getNoticeView(paraMap);
 				// 글조회수 증가와 함께 글1개를 조회를 해주는 것
 				fileList = service.getView_notice_files(seq);
@@ -1668,9 +1592,7 @@ public class BoardController {
 			}
 			
 			else {
-				// 글목록에서 특정 글제목을 클릭하여 본 상태에서 웹브라우저에서 새로고침(F5)을 클릭한 경우이다.
 				boardvo = service.getnotice_View_no_increase_readCount(paraMap);
-				// 글조회수 증가는 없고 단순히 글1개만 조회를 해주는 것
 			}
 			
 			mav.addObject("fileList", fileList);
@@ -1678,8 +1600,6 @@ public class BoardController {
 			mav.addObject("paraMap", paraMap);
 
 		} catch (NumberFormatException e) {
-			// 이전글제목 또는 다음글제목을 클릭하여 본 상태에서
-			// 웹브라우저에서 새로고침(F5)을 클릭한 경우이다.
 			mav.setViewName("redirect:/noticeboard.gw");
 			return mav;
 		}
@@ -1729,192 +1649,157 @@ public class BoardController {
 	}// end of public ModelAndView notice_view_2(ModelAndView mav, HttpServletRequest request, RedirectAttributes redirectAttr) {-----
 	// ====== 공지사항 1개를 보여주는 페이지 요청하기 끝 ====== //
 
-	// ===== 검색어 입력시 자동글 완성하기 시작 ===== //
-		@ResponseBody
-		@GetMapping(value = "/notice_wordSearchShow.gw", produces = "text/plain;charset=UTF-8")
-		public String notice_wordSearchShow(HttpServletRequest request) {
+	// ====== 첨부파일 다운로드 받기 시작 ======= //
+	@GetMapping(value = "/notice_download.gw")
+	public void notice_download(HttpServletRequest request, HttpServletResponse response) {
 
-			String searchType = request.getParameter("searchType");
-			String searchWord = request.getParameter("searchWord");
+		String fileno = request.getParameter("fileno");
+		// 첨부파일이 있는 글번호
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("fileno", fileno);
+		paraMap.put("searchType", "");
+		paraMap.put("searchWord", "");
 
-			Map<String, String> paraMap = new HashMap<>();
-			paraMap.put("searchType", searchType);
-			paraMap.put("searchWord", searchWord);
+		response.setContentType("text/html; charset=UTF-8");
+		
+		PrintWriter out = null;
+		NoticeboardFileVO filevo = null;
+		try {
+			Integer.parseInt(fileno);
+			filevo = service.getNotice_Each_view_files(fileno);
+		
+			if (filevo == null || (filevo != null &&  filevo.getFileName() == null)) {
+				out = response.getWriter();
+				out.println("<script type='text/javascript'>alert('존재하지 않는 글번호 이거나 첨부파일이 없으므로 파일다운로드가 불가합니다.'); history.back();</script>");
+				return;
+			} else { // 정상적으로 다운로드를 할 경우
+				String fileName = filevo.getFileName();
+				String orgFilename = filevo.getOrgFilename();
+				HttpSession session = request.getSession();
+				String root = session.getServletContext().getRealPath("/");
+				String path = root + "resources" + File.separator + "Filename";
 
-			List<String> wordList = service.notice_wordSearchShow(paraMap);
-
-			JSONArray jsonArr = new JSONArray(); // []
-
-			if (wordList != null) {
-				for (String word : wordList) {
-					JSONObject jsonObj = new JSONObject(); // {}
-					jsonObj.put("word", word);
-					jsonArr.put(jsonObj); // [{},{},{}]
-				} // end of for------------
+				// ***** file 다운로드 하기 ***** //
+				boolean flag = false; 
+				flag = fileManager.doFileDownload(fileName, orgFilename, path, response);
+				if (!flag) {
+					out = response.getWriter();
+					out.println("<script type='text/javascript'>alert('파일다운로드가 실패되었습니다.'); history.back();</script>");
+				}
 			}
 
-			return jsonArr.toString();
+		} catch (NumberFormatException | IOException e) {
+				e.printStackTrace();
+			try {
+				out = response.getWriter();
+				out.println("<script type='text/javascript'>alert('파일다운로드가 불가합니다.'); history.back();</script>");
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
 		}
-		// ===== 검색어 입력시 자동글 완성하기 끝 ===== //
-	
-		// ====== 첨부파일 다운로드 받기 시작 ======= //
-		@GetMapping(value = "/notice_download.gw")
-		public void notice_download(HttpServletRequest request, HttpServletResponse response) {
 
-			String fileno = request.getParameter("fileno");
-			// 첨부파일이 있는 글번호
-			
-			Map<String, String> paraMap = new HashMap<>();
-			paraMap.put("fileno", fileno);
-			paraMap.put("searchType", "");
-			paraMap.put("searchWord", "");
-
-			response.setContentType("text/html; charset=UTF-8");
-			
-			PrintWriter out = null;
-			NoticeboardFileVO filevo = null;
-			try {
-				Integer.parseInt(fileno);
-				filevo = service.getNotice_Each_view_files(fileno);
-			
-				if (filevo == null || (filevo != null &&  filevo.getFileName() == null)) {
-					out = response.getWriter();
-					out.println(
-							"<script type='text/javascript'>alert('존재하지 않는 글번호 이거나 첨부파일이 없으므로 파일다운로드가 불가합니다.'); history.back();</script>");
-					return;
-				} else { // 정상적으로 다운로드를 할 경우
-					String fileName = filevo.getFileName();
-					System.out.println("File Name: " + fileName);
-					String orgFilename = filevo.getOrgFilename();
-					HttpSession session = request.getSession();
-					String root = session.getServletContext().getRealPath("/");
-					String path = root + "resources" + File.separator + "Filename";
-
-					// ***** file 다운로드 하기 ***** //
-					boolean flag = false; // file 다운로드 성공, 실패인지 여부를 알려주는 용도
-					flag = fileManager.doFileDownload(fileName, orgFilename, path, response);
-					// file 다운로드 성공시 flag 는 true, 실패시 flag 는 false 를 가진다.
-					if (!flag) {
-						// 다운로드가 실패한 경우 메시지를 띄워준다.
-						out = response.getWriter();
-						out.println("<script type='text/javascript'>alert('파일다운로드가 실패되었습니다.'); history.back();</script>");
-					}
-				}
-
-			} catch (NumberFormatException | IOException e) {
-					e.printStackTrace();
-				try {
-					out = response.getWriter();
-					out.println("<script type='text/javascript'>alert('파일다운로드가 불가합니다.'); history.back();</script>");
-				} catch (IOException e2) {
-					e2.printStackTrace();
-				}
-			}
-
-		}// end of public void requiredLogin_download(HttpServletRequest request, HttpServletResponse response) {--------------
-			// ====== 첨부파일 다운로드 받기 끝 ======= //
+	}// end of public void requiredLogin_download(HttpServletRequest request, HttpServletResponse response) {--------------
+	// ====== 첨부파일 다운로드 받기 끝 ======= //
 	
 	
-		// ===== 글을 삭제하는 페이지 시작===== //
-		@GetMapping("/notice_del.gw")
-		public ModelAndView notice_del1(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+	// ===== 글을 삭제하는 페이지 시작===== //
+	@GetMapping("/notice_del.gw")
+	public ModelAndView notice_del1(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 
-			// 삭제해야 할 글번호 가져오기
-			String seq = request.getParameter("seq");
-			String fileno = request.getParameter("fileno");
-			String message = "";
-			List<NoticeboardFileVO> fileList = null;
-			try {
-				Integer.parseInt(seq);
-				
-				Map<String, String> paraMap = new HashMap<>();
-				paraMap.put("seq", seq);
-				
-				
-				NoticeboardVO boardvo = service.getnotice_View_no_increase_readCount(paraMap);
-				fileList= service.getView_notice_files(seq);
-				
-				if (boardvo == null) {
-					message = "글 삭제가 불가합니다";
-				} else {
-					HttpSession session = request.getSession();
-					EmployeesVO loginuser = (EmployeesVO) session.getAttribute("loginuser");
-
-					mav.addObject("fileList", fileList);
-					mav.addObject("boardvo", boardvo);
-					mav.setViewName("mshboard/notice_del.tiles_MTS");
-
-					return mav;
-				} // end of try {----------------
-			} catch (NumberFormatException e) {
-				message = "글 삭제가 불가합니다!!!";
-			} // end of else{-------------
-
-			String loc = "javascript:history.back()";
-			mav.addObject("message", message);
-			mav.addObject("loc", loc);
-
-			mav.setViewName("msg");
-
-			return mav;
-		}// end of public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {---
-			// ===== 글을 삭제하는 페이지 요청하기 끝 ===== //
-
-		// ====== 글을 삭제하는 페이지 완료하기 시작====== //
-		@PostMapping("/notice_delEnd.gw")
-		public ModelAndView notice_delEnd(ModelAndView mav, HttpServletRequest request) {
-
-			String seq = request.getParameter("seq");
-	
-			
+		// 삭제해야 할 글번호 가져오기
+		String seq = request.getParameter("seq");
+		String fileno = request.getParameter("fileno");
+		String message = "";
+		List<NoticeboardFileVO> fileList = null;
+		try {
 			Integer.parseInt(seq);
 			
 			Map<String, String> paraMap = new HashMap<>();
 			paraMap.put("seq", seq);
 			
-			// === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 시작 === //
-			paraMap.put("searchType", "");
-			paraMap.put("searchWord", "");
 			
-			NoticeboardVO boardvo = service.getNoticeView(paraMap);
-			List<NoticeboardFileVO> fileList = service.getView_notice_files(seq);
-
-			String fileName = boardvo.getAttachfile();
-
-			int n = 0;
-			int n2 = 0;
-			int n3 = 0;
-
+			NoticeboardVO boardvo = service.getnotice_View_no_increase_readCount(paraMap);
+			fileList= service.getView_notice_files(seq);
 			
+			if (boardvo == null) {
+				message = "글 삭제가 불가합니다";
+			} else {
+				HttpSession session = request.getSession();
+				EmployeesVO loginuser = (EmployeesVO) session.getAttribute("loginuser");
 
-			    HttpSession session = request.getSession();
-			    String root = session.getServletContext().getRealPath("/");
-			    String path = root + "resources" + File.separator + "filename";
+				mav.addObject("fileList", fileList);
+				mav.addObject("boardvo", boardvo);
+				mav.setViewName("mshboard/notice_del.tiles_MTS");
 
-			    for (NoticeboardFileVO fileVO : fileList) {
-			        String fileName1 = fileVO.getFileName();
-			        String fileno1 = fileVO.getFileno();
-			        paraMap.put("path", path); // 삭제해야할 파일이 저장된 경로
-			        paraMap.put("fileName", fileName1); // 삭제해야할 파일명
-			        paraMap.put("fileno", fileno1);
-			        n = service.notice_del_attach(paraMap);
-			    }
+				return mav;
+			} // end of try {----------------
+		} catch (NumberFormatException e) {
+			message = "글 삭제가 불가합니다!!!";
+		} // end of else{-------------
 
-			    if (n == 1) {
-			        n2 = service.notice_del(paraMap);
-			    }
-			
-			    // 파일이 첨부되지 않은 경우에도 n3에 값을 대입한다.
-			    n3 = service.notice_del(paraMap);
-			
-			// === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 끝 === //
+		String loc = "javascript:history.back()";
+		mav.addObject("message", message);
+		mav.addObject("loc", loc);
 
-			if (n3 == 1 || n2 == 1) {
-			    mav.addObject("message", "글 삭제 성공!!");
-			    mav.addObject("loc", request.getContextPath() + "/noticeboard.gw");
-			    mav.setViewName("msg");
-			}
+		mav.setViewName("msg");
 
+		return mav;
+	}// end of public ModelAndView requiredLogin_del(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {---
+		// ===== 글을 삭제하는 페이지 요청하기 끝 ===== //
+
+	// ====== 글을 삭제하는 페이지 완료하기 시작====== //
+	@PostMapping("/notice_delEnd.gw")
+	public ModelAndView notice_delEnd(ModelAndView mav, HttpServletRequest request) {
+
+		String seq = request.getParameter("seq");
+
+		
+		Integer.parseInt(seq);
+		
+		Map<String, String> paraMap = new HashMap<>();
+		paraMap.put("seq", seq);
+		
+		// === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 시작 === //
+		paraMap.put("searchType", "");
+		paraMap.put("searchWord", "");
+		
+		NoticeboardVO boardvo = service.getNoticeView(paraMap);
+		List<NoticeboardFileVO> fileList = service.getView_notice_files(seq);
+
+		String fileName = boardvo.getAttachfile();
+
+		int n = 0;
+		int n2 = 0;
+		int n3 = 0;
+
+	    HttpSession session = request.getSession();
+	    String root = session.getServletContext().getRealPath("/");
+	    String path = root + "resources" + File.separator + "filename";
+
+	    for (NoticeboardFileVO fileVO : fileList) {
+	        String fileName1 = fileVO.getFileName();
+	        String fileno1 = fileVO.getFileno();
+	        paraMap.put("path", path); // 삭제해야할 파일이 저장된 경로
+	        paraMap.put("fileName", fileName1); // 삭제해야할 파일명
+	        paraMap.put("fileno", fileno1);
+	        n = service.notice_del_attach(paraMap);
+	    }
+
+	    if (n == 1) {
+	        n2 = service.notice_del(paraMap);
+	    }
+	
+	    // 파일이 첨부되지 않은 경우에도 n3에 값을 대입한다.
+	    n3 = service.notice_del(paraMap);
+	
+	// === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 끝 === //
+
+		if (n3 == 1 || n2 == 1) {
+		    mav.addObject("message", "글 삭제 성공!!");
+		    mav.addObject("loc", request.getContextPath() + "/noticeboard.gw");
+		    mav.setViewName("msg");
+		}
 			return mav;
 		}// end of public ModelAndView delEnd(ModelAndView mav, HttpServletRequest request) {------
 		// ====== 글을 삭제하는 페이지 완료하기 끝===== //
@@ -1996,8 +1881,6 @@ public class BoardController {
 			paraMap.put("boardvo", boardvo);
 			paraMap2.put("fk_seq", boardvo.getSeq());
 			
-			int n = service.notice_edit(boardvo);
-			
 			HttpSession session = mrequest.getSession();
 			
 			// service로 넘길 파일정보가 담긴 리스트
@@ -2012,8 +1895,7 @@ public class BoardController {
 		        }
 
 		        for (MultipartFile mtfile : mrequest.getFiles("file_arr")) {
-		            //System.out.println("파일명 : " + mtfile.getOriginalFilename() + " / 파일 크기 : " + mtfile.getSize());
-
+		     
 		            String filename = "";
 		            String originalFilename = "";
 		            byte[] bytes = null;
@@ -2050,80 +1932,27 @@ public class BoardController {
 		    paraMap.put("fileList", fileList);
 		    
 		    boolean result = service.notice_board_edit(paraMap);
-		    
-		    System.out.println("fk_seq=>"+boardvo.getSeq());
-		   
-		    
+		      
 		    String attachfile = service.noticeboard_update_attachfile(boardvo.getSeq()); 	
 		  
 		    int a = 0;
 			int b = 0;
 		    
 			if (attachfile.equals("0")) {
-				System.out.println("a 이까진 온다.!");
 				 a = service.getnoticeboard_filename_clear(paraMap2);
 			}
 			else {
-				 System.out.println("b 이까진 온다.!");
+
 				 b = service.getnoticeboard_filename_add(paraMap2);
 			}
-			
-			System.out.println("a=>"+a);
-			System.out.println("b=>"+b);
-			
+
 		    JSONObject jsonObj = new JSONObject();
 		    jsonObj.put("result", result);
-		    jsonObj.put("n", n);
 		    return jsonObj.toString();
 				
 		}
 		
-		
-		
-		/*
-		@ResponseBody
-		@PostMapping(value = "/exist_file_editEnd.gw" , produces = "text/plain;charset=UTF-8")
-		public String exist_file_editEnd(HttpServletRequest request,Map<String, String> paraMap) {
-			int n = 0;
-			String seq = request.getParameter("seq");
-			paraMap.put("seq", seq);
-			
-			try {
-				n = service.getfreeboard_filename_add(paraMap);
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-			
-			JSONObject jsonObj = new JSONObject(); // {}
-			jsonObj.put("n", n);
-
-			return jsonObj.toString();
-
-		}
-		
-		@ResponseBody
-		@PostMapping(value = "/nofile_editEnd.gw" , produces = "text/plain;charset=UTF-8")
-		public String nofile_editEnd(HttpServletRequest request,Map<String, String> paraMap) {
-			int n = 0;
-			String seq = request.getParameter("seq");
-			paraMap.put("seq", seq);
-			
-			try {
-				n = service.getfreeboard_filename_clear(paraMap);
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-			
-			JSONObject jsonObj = new JSONObject(); // {}
-			jsonObj.put("n", n);
-
-			return jsonObj.toString();
-
-		}
-		*/
-		
-		
-		
+	
 		//글 수정다음에 띄어줘야할 페이지
 		@GetMapping("/notice_editAfter_view.gw")
 		public ModelAndView notice_editAfter_view(ModelAndView mav, HttpServletRequest request) {
@@ -2177,7 +2006,7 @@ public class BoardController {
 				if (searchWord == null) {
 					searchWord = "";
 				}
-				//System.out.println("넘어온다"+searchType);
+
 				// === 검색으로 조회된 글을 볼 때 view.jsp 에서 이전글제목 및 다음글제목 클릭시 사용하기 위한 것임. 끝 ===
 			}
 
@@ -2213,8 +2042,6 @@ public class BoardController {
 				mav.addObject("paraMap", paraMap);
 
 			} catch (NumberFormatException e) {
-				// 이전글제목 또는 다음글제목을 클릭하여 본 상태에서
-				// 웹브라우저에서 새로고침(F5)을 클릭한 경우이다.
 				mav.setViewName("redirect:/Noticeboard.gw");
 				return mav;
 			}
@@ -2242,20 +2069,15 @@ public class BoardController {
 			// 파일 테이블에서 파일삭제
 			boolean result = service.notice_delete_file(fileno, path);
 			
-			
-			// 내가 하던거
 			String attachfile = service.noticeboard_update_attachfile(fk_seq);
 			
-			System.out.println("attachfile=>"+attachfile);
 			
 			int a = 0;
 			
 			if (attachfile.equals("0")) {
-				System.out.println("이까진 온다.!");
 				 a = service.getnoticeboard_filename_clear(paraMap);
 			}
-			
-			
+		
 			JSONObject json = new JSONObject();
 			json.put("result", result);
 			json.put("a", a);
@@ -2263,11 +2085,4 @@ public class BoardController {
 		}	
 
 	// ========== 글을 수정하는 페이지에서 첨부파일 삭제 끝 =============//
-	
-	
-	
-		
-	
-	
-	
 }
