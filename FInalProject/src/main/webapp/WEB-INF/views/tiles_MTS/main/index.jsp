@@ -691,7 +691,7 @@ function getMyWorkTime(myWorkDate){
 <body>
    <div class="parent">
       <div class="widget-container div4">
-               <div class="widget-header mb-2">프로필  <a class="btn btn-info btn-sm" href="<%=ctxPath%>/myinfo.gw"></a></div>
+               <div class="widget-header mb-2">프로필  <a href="<%=ctxPath%>/myinfo.gw"><i class="fa-solid fa-share-from-square"></i></a></div>
                   <div >
             
                <div id="photo" class="mx-2">
@@ -750,7 +750,7 @@ function getMyWorkTime(myWorkDate){
         </div>
        <!-- todo -->
        <div class="widget-container div5">
-           <div class="widget-header mb-2">결제 / 승인 <a class="btn btn-info btn-sm" href="<%=ctxPath%>/approval/home.gw"></a></div>
+           <div class="widget-header mb-2">결제 / 승인 <a href="<%=ctxPath%>/approval/home.gw"><i class="fa-solid fa-share-from-square"></i></a></div>
               <div class="listContainer " style="font-size: 9pt;">
                <c:if test="${sessionScope.loginuser.gradelevel != 1}">
                <div class='listContainer'>
@@ -842,7 +842,7 @@ function getMyWorkTime(myWorkDate){
        
            <!-- 일정관리 -->
            <div class="widget-container div1 ">
-               <div class="widget-header mb-2">일정관리  <a class="btn btn-info btn-sm" href="<%=ctxPath%>/schedule/scheduleManagement.gw"></a></div>
+               <div class="widget-header mb-2">일정관리  <a href="<%=ctxPath%>/schedule/scheduleManagement.gw"><i class="fa-solid fa-share-from-square"></i></a></div>
                
                <div style="margin-left: 40px; width: 88%; margin-top: 100px;">
                 <%-- 풀캘린더가 보여지는 엘리먼트  --%>
@@ -853,7 +853,7 @@ function getMyWorkTime(myWorkDate){
            </div>
             <!--  웹메일 -->     
           <div class="widget-container div6">
-             <div class="widget-header mb-2">웹메일  <a class="btn btn-info btn-sm" href="<%=ctxPath%>/digitalmail.gw"></a></div>
+             <div class="widget-header mb-2">웹메일  <a href="<%=ctxPath%>/digitalmail.gw"><i class="fa-solid fa-share-from-square"></i></a></div>
              <!-- 이메일 리스트 -->
              <div class="emailList_list">
                  <table class="table">

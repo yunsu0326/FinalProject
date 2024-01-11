@@ -84,7 +84,6 @@ public class VacationService_imple implements VacationService {
 		int n1=0, n2=0, n3=0;
 		
 		n1 = dao.vacManage_Update(paraMap); // 휴가 관리 테이블에서 vacation_confirm 컬럼을 2로 업데이트
-		System.out.println("1 뜨면 컬럼 2로 업데이트 완료 => "+ n1);
 		if(n1>0) {
 			
 			for( int i=0; i<paraMap.get("fk_employee_id_arr").length; i++) {
@@ -137,7 +136,6 @@ public class VacationService_imple implements VacationService {
 						n2 = dao.vacUpdate_plus(paraMap2);
 					break;
 				}
-				System.out.println("n2 => "+n2);
 				if(n2 == 1) {
 					Map<String, String> paraMap3 = new HashMap<>();
 					paraMap3.put("fk_employee_id", fk_employee_id);
@@ -149,7 +147,6 @@ public class VacationService_imple implements VacationService {
 					
 					// 휴가 승인이 모두 끝나면 스케쥴 달력에 insert 하기
 					n3 = dao.calendarInsert(paraMap3);
-					System.out.println("n3 => " + n3);
 				}
 			}
 		} 

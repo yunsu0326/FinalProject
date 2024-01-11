@@ -195,7 +195,7 @@
 		    seq_scheduleno.nextval,
 		    TO_DATE(#{vacation_start_date_arr}, 'YYYY-MM-DD'),
 		    TO_DATE(#{vacation_end_date_arr}, 'YYYY-MM-DD'),
-		    #{name_arr},
+		    #{name_arr} || ' 휴가',
 		    '#bf80ff',
 		    '휴가',
 		    null,
