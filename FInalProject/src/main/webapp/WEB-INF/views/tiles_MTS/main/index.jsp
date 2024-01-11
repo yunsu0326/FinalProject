@@ -695,7 +695,7 @@ function getMyWorkTime(myWorkDate){
                   <div >
             
                <div id="photo" class="mx-2">
-                  <img src="<%= ctxPath%>/resources/images/${requestScope.loginuser.photo}" style="width: 100px; height: 100px; border-radius: 50%;" />
+                  <img src="<%= ctxPath%>/resources/empImg/${requestScope.loginuser.photo}" style="width: 100px; height: 100px; border-radius: 50%;" />
                </div>
                   
                <table id="table1" class="myinfo_tbl">

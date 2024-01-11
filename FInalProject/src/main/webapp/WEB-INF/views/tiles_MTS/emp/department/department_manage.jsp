@@ -430,7 +430,6 @@
 		 success:function(json){
 		      //console.log(JSON.stringify(json));
 		      
-		      
 		      let v_html = "";
 
 		      if(json.length > 0) {
