@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import com.spring.app.domain.EmployeesVO;
+
 //==== #32. Repository(DAO) 선언 ====
 //@Component
 @Repository
@@ -210,5 +212,19 @@ public class EmpDAO_imple implements EmpDAO {
 		return n;
 	}
 
+	@Override
+	public List<Map<String, String>> job_id_select_by_department(String department_id) {
+	
+			List<Map<String, String>> job_id_select_by_department = sql.selectList("yosub.job_id_select_by_department", department_id);
+		
+		return job_id_select_by_department;
+	}
 
+	@Override
+	public int infoEditEnd(EmployeesVO evo) {
+		
+			int n = sql.update("yosub.infoEditEnd", evo);
+			
+		return n;
+	}
 }

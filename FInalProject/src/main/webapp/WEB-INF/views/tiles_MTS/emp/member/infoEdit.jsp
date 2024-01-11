@@ -31,7 +31,7 @@ table.myinfo_tbl th {
     text-align: center;
     padding: 12px;
     font-weight: bold;
-    width: 15%;
+    
 }
 
 
@@ -39,7 +39,7 @@ table.myinfo_tbl td {
     border: solid 1px #ddd;
     padding: 8px;
     text-align: center;
-    width: 35%;
+    
 }
 
 table#table1{
@@ -66,7 +66,7 @@ input {
 }
 
 select {
-	width: 82.5%;
+	
     height: 25px;
     text-align: center;
 }
@@ -165,216 +165,71 @@ $(document).ready(function(){
 	$("input.error").removeClass("error");
 	$("input.check").val(1);
 	
-	// 사원증 사진 미리보기
-	$(document).on("change", "input.img_file", function(e){
-		
-		$("img#previewImg").show();
-		
-		const input_file = $(e.target).get(0);
-		const fileReader = new FileReader();
-		
-		fileReader.readAsDataURL(input_file.files[0])
-		fileReader.onload = function() {
-		 //	console.log(fileReader.result);
-			document.getElementById("previewImg").src = fileReader.result;
-		};
+	
+	
+	$("select[name='fk_job_id']").change(function () {
+	    const selectedJobId = $(this).val();
+	    const selectedOption = $(this).find("option[value='" + selectedJobId + "']");
+	    const fkTeamId = selectedOption.data("fk_team_id");
+	    alert("Selected Job ID: " + selectedJobId + ", FK Team ID: " + fkTeamId);
 	});
-	
-	
-	// 휴대전화 유효성검사
-	$("input:text[name='phone']").on("focusout", function(e) {
-			
-		const regExp_phone = new RegExp(/^\d{11}$/);
-		
-		const bool = regExp_phone.test($(e.target).val());
-		
-		if(!bool) {
-			$(e.target).addClass("error");
-			$("input:hidden[id='phone']").val(0);
-		}
-		else {
-			$(e.target).removeClass("error");
-			$("input:hidden[id='phone']").val(1);
-		}
-		
-	});
-	
-	
-	// 우편번호 input태그 누르면 다음 주소찾기 띄우기
-	$("input:text[name='postcode']").on("focus", function(e) {
-		$("input#address").removeAttr("readonly");
-	    
-	    // 참고항목을 쓰기가능 으로 만들기
-	    $("input#extraAddress").removeAttr("readonly");
-	    
-		new daum.Postcode({
-	        oncomplete: function(data) {
-	           
-	            let addr = ''; 
-	            let extraAddr = ''; 
 
-	            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-	            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-	                addr = data.roadAddress;
-	            } else { // 사용자가 지번 주소를 선택했을 경우(J)
-	                addr = data.jibunAddress;
-	            }
 
-	            // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-	            if(data.userSelectedType === 'R'){
-	                // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-	                // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-	                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
-	                    extraAddr += data.bname;
-	                }
-	                // 건물명이 있고, 공동주택일 경우 추가한다.
-	                if(data.buildingName !== '' && data.apartment === 'Y'){
-	                    extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-	                }
-	                // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-	                if(extraAddr !== ''){
-	                    extraAddr = ' (' + extraAddr + ')';
-	                }
-	                // 조합된 참고항목을 해당 필드에 넣는다.
-	                document.getElementById("extraAddress").value = extraAddr;
-	            
-	            } else {
-	                document.getElementById("extraAddress").value = '';
-	            }
-
-	            // 우편번호와 주소 정보를 해당 필드에 넣는다.
-	            document.getElementById('postcode').value = data.zonecode;
-	            document.getElementById("address").value = addr;
-	            $("input:hidden[id='postcode_v']").val(1);
-	            $("input:hidden[id='address_v']").val(1);
-	            // 커서를 상세주소 필드로 이동한다.
-	            document.getElementById("detailAddress").focus();
-	            
-	        },
-	        onclose: function(state) {
-	            // 다음 우편번호 서비스 창이 닫혔을 때 호출되는 콜백
-	            if (state === 'FORCE_CLOSE') {
-	                // 사용자가 창을 강제로 닫았을 경우, 여기에 원하는 동작을 추가할 수 있습니다.
-	                // 예를 들어, 다른 곳으로 포커스를 이동하거나 다른 동작을 수행할 수 있습니다.
-	                document.getElementById("bank_name").focus();
-	            }
-	        }
-	    }).open();
-		
-	    // 주소를 읽기전용(readonly) 로 만들기
-	    $("input#address").attr("readonly", true);
-	    
-	    // 참고항목을 읽기전용(readonly) 로 만들기
-	    $("input#extraAddress").attr("readonly", true);
-	});
 	
 	
-	// 주소 변경시 상세주소 비우기
-	$("input:text[id='detailAddress']").on("focus", function(e){
-		
-		$(e.target).val("");
-		
-	});
-	
-	// 상세주소 유효성검사
-	$("input:text[id='detailAddress']").on("focus", function(e){
-		
-		if($(e.target).val("")){
-			$(e.target).addClass("error");
-			$("input:hidden[id='detailaddress_v']").val(0);
-		}
-		else{
-			$(e.target).removeClass("error");
-			$("input:hidden[id='detailaddress_v']").val(1);
-		}
-		
-	});
-			
-	
-	// 계좌번호 유효성검사
-	$("input:text[name='bank_code']").on("focusout", function(e) {
-		
-		const regExp_phone = new RegExp(/^\d+$/);
-		
-		const bool = regExp_phone.test($(e.target).val());		
-		
-		if(!bool) {
-			$(e.target).addClass("error");
-			$("input:hidden[id='bank_code']").val(0);
-		}
-		else {
-			$(e.target).removeClass("error");
-			$("input:hidden[id='bank_code']").val(1);
-		}
-		
-	});
-	
-	
-	// 취소버튼 클릭시 이전페이지 이동
-	$("button#btnCancel").click(function() {
-		const cancel = confirm("프로필 수정을 취소하시겠습니까?")
-		if(cancel) {
-			window.history.back();
-		}
-	});
-	
-	
+	$("select[name='fk_department_id']").change(function () {
+		    const selectedDepartmentId = $(this).val();
+		     alert(selectedDepartmentId);
+		     job_id_select(selectedDepartmentId);
+		});
 	
 }); // end of $(document).ready(function(){})----------------
 
 
+function job_id_select(department_id) {
+	    // 부서에 따른 팀 값 아오기
+	    $.ajax({
+	        url: "<%= ctxPath%>/emp/job_id_select_by_department.gw",
+	        data: { "department_id": department_id },
+	        dataType: "json",
+	        success: function (json) {
+	            console.log(JSON.stringify(json));
+	            //
+	            
+	            let dropdownOptions = "<option value=''>직책 선택</option>";
+				
+	            if (json.length > 0) {
+	                $.each(json, function (index, item) {
+	                	  
+	                    dropdownOptions += "<option value='" + item.job_id + "' data-gradelevel='" + item.gradelevel + "' data-fk_team_id='" + item.fk_team_id + "'>" + item.job_name + "</option>";
+	                	
+	                });
+	            }
+	          
+	            $("select[name='fk_job_id']").html(dropdownOptions);
+	            
+	        },
+	        error: function (request, status, error) {
+	            alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
+	        }
+	    });
+	}
+
 function btnUpdate() {
 	
-	let b_requiredInfo = false;
-	
-	const requiredInfo_list = document.querySelectorAll(".requiredInfo");
-	console.log(requiredInfo_list);
-    for(let i=0; i<requiredInfo_list.length; i++){
-		const val = requiredInfo_list[i].value.trim();
-		if(val == "") {
-			alert("모든 정보를 입력해 주세요.");
-		    b_requiredInfo = true;
-		    break;
-		}
-	}// end of for-----------------------------
-	
-	
-	if($("input:hidden[id='phone']").val() != 1) {
-		alert("핸드폰 번호가 올바르지 않습니다.");
-	    b_requiredInfo = true;
-	}
-	
-	
-	if($("input:hidden[id='postcode_v']").val() != 1) {
-		alert("우편번호를 입력해주세요.");
-	    b_requiredInfo = true;
-	}
-	
-	if($("input:hidden[id='address_v']").val() != 1) {
-		alert("주소를 입력해 주세요.");
-	    b_requiredInfo = true;
-	}
-	
-	
-	if($("input:hidden[id='detailaddress_v']").val() != 1) {
-		alert("상세주소를 입력해 주세요.");
-	    b_requiredInfo = true;
-	}
-	
-	if($("input:hidden[id='bank_code']").val() != 1) {
-		alert("계좌번호가 올바르지 않습니다.");
-	    b_requiredInfo = true;
-	}
-	
-	
-	if(b_requiredInfo) {
-		return; // goRegister() 함수를 종료한다.
-	}
-	
 	const frm = document.myinfoEditFrm;
-	frm.method = "post";
-	frm.action = "<%= ctxPath%>/myinfoEditEnd.gw";
-	frm.submit();
+    const selectedJobId = $("select[name='fk_job_id']").val();
+    const selectedOption = $("select[name='fk_job_id'] option:selected");
+    const fkTeamId = selectedOption.data("fk_team_id");
+    const gradelevel = selectedOption.data("gradelevel");
+
+    // input 엘리먼트에 값을 설정
+    frm.fk_team_id.value = fkTeamId;
+    frm.gradelevel.value = gradelevel;
+
+    frm.method = "post";
+    frm.action = "<%= ctxPath%>/emp/infoEditEnd.gw";
+    frm.submit();
 	
 }
 
@@ -386,18 +241,17 @@ function populateDepartmentsDropdown() {
 	        success: function (json) {
 	        	//console.log(JSON.stringify(json));
 	        
-	            let dropdownOptions = "<option value='${requestScope.empOneDetail.department_id}'>${requestScope.empOneDetail.department_name}</option>";
+	            let dropdownOptions = "<option value=''>부서 선택</option>";
 
 	            if (json.length > 0) {
 	                $.each(json, function (index, item) {
-	                	
+							
 	                    	dropdownOptions += "<option value="+item.department_id+">"+item.department_name+"</option>";
-	                	
 	                });
 	            }
 
-	            $("select[name='dept_id']").html(dropdownOptions);
-	            $("select[name='del_dept_id']").html(dropdownOptions);
+	            $("select[name='fk_department_id']").html(dropdownOptions);
+	           
 	        },
 	        error: function (request, status, error) {
 	            alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
@@ -409,9 +263,8 @@ function populateDepartmentsDropdown() {
 </script>
 	
 	<div id="top">
-	    <h1>프로필 수정</h1>
-	    <button type="button" id="btnUpdate" onclick="btnUpdate()">수정하기</button>
-	    <button type="button" id="btnCancel">취소</button>  
+	    <h1>인사이동</h1>
+	   
 	</div>
 	
 	<form name="myinfoEditFrm" enctype="multipart/form-data">
@@ -425,43 +278,39 @@ function populateDepartmentsDropdown() {
 		 
 				<tr>
 					<th>성명</th>
-					<td>${requestScope.empOneDetail.name}</td>
+					<td colspan="2">${requestScope.empOneDetail.name}</td>
 					<th>사원번호</th>
-					<td>${requestScope.empOneDetail.employee_id}</td>
+					<td>${requestScope.empOneDetail.employee_id}<input type="hidden" name="employee_id" value="${requestScope.empOneDetail.employee_id}"/></td>
 				</tr>
 		 
 				<tr>
 					<th>부서명</th>
-					<td><select name="dept_id"> </select></td>
+					<td>${requestScope.empOneDetail.department_name}</td><td><select name="fk_department_id"></select></td>
 					<th>팀명</th>
-					<td>${requestScope.empOneDetail.team_name}</td>
+					<td>${requestScope.empOneDetail.team_name} <input type="hidden" name="fk_team_id" /></td>
 				</tr>
 				
 				<tr>
 					<th>직급</th>
-					<td>${requestScope.empOneDetail.job_name}</td>
+					<td>${requestScope.empOneDetail.job_name}<input type="text" name="gradelevel"/></td><td><select name="fk_job_id"></select></td>
 					<th>입사일자</th>
 					<td>${requestScope.empOneDetail.hire_date}</td>
 				</tr>
 				
+			
 			</table>
 			
 		</div>
 		
-		<div class="filebox">
-			<label for="attach">사원증 변경하기</label> 
-			<input type="file" id="attach" class="img_file" name="attach" accept="image/jpeg, image/png">
-		</div>
 		
 		<table id="table2" class="myinfo_tbl">
 		
 			<tr>
 				<th>이메일</th>
-				<td class="input_size"><input type="text" name="email" value="${requestScope.empOneDetail.email}" /></td>
+				<td class="input_size">${requestScope.empOneDetail.email}</td>
 				<th>연락처</th>
 				<td class="input_size">
-					<input type="text" class="error requiredInfo" name="phone" value="${requestScope.empOneDetail.phone}" />
-					<input type="hidden" id="phone" class="check" />
+					${requestScope.empOneDetail.phone}
 				</td>
 			</tr>
 	
@@ -474,56 +323,33 @@ function populateDepartmentsDropdown() {
 			
 			<tr>
 				<th>우편번호</th>
-				<td class="input_size">
-					<input type="text" class="error requiredInfo" name="postcode" id="postcode" value="${requestScope.empOneDetail.post_code}" />
-					<input type="hidden" id="postcode_v" class="check" />
-				</td>
-				<th>주소 참고사항</th>
-				<td class="input_size"><input type="text" class="error requiredInfo" name="extraaddress" id="extraAddress" size="30" value="${requestScope.empOneDetail.extraaddress}" /></td>
+				<td class="input_size">${requestScope.empOneDetail.postcode}</td>
+				<th>주   소</th>
+				<td class="input_size">${requestScope.empOneDetail.address}</td>
 			</tr>
 			
-			<tr>
-				<th>주소</th>
-				<td class="input_size">
-					<input type="text" class="error requiredInfo" name="address" id="address" style="margin-bottom: 1%;" size="30" value="${requestScope.empOneDetail.address}" />
-					<input type="hidden" id="address_v" class="check" />
-				</td>
-				<th>상세주소</th>
-				<td class="input_size">
-					<input type="text" class="error requiredInfo" name="detailaddress" id="detailAddress" size="30" value="${requestScope.empOneDetail.detailaddress}" />
-					<input type="hidden" id="detailaddress_v" class="check" />
-				</td>
-			</tr> 
 			
 			<tr>
 				<th>은행명</th>
 				<td class="input_size">
-					<select name="bank_name" id="bank_name">
-						<option>${requestScope.empOneDetail.bank_name}</option>
-						<option>농협은행</option>
-						<option>신한은행</option>
-						<option>국민은행</option>
-						<option>기업은행</option>
-						<option>우리은행</option>
-						<option>하나은행</option>
-						<option>신협은행</option>
-						<option>토스뱅크</option>
-						<option>카카오은행</option>
-					</select>
+					
+					${requestScope.empOneDetail.bank_name}
+						
 				</td>
 				<th>계좌번호</th>
 				<td class="input_size">
-					<input type="text" class="error requiredInfo" name="bank_code" value="${requestScope.empOneDetail.bank_code}" />
-					<input type="hidden" id="bank_code" class="check" />
+					${requestScope.empOneDetail.bank_code}
 				</td>
 			</tr>
 			
 		</table>
 		
-		<input type="hidden" value="${requestScope.empOneDetail.photo}" name="photo" />
-		<input type="hidden" value="${employee_id}" name="employee_id" />
 	</form>
 	
+	<div class="my-5 text-center">
+	 <button type="button" id="btnUpdate" onclick="btnUpdate()">수정하기</button>
+	    <button type="button" id="btnCancel">취소</button>  
+	</div>
 
 
 

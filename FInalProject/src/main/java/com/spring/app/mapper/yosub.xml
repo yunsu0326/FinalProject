@@ -449,6 +449,30 @@
 	</select>
 
 
+	<resultMap type="HashMap" id="job_id_select_by_department_Map">
+		<result property="job_id" 		column="job_id"  		javaType="String"/>
+		<result property="job_name" 	column="job_name"  	javaType="String"/>
+		<result property="fk_team_id" column="fk_team_id"  	javaType="String"/>
+		<result property="gradelevel" column="gradelevel"  	javaType="String"/>
+		
+	</resultMap>
+	<!--  팀 직책 가져오기  -->
+	<select id="job_id_select_by_department" parameterType="String" resultMap="job_id_select_by_department_Map">
+        select job_id, job_name, fk_team_id, gradelevel
+		from tbl_jobs
+		where fk_department_id = #{department_id}
+	</select>
+
+
+	<!-- 회원정보 수정하기  -->
+	<update id="infoEditEnd" parameterType="com.spring.app.domain.EmployeesVO">
+		update tbl_employees set fk_department_id = #{fk_department_id} , fk_job_id = #{fk_job_id}, fk_team_id = #{fk_team_id} , gradelevel = #{gradelevel}
+	    where employee_id = #{employee_id}
+	</update>
+	
+
+
+
 
 
 
