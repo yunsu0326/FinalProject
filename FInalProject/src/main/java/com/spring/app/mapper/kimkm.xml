@@ -40,7 +40,7 @@
 							   , userid = #{userid}
 							   , register_status = 1
 							   , photo = #{photo}
-							   , singimg = #{singimg}
+							   , signimg = #{signimg}
 	    where email = #{email}
 	</update>
 	
@@ -48,7 +48,7 @@
 	<!-- 회원가입시 휴가 테이블 insert 하기 -->
 	<insert id="insert_vacation" parameterType="String">
 		insert into tbl_vacation(fk_employee_id, annual, family_care, reserve_forces, infertility_treatment, childbirth, marriage, reward)
-		values(${employee_id}, 0, 0, 0, 0, 0, 0, 0)
+		values(${employee_id}, 5, 0, 0, 0, 0, 0, 0)
 	</insert>
 	
 	
