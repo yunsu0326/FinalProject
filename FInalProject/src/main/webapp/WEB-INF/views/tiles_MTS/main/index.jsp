@@ -226,10 +226,15 @@ $(document).ready(function(){
 
    const FullDate = year+"-"+month+"-"+day;     // 2023-12-27
    const FullTime = hour+":"+minute+":"+second; // 16:31:25
+
+   // 출, 퇴근, 누적 시간 display 숨겨놓기
+   $('#start_time_dis').hide();
+   $('#end_time_dis').hide();
+   $('#append_time_dis').hide();
    
 	// 출, 퇴근, 누적 시간 뿌리는 함수 호출
 	getMyWorkTime(FullDate);
-    
+   
     // 출근 버튼 클릭시  근무 테이블에 insert
     $("button#goToWork").click(function(){
 
@@ -246,12 +251,12 @@ $(document).ready(function(){
     // 퇴근 버튼 클릭시  근무 테이블 update
     $("button#leaveWork").click(function(){
        
-       $("input[name='work_date']").val(FullDate);
-       $("input:hidden[name='work_end_time']").val(FullTime);
+       $("input[name='work_date_ex']").val(FullDate); // 오늘 날짜
+       $("input:hidden[name='work_end_time']").val(FullTime); // 현재 시간
        
       /////////////////////////////////////////////////////
       // 출근시간 날짜형식으로 변환
-       var TodayStartTime = $('#todayST').val(); // 로그인 한 사원의 오늘 출근 시간
+       var TodayStartTime = $('#start_time').text(); // 로그인 한 사원의 오늘 출근 시간
        
        var TodayHour = TodayStartTime.substr(0, 2); // 출근 시 구하기
        
@@ -268,7 +273,7 @@ $(document).ready(function(){
        /////////////////////////////////////////////////////
        // 근무 시간 가져오기
        var workTimeNow = now - todayStartTimeVal;
-     
+       
        var workTimeH = Math.floor(workTimeNow / (1000 * 60 * 60)); // 근무 시간
        
        var workTimeM = Math.floor(workTimeNow / (1000 * 60) % 60); // 근무 분
@@ -276,6 +281,7 @@ $(document).ready(function(){
        var workTimeC = Math.floor((workTimeNow / 1000) % 60);       // 근무 초
        
        var workTimeVal = padZero(workTimeH)+":"+padZero(workTimeM)+":"+padZero(workTimeC);
+       
        ///////////////////////////////////////////////////////////////
        // 연장 근무 시간 구하기
        // 9시간의 밀리초는 32400000 - 23611081 = 12345125
@@ -304,6 +310,9 @@ $(document).ready(function(){
           frm.action = "<%= ctxPath %>/goToWorkUpdateIndex.gw";
          frm.submit();
        }
+       
+       document.getElementById('end_time_dis').style.display = 'show';
+       document.getElementById('append_time_dis').style.display = 'show';
     }); // end of $("button#goToWork").click(function()--------------------
     // 출근, 퇴근 신청 [끝]
 
@@ -654,10 +663,19 @@ function getMyWorkTime(myWorkDate){
 			
 			const startTimeVal = $("span#start_time").text();
 			const endTimeVal = $("span#end_time").text();
-			$("span#append_time").text("");
+			const appendTimeVal = $("span#end_time").text();
 			
-			if(startTimeVal != "00:00:00" && endTimeVal != "00:00:00") {
+			if(startTimeVal != "") {
+				$('#start_time_dis').show();
+			}
+			if(endTimeVal != "") {
+				$('#end_time_dis').show();
+			}
+			if(startTimeVal != " " && endTimeVal != " ") {
 				$("span#append_time").text(json.timeDiff);
+			}
+			if(appendTimeVal != "") {
+				$('#append_time_dis').show();
 			}
         },
         error: function(request, status, error){
@@ -703,7 +721,7 @@ function getMyWorkTime(myWorkDate){
                    
                    <%-- 연장근무인 경우 보낼 form --%>
                    <form name="goToWorkUpdateWithExtended">
-                      <input type="hidden" name="work_date"/>
+                      <input type="hidden" name="work_date_ex"/>
                       <input type="hidden" name="work_end_time"/>
                       <input type="hidden" name="extended_end_time"/>
                       <input type="hidden" name="fk_employee_id" value="${sessionScope.loginuser.employee_id}"/>
@@ -712,15 +730,15 @@ function getMyWorkTime(myWorkDate){
             </li>
             </ul>
             <table style='width: 100%;'>
-				<tr>
+				<tr id='start_time_dis'>
 					<th style='width: 45%;'>출근시간</th>
 					<td><span id='start_time'></span></td>
 				</tr>
-				<tr>	
+				<tr id='end_time_dis'>	
 					<th>퇴근시간</th>
 					<td><span id='end_time'></span></td>
 				</tr>
-				<tr>	
+				<tr id='append_time_dis'>	
 					<th>근무누적시간</th>
 					<td><span id='append_time'></span></td>
 				</tr>

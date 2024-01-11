@@ -8,35 +8,35 @@
       rel="stylesheet">
 <style>
 
-	.dropBox {
-		background-color: #eee;
-		min-height: 50px;
-		min-height: 50px;
-		overflow:auto;
-		font-size: small;
-		text-align: center;
-		vertical-align: middle;
-	}
-	
-	.dropBox.active {
-		background-color: #E3F2FD;
-	}
-	
-	button {
-		border-style: none;
-	}
-	
-	#submitBtn, #getSavedPostBtn {
-		color: white;
-		background-color: #086BDE;
-	}
-	
-	#submitBtn, #cancelBtn {
-		font-size: small;
-	}
+.dropBox {
+	background-color: #eee;
+	min-height: 50px;
+	min-height: 50px;
+	overflow:auto;
+	font-size: small;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.dropBox.active {
+	background-color: #E3F2FD;
+}
+
+button {
+	border-style: none;
+}
+
+#submitBtn, #getSavedPostBtn {
+	color: white;
+	background-color: #086BDE;
+}
+
+#submitBtn, #cancelBtn {
+	font-size: small;
+}
 
 
-	#mycontent > form > div > div > div:nth-child(3) > div.ml-2 > input[type=file]{
+#mycontent > form > div > div > div:nth-child(3) > div.ml-2 > input[type=file]{
 		position:relative;
 		right:110px;
 	}
@@ -136,26 +136,28 @@
 		let file_arr = []; // 첨부된어진 파일 정보를 담아 둘 배열
 
       // == 파일 Drag & Drop 만들기 == //
-	    $("#file").on("dragenter", function(e){ 
+	    $("#file").on("dragenter", function(e){ /* "dragenter" 이벤트는 드롭대상인 박스 안에 Drag 한 파일이 최초로 들어왔을 때 */ 
 	        e.preventDefault();
 	        e.stopPropagation();
-	    }).on("dragover", function(e){ 
+	 
+	    }).on("dragover", function(e){ /* "dragover" 이벤트는 드롭대상인 박스 안에 Drag 한 파일이 머물러 있는 중일 때. 필수이벤트이다. dragover 이벤트를 적용하지 않으면 drop 이벤트가 작동하지 않음 */ 
+	        e.preventDefault();
 	        e.stopPropagation();
 	        $(this).css("background-color", "#ffd8d8");
-	    }).on("dragleave", function(e){
+	    }).on("dragleave", function(e){ /* "dragleave" 이벤트는 Drag 한 파일이 드롭대상인 박스 밖으로 벗어났을 때  */
 	        e.preventDefault();
 	        e.stopPropagation();
 	        $(this).css("background-color", "#fff");
-	    }).on("drop", function(e){   
+	    }).on("drop", function(e){    
 	        e.preventDefault();
 	
 	        var files = e.originalEvent.dataTransfer.files;  
 
 	        if(files != null && files != undefined){ 
-	       
+        
 	            let html = "";
-	            const f = files[0];  
-	        	let fileSize = f.size/1024/1024; 
+	            const f = files[0]; 
+	        	let fileSize = f.size/1024/1024;  
 	        	
 	        	if(fileSize >= 10) {
 	        		alert("10MB 이상인 파일은 업로드할 수 없습니다.!!");
@@ -165,17 +167,19 @@
 	        	
 	        	else {
 	        		file_arr.push(f); 
-		        	const fileName = f.name;
+		        	const fileName = f.name; // 파일명	
 	        	    fileSize = fileSize < 1 ? fileSize.toFixed(3) : fileSize.toFixed(1);
 	        	    html += 
 	                    "<div class='fileList'>" +
-	                        "<span class='delete'>&times;</span>" + 
+	                        "<span class='delete'>&times;</span>" +    //&times;는 x로 보여주는 것이다. 
 	                        "<span class='fileName'>"+fileName+"</span>" + 
 	                        "<span class='fileSize'>"+fileSize+" MB</span>" +
-	                        "<span class='clear'></span>" + 
+	                        "<span class='clear'></span>" + //"<span class='clear'></span>"는 
 	                    "</div>";
 		            $(this).append(html);
- 
+		            
+
+		            
 	        	}
 	        }// end of if(files != null && files != undefined)--------------------------
 	        
@@ -186,8 +190,11 @@
 	    // == Drop 되어진 파일목록 제거하기 == // 
 	    $(document).on("click", "span.delete", function(e){
 	    	let idx = $("span.delete").index($(e.target));
-	    	file_arr.splice(idx,1); 
-            $(e.target).parent().remove(); 
+
+	    
+	    	file_arr.splice(idx,1); // 드롭대상인 박스 안에 첨부파일을 드롭하면 파일들을 담아둘 배열인 file_arr 에서 파일을 제거시키도록 한다.
+	   
+          $(e.target).parent().remove(); // <div class='fileList'> 태그를 삭제하도록 한다.	    
 	    });
 
 <%-- === jQuery 를 사용하여 드래그앤드롭(DragAndDrop)을 통한 파일 업로드 끝 === --%>
@@ -235,7 +242,8 @@
 				alert("글내용을 입력하세요!");
 				return;
 		    }
-
+		   
+		
 		    var formData = new FormData($("form[name='editFrm']").get(0));
      	  	// 첨부한 파일의 총합의 크기가 10MB 이상 이라면 메일 전송을 하지 못하게 막는다.
    	     	let sum_file_size = 0;
@@ -243,13 +251,13 @@
             	sum_file_size += file_arr[i].size;
           	}// end of for---------------
 	            
-          	if( sum_file_size >= 10*1024*1024 ) { 
+          	if( sum_file_size >= 10*1024*1024 ) { // 첨부한 파일의 총합의 크기가 10MB 이상 이라면 
             	alert("첨부한 파일의 총합의 크기가 10MB 이상이라서 파일을 업로드할 수 없습니다.!!");
         	  	return; // 종료
 	        }
 	        else { // formData 속에 첨부파일 넣어주기
 	         	file_arr.forEach(function(item){
-	            formData.append("file_arr", item);  
+	            formData.append("file_arr", item); 
 	        	});
           	}
 	
@@ -276,7 +284,6 @@
 	 	 	});
 	
 		}); // end of $("button#submitBtn").click() ------------------------------
-		
 		
 		
 	}); // end of $(document).ready() =====================================================
@@ -307,7 +314,6 @@
 				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 			}
 		 });
-		
 	}
 	
 	// 새로 첨부된 파일 가져오기
@@ -322,9 +328,6 @@
 	}
 	
 	getNewFiles(formData);
-	
-	
-
 
 	
 	function deleteFile(fileno){
@@ -354,6 +357,8 @@
 	
 </script>   
 
+
+
  <div style="width: 80%;" class="text-center container">
 		<%-- == 원글쓰기 인 경우 == --%>
 	<div style="padding: 0 0 1% 5%;">    
@@ -363,33 +368,38 @@
 	
 	
 	<div class="ml-auto" style="display: flex; cursor: pointer;">
-		<div style="margin-left: auto;">
-		</div>
+			<div style="margin-left: auto;">
+		    </div>
 	</div>
+        
+
+	
 	
 	<form id="editFrm" name="editFrm">
 		<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
-     		<span class="left_span" style=" font-weight: 600;
-			line-height: 21px;
-			text-transform: uppercase;
-			padding-left: 20px;
-			position: relative; font-size: 18px; width: 10%;">성명</span>
-			<div style="width: 8%;">
-				<input type="text" name="name" value="${sessionScope.loginuser.name}"  style="width: 160%;" readonly/> 
-			</div>
-	    </div>
+	       			<span class="left_span" style=" font-weight: 600;
+						line-height: 21px;
+						text-transform: uppercase;
+						padding-left: 20px;
+						position: relative; font-size: 18px; width: 10%;">성명</span>
+		<div style="width: 8%;">
+
+					<input type="text" name="name" value="${sessionScope.loginuser.name}"  style="width: 160%;" readonly/> 
+				</div>
+	    	</div>
 		<input type="hidden" name="seq" value="${boardvo.seq}"/>
 		<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
-	       	<span class="left_span" style=" font-weight: 600;
-				  line-height: 21px;
-				  text-transform: uppercase;
-				  padding-left: 20px;
-				  position: relative; font-size: 18px; width: 10%;">제목</span>
+	       			<span class="left_span" style=" font-weight: 600;
+						line-height: 21px;
+						text-transform: uppercase;
+						padding-left: 20px;
+						position: relative; font-size: 18px; width: 10%;">제목</span>
 		
-			<input type="text" name="subject" id="subject" placeholder='제목을 입력하세요' style='width: 76%; font-size: small;' value="${boardvo.subject}"/>
+		<input type="text" name="subject" id="subject" placeholder='제목을 입력하세요' style='width: 76%; 
+		font-size: small;' value="${boardvo.subject}"/>
 		</div>
 		
-		  <div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
+		<div class="section-title" style="background-color: #f4f5f6; margin-bottom: 30px; display: flex; align-items: center; ">
       			<span  style=" font-weight: 600;
 				line-height: 21px;
 				text-transform: uppercase;
@@ -398,9 +408,9 @@
 		            <div class="filebox">
 						<div style="width:940px; class="dropBox mt-2">
 							<div class=row id="dropzone" style="margin-left:-1.5%; display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
-					            <div style="margin-right:710px; ">여기에 첨부 파일을 끌어 오세요</div>
-					            <div id="file" name="file" style="display: inline-block; border: solid 2px; margin-right:90px; width:850px; height:80px; background-color:white;"></div>
-					            </div>
+					            	<div style="margin-right:710px; ">여기에 첨부 파일을 끌어 오세요</div>
+					                <div id="file" name="file" style="display: inline-block; border: solid 2px; margin-right:90px; width:850px; height:80px; background-color:white; overflow-y: auto;"></div>
+					         </div>
 						</div>
 					</div>
 		    	</div>
@@ -410,7 +420,8 @@
 		
 		<div class='card'>
 			<div class='card-header small'>첨부된 파일</div>
-			<div class='card-body small' id='attachedfile'></div>
+			<div class='card-body small' id='attachedfile'>
+			</div>
 		</div>
 	
 		

@@ -670,7 +670,7 @@ public class ApprovalController {
 		return String.valueOf(jsonObj);
 	}
 	
-	
+/*	
 	// 스마트에디터, 드래그앤드롭을 사용한 다중사진 파일 업로드
 	@RequestMapping(value="/image/multiplePhotoUpload.gw")
 	public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) {
@@ -716,7 +716,7 @@ public class ApprovalController {
 		}
 		
 	}
-	
+*/	
 	
 	// 기안 임시저장하기
 	@ResponseBody

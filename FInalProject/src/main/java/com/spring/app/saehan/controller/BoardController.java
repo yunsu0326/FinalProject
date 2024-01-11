@@ -332,12 +332,12 @@ public class BoardController {
 
 	// ====== 스마트에디터. 드래그앤드롭을 사용한 다중사진 파일 업로드 시작 ====== //
 	// 스마트에디터, 드래그앤드롭을 사용한 다중사진 파일 업로드
-	@RequestMapping(value="/approval/image/smultiplePhotoUpload.gw")
+	@RequestMapping(value="/image/multiplePhotoUpload.gw")
     public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) {    
 	      // WAS의 webapp의 절대경로
 	      HttpSession session = request.getSession();
 	      String root = session.getServletContext().getRealPath("/");
-	      String path = root + "resources"+File.separator+"board_photo_upload";
+	      String path = root + "resources"+File.separator+"smart_editer_upload";
 	      
 	      File dir = new File(path);
 	      
@@ -363,7 +363,7 @@ public class BoardController {
 	         String strURL = "";
 	         strURL += "&bNewLine=true&sFileName="+newFilename; 
 	         strURL += "&sWidth="+width;
-	         strURL += "&sFileURL="+ctxPath+"/resources/board_photo_upload/"+newFilename;
+	         strURL += "&sFileURL="+ctxPath+"/resources/smart_editer_upload/"+newFilename;
 	         
 	         // === 웹브라우저 상에 사진 이미지를 쓰기 === //
 	         PrintWriter out = response.getWriter();
