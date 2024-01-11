@@ -50,13 +50,14 @@ public class DigitalmailController {
     	
     	String searchType = request.getParameter("searchType");
     	String searchWord = request.getParameter("searchWord");
-		
-    	System.out.println("new 프린트"+searchType+searchWord); // 검색바
+    	String type = request.getParameter("type");
+    	
+    	System.out.println("type=>"+type);
+    	
+    	// System.out.println("new 프린트"+searchType+searchWord); // 검색바
 		
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
-		
-
-		
+				
 		if(searchType == null) {
 			searchType = "";
 		}
@@ -70,14 +71,17 @@ public class DigitalmailController {
 		HttpSession session = request.getSession();
 		EmployeesVO loginuser = (EmployeesVO)session.getAttribute("loginuser");
 		String email = loginuser.getEmail();
-		
+		String fk_team_id = loginuser.getFk_team_id();
+		String fk_dept_id = loginuser.getFk_department_id();
 		// System.out.println("email=>"+email);
 		
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
 		paraMap.put("searchWord", searchWord);
+		paraMap.put("type", type);
 		paraMap.put("email", email);
-		
+		paraMap.put("fk_team_id", fk_team_id);
+		paraMap.put("fk_dept_id", fk_dept_id);
 		// 먼저, 내가 받은 총 메일 건수(totalCount)를 구해와야 한다.
 		// 총 게시물 건수(totalCount)는 검색조건이 있을 때와 없을때로 나뉘어진다. 
 		int totalCount = 0;    		// 총 게시물 건수 
