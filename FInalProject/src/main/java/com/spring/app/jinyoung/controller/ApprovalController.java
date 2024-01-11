@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
@@ -183,9 +184,9 @@ public class ApprovalController {
 		mav.addObject("internalList", String.valueOf(internalList));
 		mav.addObject("externalList", String.valueOf(externalList));
 		
-		System.out.println("avoList => " + avoList);
-		System.out.println("internalList => " + internalList);
-		System.out.println("externalList => " + externalList);
+//		System.out.println("avoList => " + avoList);
+//		System.out.println("internalList => " + internalList);
+//		System.out.println("externalList => " + externalList);
 		
 		return mav;
 	}
@@ -241,9 +242,9 @@ public class ApprovalController {
 		mav.addObject("internalList", String.valueOf(internalList));
 		mav.addObject("externalList", String.valueOf(externalList));
 		
-		System.out.println("avoList => " + avoList);
-		System.out.println("internalList => " + internalList);
-		System.out.println("externalList => " + externalList);
+//		System.out.println("avoList => " + avoList);
+//		System.out.println("internalList => " + internalList);
+//		System.out.println("externalList => " + externalList);
 		
 		return mav;
 	}
@@ -443,7 +444,7 @@ public class ApprovalController {
 		mav.addObject("draftList", service.getTeamDraftList(paraMap));
 
 		// 페이지바
-		String url = request.getContextPath() + "/approval/team.gw";
+		String url = request.getContextPath() + "/approval/department.gw";
 		pagination.setQueryString("&sortType="+paraMap.get("sortType")+"&sortOrder="+paraMap.get("sortOrder"));
 		mav.addObject("pagebar", pagination.getPagebar(url));
 		mav.addObject("paraMap", paraMap);
@@ -558,7 +559,7 @@ public class ApprovalController {
 				else {
 					recipientArr = null;
 					
-					System.out.println("recipientArr =>" + String.valueOf(recipientArr).toUpperCase());
+				//	System.out.println("recipientArr =>" + String.valueOf(recipientArr).toUpperCase());
 					
 					break;
 				}
@@ -670,17 +671,14 @@ public class ApprovalController {
 		return String.valueOf(jsonObj);
 	}
 	
-/*	
+	
 	// 스마트에디터, 드래그앤드롭을 사용한 다중사진 파일 업로드
 	@RequestMapping(value="/image/multiplePhotoUpload.gw")
 	public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) {
-     
-		// WAS의 webapp의 절대경로
+		
 		HttpSession session = request.getSession();
 		String root = session.getServletContext().getRealPath("/");
-		String path = root + "resources"+File.separator+"draft_photo_upload";
-		
-		System.out.println("~~~ 확인용 path => " + path);
+		String path = root + "resources"+File.separator+"smart_editer_upload";
 		
 		File dir = new File(path);
 		if(!dir.exists()) {
@@ -688,8 +686,8 @@ public class ApprovalController {
 		}
 		
 		try {
-			String filename = request.getHeader("file-name"); // 파일명(문자열) - 일반 원본파일명
-	         
+			String filename = request.getHeader("file-name");
+			
 			InputStream is = request.getInputStream(); // is는 네이버 스마트 에디터를 사용하여 사진첨부하기 된 이미지 파일임.
 	         
 			String newFilename = fileManager.doFileUpload(is, filename, path);
@@ -699,13 +697,13 @@ public class ApprovalController {
 			if(width > 600) {
 				width = 600;
 			}
-	          
+			
 			String ctxPath = request.getContextPath(); //  /board
 			
 			String strURL = "";
 			strURL += "&bNewLine=true&sFileName="+newFilename; 
 			strURL += "&sWidth="+width;
-			strURL += "&sFileURL="+ctxPath+"/resources/draft_photo_upload/"+newFilename;
+			strURL += "&sFileURL="+ctxPath+"/resources/smart_editer_upload/"+newFilename;
 			
 			// === 웹브라우저 상에 사진 이미지를 쓰기 === //
 			PrintWriter out = response.getWriter();
@@ -716,7 +714,7 @@ public class ApprovalController {
 		}
 		
 	}
-*/	
+	
 	
 	// 기안 임시저장하기
 	@ResponseBody
@@ -776,7 +774,7 @@ public class ApprovalController {
 				else {
 					recipientArr = null;
 					
-					System.out.println("recipientArr =>" + String.valueOf(recipientArr).toUpperCase());
+		//			System.out.println("recipientArr =>" + String.valueOf(recipientArr).toUpperCase());
 					
 					break;
 				}
@@ -1046,7 +1044,9 @@ public class ApprovalController {
 			JSONObject json = new JSONObject(emp);
 			aprvArray.put(json);
 		}
-
+		
+	//	System.out.println("확인용 aprvArray => " + aprvArray);
+		
 		return aprvArray.toString();
 		
 	}
@@ -1083,6 +1083,11 @@ public class ApprovalController {
 	public ModelAndView editApprovalLine(ModelAndView mav, HttpServletRequest request, SavedAprvLineVO sapVO) {
 		
 		// update
+		System.out.println("확인용 getAprv_line_name => " + sapVO.getAprv_line_name());
+		System.out.println("확인용 getAprv_line_no => " + sapVO.getAprv_line_no());
+		System.out.println("확인용 getFk_approval_empno1 => " + sapVO.getFk_approval_empno1());
+		System.out.println("확인용 getFk_approval_empno2 => " + sapVO.getFk_approval_empno2());
+		System.out.println("확인용 getFk_empno => " + sapVO.getFk_empno());
 		int n = service.editApprovalLine(sapVO);
 		
 		if (n == 0) {
@@ -1240,7 +1245,7 @@ public class ApprovalController {
 		JSONObject json = new JSONObject();
 
 		// 공통결재라인 여부 사용으로 변경하기
-		boolean result = service.setUseOfficialLine(draft_type_no); 
+		int result = service.setUseOfficialLine(draft_type_no); 
 		
 		json.put("result", result);
 		return String.valueOf(json);
@@ -1249,8 +1254,7 @@ public class ApprovalController {
 	// 관리자메뉴-공통결재라인 수정
 	@PostMapping(value = "/admin/approvalLine/save.gw")
 	public ModelAndView saveOfficialApprovalLine(ModelAndView mav, HttpServletRequest request, OfficialAprvLineVO oapVO) {
-
-		// update
+		
 		int n = service.saveOfficialApprovalLine(oapVO);
 
 		if (n == 0) {

@@ -212,7 +212,7 @@ public class ApprovalDAO_imple implements ApprovalDAO {
 	// 환경설정-결재라인 수정
 	@Override
 	public int editApprovalLine(SavedAprvLineVO sapVO) {
-		return sqlsession.insert("approval.editApprovalLine", sapVO);
+		return sqlsession.update("approval.editApprovalLine", sapVO);
 	}
 	
 	// 환경설정-결재라인 삭제

@@ -540,7 +540,7 @@ public class ApprovalService_imple implements ApprovalService {
 	// 공통결재라인 여부 사용으로 변경하기
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED, rollbackFor= {Throwable.class})
-	public boolean setUseOfficialLine(String draft_type_no) {
+	public int setUseOfficialLine(String draft_type_no) {
 		int n = dao.setUseOfficialLine(draft_type_no);
 				
 		if (n == 1) {
@@ -551,12 +551,12 @@ public class ApprovalService_imple implements ApprovalService {
 			OfficialAprvLineVO oapVO = new OfficialAprvLineVO();
 			oapVO.setOfficial_aprv_line_no(official_aprv_line_no);
 			oapVO.setFk_draft_type_no(Integer.parseInt(draft_type_no));
-			oapVO.setFk_approval_empno1(1);
+			oapVO.setFk_approval_empno1("10000");
 			
 			n = dao.saveOfficialApprovalLine(oapVO);
 		}
 		
-		return (n == 1)? true: false;
+		return (n == 1)? 1: 0;
 	}
 
 	// 관리자메뉴-공통결재라인 저장
