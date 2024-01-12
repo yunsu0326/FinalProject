@@ -331,7 +331,7 @@ function func_select(searchTypeVal){
                                id: json[i].job_name,
                                title: json[i].job_name,
                                name: json[i].name,
-                               image: '<%= ctxPath%>/resources/empImg/'+json[i].photo
+                               image: '<%= ctxPath%>/resources/images/empImg/'+json[i].photo
                               };
                       resultArr.push(obj);
                    }// end of for-------------------------------
@@ -493,7 +493,7 @@ function func_select(searchTypeVal){
                                          id: deptList[i].employee_id,
                                          title: deptList[i].job_name,
                                          name: deptList[i].name,
-                                         image: '<%= ctxPath%>/resources/empImg/'+deptList[i].photo
+                                         image: '<%= ctxPath%>/resources/images/empImg/'+deptList[i].photo
                                         };
                                 resultArr.push(obj); 
                              }// end of for-------------------------------

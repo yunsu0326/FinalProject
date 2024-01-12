@@ -441,7 +441,7 @@ function goPwdUpdate() {
 	<div style="display: flex; justify-content: center;">
 		
 		<div id="photo">
-			<img src="<%= ctxPath%>/resources/empImg/${requestScope.loginuser.photo}" />
+			<img src="<%= ctxPath%>/resources/images/empImg/${requestScope.loginuser.photo}" />
 		</div>
 			
 		<table id="table1" class="myinfo_tbl">

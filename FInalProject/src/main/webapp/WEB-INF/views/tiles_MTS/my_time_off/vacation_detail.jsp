@@ -377,7 +377,7 @@
 	            <th class='col'>신청일</th>
 	            <th class='col'>시작일</th>
 	            <th class='col'>종료일</th>
-	            <th class='col col-1'>결재상태</th>
+	            <th class='col'>결재상태</th>
             </tr>
          </thead>
          
@@ -416,13 +416,13 @@
 			            <td class='col'>${List.vacation_end_date}</td>
 			            <c:choose>
 			            	<c:when test="${List.vacation_confirm == '1'}">
-			            		<td class='col col-1'>대기</td>
+			            		<td class='col'>대기</td>
 			            	</c:when>
 			            	<c:when test="${List.vacation_confirm == '2'}">
-			            		<td class='col col-1'>승인</td>
+			            		<td class='col'>승인</td>
 			            	</c:when>
 			            	<c:when test="${List.vacation_confirm == '3'}">
-			            		<td class='col col-1'>반려</td>
+			            		<td class='col'>반려</td>
 			            	</c:when>
 			            </c:choose>
 			        </tr>

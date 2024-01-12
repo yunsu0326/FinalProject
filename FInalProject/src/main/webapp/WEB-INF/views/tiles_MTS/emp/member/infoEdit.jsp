@@ -271,7 +271,7 @@ function populateDepartmentsDropdown() {
 		<div style="display: flex; justify-content: center;">
 		
 			<div id="photo">
-				<img src="<%= ctxPath%>/resources/empImg/${requestScope.empOneDetail.photo}" id="previewImg" />
+				<img src="<%= ctxPath%>/resources/images/empImg/${requestScope.empOneDetail.photo}" id="previewImg" />
 			</div>
 				
 			<table id="table1" class="myinfo_tbl">

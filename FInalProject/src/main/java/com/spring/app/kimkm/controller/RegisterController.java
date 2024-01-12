@@ -168,7 +168,7 @@ public class RegisterController {
 			
 			String root = "C:\\git\\FinalProject\\FInalProject\\src\\main\\webapp\\";
 		 //	System.out.println("~~~~ 확인용 webapp 의 절대경로 => " + root);
-			String path = root + "resources" + File.separator + "empImg";
+			String path = root + "resources" + File.separator + "images" + File.separator + "empImg";
 		 //	System.out.println(path);
 			
 			String newFileName = "";
