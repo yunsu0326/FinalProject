@@ -262,10 +262,10 @@
 					<tr class="infoSchedule">
 						<td style="display: none;" class="scheduleno">${map.SCHEDULENO}</td>
 						<td>${map.STARTDATE} - ${map.ENDDATE}</td>
-						<td>${map.LGCATGONAME} - ${map.SMCATGONAME}</td>
-						<td>${map.NAME}</td>  <%-- 캘린더 작성자명 --%>
-						<td>${map.SUBJECT}</td>
-						<td>${map.CONTENT}</td>
+						<td style="padding-left:30px;">${map.LGCATGONAME} - ${map.SMCATGONAME}</td>
+						<td style="padding-left:30px;">${map.NAME}</td>  <%-- 캘린더 작성자명 --%>
+						<td style="padding-left:30px;">${map.SUBJECT}</td>
+						<td style="padding-left:30px;">${map.CONTENT}</td>
 					</tr>
 				</c:forEach>
 			</c:if>
