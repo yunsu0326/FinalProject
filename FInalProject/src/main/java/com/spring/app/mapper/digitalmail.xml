@@ -103,7 +103,30 @@
 				</choose>
 				<!-- 검색 페이징 -->   
 	        </when>
-	        
+	        <when test='type == "time"'> 
+	        	e.sender_delete = 0 
+	        	and e.fk_sender_email = #{email}
+	        	and e.send_time <![CDATA[>]]> SYSDATE
+	            <!-- 검색 페이징 -->
+				<choose>
+					<when test='searchType == "subject" and searchWord != ""'>
+		                 AND lower(e.email_subject) LIKE '%' || lower(#{searchWord}) || '%'
+		             </when>
+		             <when test='searchType == "content" and searchWord != ""'>
+		                 AND lower(e.email_contents) LIKE '%' || lower(#{searchWord}) || '%'
+		             </when>
+		             <when test='searchType == "subject_content" and searchWord != ""'>
+		                 AND (lower(e.email_subject) LIKE '%' || lower(#{searchWord}) || '%' OR lower(content) LIKE '%' || lower(#{searchWord}) || '%') 
+		             </when>
+		             <when test='searchType == "name" and searchWord != ""'>
+		                 AND lower(p.name) LIKE '%' || lower(#{searchWord}) || '%'
+		             </when>
+		             <when test='searchType == "job" and searchWord != ""'>
+		                 AND lower(j.job_name) LIKE '%' || lower(#{searchWord}) || '%'
+		             </when>
+				</choose>
+				<!-- 검색 페이징 -->   
+	        </when>
 	        <!-- 그 이외 -->  
 		    <when test='type != "fk_sender_email" or  type != "del"'> 
 	        	r.receipt_delete = 0
