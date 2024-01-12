@@ -124,7 +124,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 }); //마지막으로 레알 고침
 
-
 function showPopup() {
     var chatWindowName = "chatRoom";
     var width = 700;
@@ -173,12 +172,7 @@ function showPopup() {
                             <span class="nav-link-text">부서관리</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="<%= ctxPath %>/viewOrgChart.gw">
-                            <i class="fa-solid fa-chart-column nav-icon"></i>
-                            <span class="nav-link-text">통합관리그래프</span>
-                        </a>
-                    </li>
+                    
                     <li class="nav-item">
                         <a href="<%= ctxPath %>/workflow_b.gw">
                             <i class="fa-solid fa-person-circle-plus nav-icon"></i>
@@ -188,7 +182,7 @@ function showPopup() {
                 </ul>
             </li>
         </c:if>
-		
+
         <!-- 프로필 항목 추가 -->
         <li class="nav-item">
             <a href="<%= ctxPath %>/myinfo.gw">
@@ -203,7 +197,7 @@ function showPopup() {
             </a>
         </li>
         <li class="nav-item">
-            <a href="<%= ctxPath %>/email.gw">
+            <a href="<%= ctxPath %>/digitalmail.gw">
                 <i class="fa-solid fa-id-card nav-icon nav-icon"></i>
                 <span class="nav-link-text">웹메일</span>
             </a>
