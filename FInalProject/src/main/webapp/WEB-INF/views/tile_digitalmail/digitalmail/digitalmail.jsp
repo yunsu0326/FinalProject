@@ -8,13 +8,104 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
       rel="stylesheet">
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ page import="java.util.Date" %>
 
   <script>
   
       // 페이지 로딩 후 실행되는 함수
-      $(document).ready(function(){
-	      
+      $(document).ready(function(){	 
+    	  
+    	  var war = $("input#pageupdown").val();
+    	  
+    	  if(war == "up"){
+    		  alert("마지막 페이지입니다 마지막 페이지에 머뭅니다.");
+    	  }
+    	  if(war == "down"){
+    		  alert("첫번째 페이지입니다 첫번째 페이지에 머뭅니다.");
+    	  }
+    	  
+    	  var plzCount = $("span.plz0").length;
+    	  var alertCount = $("span.alert0").length;
+    	  var eventCount = $("span.event0").length;
+    	  
+    	  if(plzCount != 0){
+    		  alert("안읽은 업무지시메일이 " + plzCount + "개 있습니다.");
+    	  }
+    	  if(alertCount != 0){
+    		  alert("안읽은 긴급메일이 " + alertCount + "개 있습니다.");
+    	  }
+    	  if(eventCount != 0){
+    		  alert("안읽은 공지사항이 " + eventCount + "개 있습니다.");
+    	  }
+    	  
+    	  
+    	  
+    	  alert("war=>"+war);    	  
+    	  // 시간 검사
+          var date = "";
+          var time ="";
+          var hour = "";
+          var minute = "";
+          var send_time = "";
+          
+          var spanCount = $("span.gettime").length;
+
+          for (var i = 0; i < spanCount; i++) {
+              var date = $("span.gettime").eq(i).text();
+              // alert(date);
+              
+              
+              var redate = date.split("-");
+           	  var reYear =  redate[0];
+           	  var reMonth = redate[1];
+           	  var reDay =   redate[2];
+           	  var retime = time.split(":"); 
+           	  var rehour =  retime[0];
+           	  var remi =    retime[1];
+           	   
+           	  var reservation_date = new Date(reYear, reMonth, reDay, rehour, remi);      			       
+    	            
+	           	var now = new Date();   
+	            var year = now.getFullYear();  // 현재 해당 년도
+	            var month = now.getMonth()+1;  // 현재 해당 월
+	            var day = now.getDate();       // 현재 해당 일자
+	            
+	            var hour = now.getHours();       // 현재 해당 시각
+	            var minute = now.getMinutes(); // 현재 해당 분
+	            var second = now.getSeconds(); // 현재 해당 초
+				
+	         	// 한 자리 수일 때 앞에 0 붙이기 (함수 활용)
+	            hour = padZero(hour);
+	            minute = padZero(minute);
+	            second = padZero(second);
+	            month = padZero(month);
+	            day = padZero(day);
+	            
+	         	const FullDate = year+"-"+month+"-"+day + " " + hour+":"+minute; 
+	         	
+	         	
+	         	//alert("date=>"+date);
+	         	// date=>2024-01-11 21:34
+	         	//alert("FullDate=>"+FullDate);
+	         	// 2024-01-08 12:00
+              	
+	         	if(FullDate<date){
+            	  	$("div.gettime").eq(i).hide();
+              	}
+              
+          }       	  
+
+       	
+    	  
+    	  
+    	  
+    	  
+    	  
+    	  
+    	  
+    	  
+    	  
+    	  /*
 	      // 각 섹션에 대한 클릭 이벤트 리스너 등록
 	      $('div.section').click(function() {
 		      alert('섹션 클릭됨!');
@@ -23,7 +114,8 @@
 	          // 현재 클릭된 섹션에 'section_selected' 클래스 추가
 	          $(this).addClass('section_selected');
 	      });
-		  	
+		  */
+		  
 	      /* 안쓰는듯?
 	      $('div.opti').click(function() {
 	         alert('시발섹션 클릭됨!');
@@ -35,6 +127,7 @@
 	      });
 		  */
 		  
+		  /*
 	      // 각 섹션에 대한 클릭 이벤트 리스너 등록
 	  	  $('div.opt').click(function() {
 	          alert('섹션 클릭됨!');
@@ -49,6 +142,86 @@
 		      $('div.hide .material-icons-outlined').text(iconText);
 	          $('div.hide .list_name').text(menuNameText);
 	      });
+	      */
+	      
+	      let type = "${requestScope.type}";
+	      alert(type);
+	      if(type=="null"){
+	      	 
+	      }
+	      else{
+	      if(type == "fk_sender_email"){
+	    	  var iconText = 'forward_to_inbox';
+	      	  var menuNameText = '보낸메일함';
+	  	      // console.log(iconText,menuNameText);
+		      $('div.show .material-icons-outlined').text(iconText);
+	          $('div.show .list_name').text(menuNameText);  
+	      }
+	      if(type=="noread"){
+	    	  var iconText = 'mark_email_unread';
+	      	  var menuNameText = '안읽은메일함';
+	  	      // console.log(iconText,menuNameText);
+		      $('div.show .material-icons-outlined').text(iconText);
+	          $('div.show .list_name').text(menuNameText);  
+	      }
+	      if(type=="impt"){
+	    	  var iconText = 'priority_high';
+	      	  var menuNameText = '중요메일함';
+	  	      // console.log(iconText,menuNameText);
+		      $('div.show .material-icons-outlined').text(iconText);
+	          $('div.show .list_name').text(menuNameText);  
+	      }
+	      if(type=="fav"){
+	    	  var iconText = 'favorite';
+	      	  var menuNameText = '즐겨찾기';
+	  	      // console.log(iconText,menuNameText);
+		      $('div.show .material-icons-outlined').text(iconText);
+	          $('div.show .list_name').text(menuNameText);  
+	      }
+	      if(type=="del"){
+	    	  var iconText = 'delete';
+	      	  var menuNameText = '휴지통';
+	  	      // console.log(iconText,menuNameText);
+		      $('div.show .material-icons-outlined').text(iconText);
+	          $('div.show .list_name').text(menuNameText);  
+	      }
+	      if(type=="me"){
+	    	  var iconText = 'edit_note';
+	      	  var menuNameText = '내게쓴메일함';
+	  	      // console.log(iconText,menuNameText);
+		      $('div.show .material-icons-outlined').text(iconText);
+	          $('div.show .list_name').text(menuNameText);  
+	      }
+	      if(type=="sell"){
+	    	  var iconText = 'sell';
+	      	  var menuNameText = '카테고리메일함';
+	  	      // console.log(iconText,menuNameText);
+		      $('div.show .material-icons-outlined').text(iconText);
+	          $('div.show .list_name').text(menuNameText);  
+	      }
+	      if(type=="read"){
+	    	  var iconText = 'drafts';
+	      	  var menuNameText = '읽은메일함';
+	  	      // console.log(iconText,menuNameText);
+		      $('div.show .material-icons-outlined').text(iconText);
+	          $('div.show .list_name').text(menuNameText);  
+	      }
+	      if(type=="team"){
+	    	  var iconText = 'face';
+	      	  var menuNameText = '우리팀메일함';
+	  	      // console.log(iconText,menuNameText);
+		      $('div.show .material-icons-outlined').text(iconText);
+	          $('div.show .list_name').text(menuNameText);  
+	      }
+	      if(type=="dept"){
+	    	  var iconText = 'face';
+	      	  var menuNameText = '우리부서메일함';
+	  	      // console.log(iconText,menuNameText);
+		      $('div.show .material-icons-outlined').text(iconText);
+	          $('div.show .list_name').text(menuNameText);  
+	      }
+	      }
+	      
 	      
 		  // 체크 메뉴
 	      $(".digitalmail_check").click(function(){
@@ -225,8 +398,9 @@
 		});
 	};
 	
-	function goDel(){
+	function goDel(deltype){
   		
+		var deltype = deltype;
   		// alert("클릭했습니다.")
   		const receipt_mail_seq_check = $("input:checkbox[name='receipt_mail_seq']:checked").length;
   		// alert("empidcheck = >" + empidcheck);
@@ -244,21 +418,31 @@
   				} // end of if -----
   	            
 			}// end of for---------------------------
-          
+			
+			let uniqueArray = receipt_mail_seq_Arr.filter((value, index, self) => {
+				  return self.indexOf(value) === index;
+			});
+
+			
+        	alert("uniqueArray=>"+uniqueArray);
+			
+          	console.log("삭제 이메일 번호: " + uniqueArray);
           
             console.log("삭제 이메일 번호: " + receipt_mail_seq_Arr);
-            const receipt_mail_seq_join = receipt_mail_seq_Arr.join();
+            const receipt_mail_seq_join = uniqueArray.join();
           
             console.log("삭제 이메일 번호: " + receipt_mail_seq_join);
   		
             const bool = confirm("정말로 삭제하시겠습니까?");
-         
+         	
+            alert("deltype=>"+deltype);
           	if(bool) {   
                 $.ajax({
               		url:"<%= ctxPath%>/email_del.gw",
                   	type:"POST",
                   	data:{
-                  		"receipt_mail_seq_join":receipt_mail_seq_join
+                  		"receipt_mail_seq_join":receipt_mail_seq_join,
+                  		"deltype":deltype
                   	},
                   	dataType:"JSON",     
                   	success:function(json){
@@ -361,6 +545,11 @@
 		F5frm.submit(); 
 	}
 	
+	// 주어진 값이 10보다 작을 경우 그 앞에 0을 붙여서 두 자리 수로 만드는 함수
+	function padZero(value) {
+	    return value < 10 ? "0" + value : value;
+	}
+	
       
   
   </script>
@@ -372,7 +561,7 @@
 	<!-- 메일함 리스트 세팅-->
 	
 	<div class="emailList_settings">
-
+		<input type="hidden" id="pageupdown" value='${requestScope.war}'/>
 		<!--왼쪽 세팅-->
 		<div class="emailList_settingsLeft">
 	        <input type="checkbox" id="all_check" onclick="allCheckBox();">                        
@@ -380,18 +569,34 @@
 				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">redo</span>
 				<span class="icon_text">새로고침</span>
 			</div>
-			<div class="icon_set mr-3">
-				<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="total_email_receipt_read_count_update('1')" style="font-size: 24pt;">drafts</span>
-				<span class="icon_text">읽음</span>
-			</div>
-			<div class="icon_set mr-3">
-				<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="total_email_receipt_read_count_update('0')" style="color: red; font-size: 24pt;">mark_email_unread</span>
-				<span class="icon_text">안읽음</span>
-			</div>							           
-			<div class="icon_set mr-3" onclick="goDel();">
-				<span class="material-icons-outlined icon_img" style="font-size: 24pt;">delete</span>
+			<c:if test="${requestScope.type ne 'fk_sender_email' and requestScope.type ne 'del' and requestScope.type ne 'senddel'}">
+				<div class="icon_set mr-3">
+					<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="total_email_receipt_read_count_update('1')" style="font-size: 24pt;">drafts</span>
+					<span class="icon_text">읽음</span>
+				</div>
+			
+				<div class="icon_set mr-3">
+					<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="total_email_receipt_read_count_update('0')" style="color: red; font-size: 24pt;">mark_email_unread</span>
+					<span class="icon_text">안읽음</span>
+				</div>	
+			</c:if>					           
+			<div class="icon_set mr-3" onclick="goDel('${requestScope.type}');">
+				<span class="material-icons-outlined icon_img" style="font-size:24pt;">delete</span>
 				<span class="icon_text">휴지통</span>
-			</div>                        
+			</div>
+			
+			<c:if test="${requestScope.type == 'del'}">
+				<div class="icon_set mr-3" onclick="goDel('plus');">
+					<span class="material-icons-outlined icon_img" style="font-size: 24pt;">delete</span>
+					<span class="icon_text">복구하기</span>
+				</div>
+			</c:if>
+			<c:if test="${requestScope.type == 'senddel'}">
+				<div class="icon_set mr-3" onclick="goDel('senddelplus');">
+					<span class="material-icons-outlined icon_img" style="font-size: 24pt;">delete</span>
+					<span class="icon_text">복구하기</span>
+				</div>
+			</c:if>                           
 		</div>
         <!--왼쪽 세팅-->
         <form name="F5Frm">
@@ -428,54 +633,133 @@
 		
 		<c:if test="${not empty requestScope.emailVOList}">
 			<c:forEach var="emailVO" items="${requestScope.emailVOList}" varStatus="status">
-				<div class="emailRow">
-					
-					<!-- 즐겨찾기 여부 -->
-					<div class="emailRow_options">
-						<input type="checkbox" type="checkbox" name="receipt_mail_seq" value="${emailVO.receipt_mail_seq}" class="digitalmail_check">
-		                <c:if test="${emailVO.receipt_favorites==0}">
-		                	<span id="${emailVO.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.receipt_mail_seq}')">favorite_border</span>
-		                </c:if>
-		                <c:if test="${emailVO.receipt_favorites==1}">
-		                	<span id="${emailVO.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.receipt_mail_seq}')" style="color: red;">favorite</span>
-		                </c:if>
-					</div>
-					<!-- 즐겨찾기 여부 -->
-					
-					<!-- 읽음 여부 정보 -->
-					<c:if test="${emailVO.email_receipt_read_count==0}">
-	                	<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="email_receipt_read_count_update('${emailVO.receipt_mail_seq}')" style="color: red;">mark_email_unread</span>
-	                </c:if>
-	                <c:if test="${emailVO.email_receipt_read_count==1}">
-	                	<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="email_receipt_read_count_update('${emailVO.receipt_mail_seq}')">drafts</span>
-	                </c:if>		
-			        <!-- 읽음 여부 정보 -->
-			        
-			        <!-- 중요메일 여부 -->
-					<c:if test="${emailVO.receipt_important==0}">
-	                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: black;"> priority_high </span>
-	                </c:if>
-	                <c:if test="${emailVO.receipt_important==1}">
-	                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: orange;"> priority_high </span>
-	                </c:if>		
-			        <!-- 중요메일 여부 -->
+				<div class="emailRow gettime" id="${emailVO.receipt_mail_seq}time">
+					<c:if test="${requestScope.type != 'fk_sender_email' and requestScope.type != 'senddel'}">
+						
+						<!-- 즐겨찾기 여부 -->
+						<div class="emailRow_options">
+							<input type="checkbox" type="checkbox" name="receipt_mail_seq" value="${emailVO.receipt_mail_seq}" class="digitalmail_check">
 			                
+			                
+			                <c:if test="${emailVO.category==1}">
+			                	<span class="material-icons-outlined ml-2 plz${emailVO.email_receipt_read_count}" style="color: green; font-size: 12pt;">업무지시</span>
+			                </c:if>
+			                <c:if test="${emailVO.category==2}">
+			                	<span class="material-icons-outlined ml-2 alert${emailVO.email_receipt_read_count}" style="color: red; font-size: 12pt;">긴급</span>
+			                </c:if>
+			                <c:if test="${emailVO.category==3}">
+			                	<span class="material-icons-outlined ml-2 event${emailVO.email_receipt_read_count}" style="color: blue; font-size: 12pt;">공지사항</span>
+			                </c:if>
+			                
+			                
+			                <c:if test="${emailVO.receipt_favorites==0}">
+			                	<span id="${emailVO.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.receipt_mail_seq}')">favorite_border</span>
+			                </c:if>
+			                <c:if test="${emailVO.receipt_favorites==1}">
+			                	<span id="${emailVO.receipt_mail_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.receipt_mail_seq}')" style="color: red;">favorite</span>
+			                </c:if>
+			                <!-- 읽음 여부 정보 -->
+							<c:if test="${emailVO.email_receipt_read_count==0}">
+		                		<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="email_receipt_read_count_update('${emailVO.receipt_mail_seq}')" style="color: red;">mark_email_unread</span>
+		                	</c:if>
+		                	<c:if test="${emailVO.email_receipt_read_count==1}">
+		                		<span id="${emailVO.receipt_mail_seq}rc" class="material-icons-outlined ml-2" onclick="email_receipt_read_count_update('${emailVO.receipt_mail_seq}')">drafts</span>
+		                	</c:if>		
+				        	<!-- 읽음 여부 정보 -->
+				        	<!-- 중요메일 여부 -->
+							<c:if test="${emailVO.receipt_important==0}">
+			                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: black;"> priority_high </span>
+			                </c:if>
+			                <c:if test="${emailVO.receipt_important==1}">
+			                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: orange;"> priority_high </span>
+			                </c:if>		
+					        <!-- 중요메일 여부 -->
+						</div>
+					</c:if>
+					
+					<c:if test="${requestScope.type == 'fk_sender_email'}">
+						<div class="emailRow_options">
+							<input type="checkbox" type="checkbox" name="receipt_mail_seq" value="${emailVO.send_email_seq}" class="digitalmail_check">
+			                <c:if test="${emailVO.sender_favorites==0}">
+			                	<span id="${emailVO.send_email_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.send_email_seq}')">favorite_border</span>
+			                </c:if>
+			                <c:if test="${emailVO.sender_favorites==1}">
+			                	<span id="${emailVO.send_email_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.send_email_seq}')" style="color: red;">favorite</span>
+			                </c:if>
+			                <!-- 읽음 여부 정보 -->
+							<c:if test="${emailVO.email_total_read_count==0}">
+		                		<span id="${emailVO.send_email_seq}rc" class="material-icons-outlined ml-2" style="color: red;">mark_email_unread</span>
+		                		<span style="font-size: 12px">0명 읽음</span>
+		                	</c:if>
+		                	<c:if test="${emailVO.email_total_read_count>1}">
+		                		<span id="${emailVO.send_email_seq}rc" class="material-icons-outlined ml-2">drafts</span>
+		                		<span style="font-size: 12px">${emailVO.email_total_read_count}명 읽음</span>
+		                	</c:if>		
+				        	<!-- 읽음 여부 정보 -->
+				        	<!-- 중요메일 여부 -->
+							<c:if test="${emailVO.sender_important==0}">
+			                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: black;"> priority_high </span>
+			                </c:if>
+			                <c:if test="${emailVO.sender_important==1}">
+			                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: orange;"> priority_high </span>
+			                </c:if>		
+					        <!-- 중요메일 여부 -->
+						</div>
+					</c:if>
+					
+					<c:if test="${requestScope.type == 'senddel'}">
+						<div class="emailRow_options">
+							<input type="checkbox" type="checkbox" name="receipt_mail_seq" value="${emailVO.send_email_seq}" class="digitalmail_check">
+			                <c:if test="${emailVO.sender_favorites==0}">
+			                	<span id="${emailVO.send_email_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.send_email_seq}')">favorite_border</span>
+			                </c:if>
+			                <c:if test="${emailVO.sender_favorites==1}">
+			                	<span id="${emailVO.send_email_seq}fav" class="material-icons-outlined ml-2" onclick="receipt_favorites_update('${emailVO.send_email_seq}')" style="color: red;">favorite</span>
+			                </c:if>
+			                <!-- 읽음 여부 정보 -->
+							<c:if test="${emailVO.email_total_read_count==0}">
+		                		<span id="${emailVO.send_email_seq}rc" class="material-icons-outlined ml-2" style="color: red;">mark_email_unread</span>
+		                		<span style="font-size: 12px">0명 읽음</span>
+		                	</c:if>
+		                	<c:if test="${emailVO.email_total_read_count>0}">
+		                		<span id="${emailVO.send_email_seq}rc" class="material-icons-outlined ml-2">drafts</span>
+		                		<span style="font-size: 12px">${emailVO.email_total_read_count}명 읽음</span>
+		                	</c:if>		
+				        	<!-- 읽음 여부 정보 -->
+				        	<!-- 중요메일 여부 -->
+							<c:if test="${emailVO.sender_important==0}">
+			                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: black;"> priority_high </span>
+			                </c:if>
+			                <c:if test="${emailVO.sender_important==1}">
+			                	<span id="${emailVO.receipt_mail_seq}imp" class="material-icons-outlined" onclick="receipt_important_update('${emailVO.receipt_mail_seq}')" style="color: orange;"> priority_high </span>
+			                </c:if>		
+					        <!-- 중요메일 여부 -->
+						</div>
+					</c:if>
+					
+					<!-- 즐겨찾기 여부 -->
+					
 					<!-- 수신자 정보 -->
 					<span class="emailRow_title ml-2">${emailVO.job_name}&nbsp;${emailVO.name}</span>
 					<!-- 수신자 정보 -->
 					
 					<!-- 제목-->
+					
 					<div class="emailRow_message" onclick = "selectOneEmail('${emailVO.send_email_seq}')">
+						<c:if test="${emailVO.filename==null}">
+							파일 없음
+						</c:if>
+						<c:if test="${emailVO.filename != null}">
+							파일 있음
+						</c:if>
 						<span>${emailVO.email_subject}</span>
 					</div>
 					<!-- 제목 -->
 						
 					<!--전송시간-->
-					<span class="mr-3" onclick = "selectOneEmail('${emailVO.send_email_seq}')">${emailVO.send_time}</span>
+					<span id="${emailVO.receipt_mail_seq}time" class="mr-3 gettime" onclick = "selectOneEmail('${emailVO.send_email_seq}')">${emailVO.send_time}</span>
 					<!--전송시간-->
 				</div>
 			</c:forEach>
 		</c:if>
 	</div>
-
-     

@@ -1102,6 +1102,7 @@
 	    		</div>
 	    		<div></div>
 	    		
+	    		<c:if test="${sessionScope.loginuser.gradelevel != '1'}">
 	    		<div class="section-title">
 	       			<span class="left_span">카테고리</span>
 					<div id="check_set">
@@ -1111,12 +1112,13 @@
 					<div class="sminput" id="categorybox">
 						<select name="categoryval" id="categoryval">
 		                	<option value="error">선택안함</option>
-						    <option value="1">옵션1</option>
-						    <option value="2">옵션2</option>
-						    <option value="3">옵션2</option>
+						    <option value="1">업무지시</option>
+						    <option value="2">긴급메일</option>
+						    <option value="3">공지사항</option>
 		            	</select>
 		            </div>
 	    		</div>
+	    		</c:if>
 	    		<div></div>
 	    			
 	    		<div class="section-title">

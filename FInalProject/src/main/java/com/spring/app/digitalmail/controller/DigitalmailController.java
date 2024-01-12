@@ -51,7 +51,10 @@ public class DigitalmailController {
     	String searchType = request.getParameter("searchType");
     	String searchWord = request.getParameter("searchWord");
     	String type = request.getParameter("type");
-    	
+    	String war = "nothing";
+    	if(type == null) {
+    		type = "null";
+    	}
     	System.out.println("type=>"+type);
     	
     	// System.out.println("new 프린트"+searchType+searchWord); // 검색바
@@ -100,14 +103,32 @@ public class DigitalmailController {
 		if(str_currentShowPageNo == null) {
 			 // 메일 초기에 보여지는 화면
 			 currentShowPageNo = 1;
+			 currentShowPageNoplus = 2;
+			 currentShowPageNodel = 1;
+			 mav.addObject("war", war);
 		 }
 		 else {
-	         
+			 mav.addObject("war", war);
+			 currentShowPageNo = Integer.parseInt(str_currentShowPageNo);
+			 currentShowPageNodel = currentShowPageNo-1;
+			 currentShowPageNoplus = currentShowPageNo+1;
 			 try {
 	             currentShowPageNo = Integer.parseInt(str_currentShowPageNo); 
-				 if(currentShowPageNo < 1 || currentShowPageNo > totalPage) { // 유효성 검사   
+				 if(currentShowPageNo < 1 ) { // 유효성 검사   
+					war = "down";
 					currentShowPageNo = 1;
+					currentShowPageNodel = 1;
+					currentShowPageNoplus = 2;
+					mav.addObject("war", war);
 				 }
+				 else if(currentShowPageNo > totalPage) {
+					 currentShowPageNo = totalPage;
+					 currentShowPageNodel = totalPage-1;
+					 currentShowPageNoplus = totalPage;
+					 war = "up";
+					 mav.addObject("war", war);
+				 }
+				 
 	         } catch(NumberFormatException e) {
 				 currentShowPageNo = 1; 
 	         }
@@ -121,7 +142,11 @@ public class DigitalmailController {
 		 System.out.println("시작=>"+paraMap.get("startRno"));
 		 System.out.println("끝=>"+paraMap.get("endRno"));
 		 
+		 mav.addObject("type",type);
+		 
 		 mav= service.digitalmail(mav,paraMap);
+		 
+		 
 		 
 		 if("subject".equals(searchType) || 
 		    "content".equals(searchType) ||
@@ -132,44 +157,34 @@ public class DigitalmailController {
 		 
 		 }
 		
+		 
+		
+		 
 		// === 페이지바 만들기 (만들거면 해야되는데 굳이...?)  === //
 		int blockSize = 10;
 		int loop = 1;
 		int pageNo = ((currentShowPageNo - 1)/blockSize) * blockSize + 1;
 		// === 페이지바 만들기 (만들거면 해야되는데 굳이...?)  === //
 		
-		str_currentShowPageNo = request.getParameter("currentShowPageNo");
-		
-		if(str_currentShowPageNo == null) {
-			 // 메일 초기에 보여지는 화면
-			 currentShowPageNo = 1;
-			 
-		}
-		else {
-			currentShowPageNo = Integer.parseInt(str_currentShowPageNo);
-			currentShowPageNodel = Integer.parseInt(str_currentShowPageNo)-1;
-			currentShowPageNoplus = Integer.parseInt(str_currentShowPageNo)+1;
-		}
-
+		System.out.println("currentShowPageNoplus=>"+currentShowPageNoplus);
+		System.out.println("currentShowPageNodel=>"+currentShowPageNodel);
 		
 		String url = "/FinalProject/digitalmail.gw";
-		
 		String pageBar = "<div class='emailList_settingsRight'>";
 		
 		pageBar +=	"<div class='icon_set'>";
-		pageBar += "<a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(currentShowPageNodel)+"'>";
+		pageBar += "<a href='"+url+"?searchType="+searchType+"&type="+type+"&searchWord="+searchWord+"&currentShowPageNo="+(currentShowPageNodel)+"'>";
 		pageBar += "<span class='material-icons-outlined icon_img' style='font-size: 24pt;'>chevron_left</span></a>";
-		pageBar += "<span class='icon_text'>이전</span></div>";
+		pageBar += "<span class='icon_text'>이전"	+currentShowPageNodel+"/"+totalPage+"</span></div>";
 		pageBar +=	"<div class='icon_set'>";
-		pageBar += "<a href='"+url+"?searchType="+searchType+"&searchWord="+searchWord+"&currentShowPageNo="+(currentShowPageNoplus)+"'>";
+		pageBar += "<a href='"+url+"?searchType="+searchType+"&type="+type+"&searchWord="+searchWord+"&currentShowPageNo="+(currentShowPageNoplus)+"'>";
 		pageBar += "<span class='material-icons-outlined icon_img' style='font-size: 24pt;'>chevron_right</span></a>";
-		pageBar += "<span class='icon_text'>다음</span></div>";
+		pageBar += "<span class='icon_text'>다음"	+currentShowPageNoplus+"/"+totalPage+"</span></div>";
 		pageBar += "</div>";
 		
 		mav.addObject("pageBar", pageBar);
 		
 		String goBackURL = MyUtil.getCurrentURL(request);
-		
 		mav.addObject("goBackURL", goBackURL); // 검색 결과로 돌아갈 때 사용할것
 		
 	    return mav;
@@ -882,19 +897,65 @@ public class DigitalmailController {
 		return jsonObj.toString();
 	}
     
-	// receipt_favorites update 하기
 	@ResponseBody
 	@PostMapping(value="/email_del.gw", produces="text/plain;charset=UTF-8")
 	public String email_del(HttpServletRequest request) {
 		
 		String receipt_mail_seq_join = request.getParameter("receipt_mail_seq_join");
-    	System.out.println(receipt_mail_seq_join);
+    	String deltable = request.getParameter("deltype");
+    	System.out.println("deltable=>"+deltable);
+    	String seqtype = "";
+    	String delname = "";
+    	int cnt = 0;
+    	if("fk_sender_email".equals(deltable)) {
+    		deltable = "tbl_email";
+    		seqtype = "send_email_seq";
+    		delname = "sender_delete";
+    	}
+    	else if("del".equals(deltable)){
+    		deltable = "tbl_receipt_email";
+    		seqtype = "receipt_mail_seq";
+    		delname = "receipt_delete";
+    		cnt  = 1;
+    	}
+    	else if("senddel".equals(deltable)){
+    		deltable = "tbl_email";
+    		seqtype = "send_email_seq";
+    		delname = "sender_delete";
+    		cnt  = 1;
+    	}
+    	else if("plus".equals(deltable)){
+    		deltable = "tbl_receipt_email";
+    		seqtype = "receipt_mail_seq";
+    		delname = "receipt_delete";
+    		cnt  = -1;
+    	}
+    	else if("senddelplus".equals(deltable)){
+    		deltable = "tbl_email";
+    		seqtype = "send_email_seq";
+    		delname = "sender_delete";
+    		cnt  = -1;
+    	}
+    	else {
+    		
+    		deltable = "tbl_receipt_email";
+    		seqtype = "receipt_mail_seq";
+    		delname = "receipt_delete";
+    	}
+		System.out.println(receipt_mail_seq_join);
+		System.out.println(deltable+seqtype+delname);
 		
     	String[] receipt_mail_seq_arr = receipt_mail_seq_join.split("\\,");
     	
     	Map<String, Object> receipt_mailMap = new HashMap<>();
+    	
+    	receipt_mailMap.put("deltable", deltable);
+    	receipt_mailMap.put("seqtype", seqtype);
     	receipt_mailMap.put("receipt_mail_seq_arr",receipt_mail_seq_arr);
-	    int del = service.email_del(receipt_mailMap);
+    	receipt_mailMap.put("delname",delname);
+    	receipt_mailMap.put("cnt",cnt);
+    	
+    	int del = service.email_del(receipt_mailMap);
 		
 	    boolean delsuc = false;
 	    

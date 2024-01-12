@@ -82,7 +82,11 @@ public interface DigitalmailDAO {
 	EmailVO getseqfav(Map<String, String> paraMap);
 	
 	int onedel(String receipt_mail_seq);
+	
 	int emailstop_del(Map<String, Object> receipt_mailMap);
+	// 토탈 cnt up
+	int email_totalcnt_update(Map<String, String> paraMap);
+
 	
 	
 	

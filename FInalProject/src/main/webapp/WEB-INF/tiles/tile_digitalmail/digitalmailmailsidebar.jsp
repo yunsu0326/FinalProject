@@ -95,6 +95,10 @@
 	            <a class="menu_name" href='<%= ctxPath %>/digitalmail.gw?type=me'>내게쓴메일함</a>
 			</div>
 			<div class="sidebarOption opt">
+				<span class="material-icons-outlined">sell</span>
+				<a class="menu_name" href='<%= ctxPath %>/digitalmail.gw?type=sell'>카테고리메일함</a>
+			</div>
+			<div class="sidebarOption opt">
 				<span class="material-icons-outlined">drafts</span>
 				<a class="menu_name" href='<%= ctxPath %>/digitalmail.gw?type=read'>읽은메일함</a>
 			</div>
@@ -105,6 +109,14 @@
 			<div class="sidebarOption opt">
 				<span class="material-icons-outlined">face</span> 
 	            <a class="menu_name" href='<%= ctxPath %>/digitalmail.gw?type=dept'>우리부서메일함</a>
+			</div>
+			<div class="sidebarOption opt">
+				<span class="material-icons-outlined">delete</span> 
+	            <a class="menu_name" href='<%= ctxPath %>/digitalmail.gw?type=senddel'>보낸메일휴지통</a>
+			</div>
+			<div class="sidebarOption opt">
+				<span class="material-icons-outlined">date_range</span> 
+	            <a class="menu_name" href='<%= ctxPath %>/digitalmail.gw?type=time'>예약예정메일</a>
 			</div>
 	        <div class="sidebarOption reset">
 				<span class="material-icons-outlined">expand_less</span> 

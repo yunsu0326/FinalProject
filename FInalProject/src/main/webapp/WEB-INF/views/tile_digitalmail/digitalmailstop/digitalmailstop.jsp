@@ -195,8 +195,8 @@
 	<!--셀렉션 세팅-->
 	<div class="emailList_sections">
     	<div class="section section_selected show">
-        	<span class="material-icons-outlined" style="font-size:24px;"> inbox </span> 
-			<span class="list_name">임시메일함</span>
+        	<span class="material-icons-outlined" style="font-size:24px;"> note_add </span> 
+			<span class="list_name">임시보관함</span>
 		</div>
 		<div class="section hide">
 			<span class="material-icons-outlined">quiz</span> 

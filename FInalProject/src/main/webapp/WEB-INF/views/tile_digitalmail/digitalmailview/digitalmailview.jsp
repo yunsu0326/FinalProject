@@ -15,13 +15,15 @@
       // 페이지 로딩 후 실행되는 함수
       $(document).ready(function(){
           // 각 섹션에 대한 클릭 이벤트 리스너 등록
+          /*
           $('div.section').click(function() {
 		      alert('섹션 클릭됨!');
               // 기존에 선택된 섹션들에서 'section_selected' 클래스 제거
               $('div.section').removeClass('section_selected');
 			  // 현재 클릭된 섹션에 'section_selected' 클래스 추가
               $(this).addClass('section_selected');
-	      });  
+	      });
+          */          
 	   	  // 글쓰기 버튼
 	   	  $('button#replyWrite').click(function(){
 	   		  alert('확인 요청!');
@@ -314,7 +316,17 @@
                                 					</tr>		
                             						<tr>
                               							<td style="padding:10px 25px;">
-												            <h5 class='text-left' style="margin: 0; font-size: 20px; line-height: 40px; font-weight: 700;">메일 정보</h5>
+												            <h5 class='text-left' style="margin: 0; font-size: 20px; line-height: 40px; font-weight: 700;">메일 정보
+												            <c:if test="${emailVO.category==1}">
+			                									<span class="material-icons-outlined ml-2 plz${emailVO.email_receipt_read_count}" style="color: green; font-size: 12pt;">업무지시</span>
+											                </c:if>
+											                <c:if test="${emailVO.category==2}">
+											                	<span class="material-icons-outlined ml-2 alert${emailVO.email_receipt_read_count}" style="color: red; font-size: 12pt;">긴급</span>
+											                </c:if>
+											                <c:if test="${emailVO.category==3}">
+											                	<span class="material-icons-outlined ml-2 event${emailVO.email_receipt_read_count}" style="color: blue; font-size: 12pt;">공지사항</span>
+											                </c:if>
+												            </h5>
 															<h5 class='text-left' style="font-size: 10px;">시간 : ${requestScope.emailVO.send_time}</h5>
 														<table class='table Emailinfotable table-bordered text-left'>
 															<tr>

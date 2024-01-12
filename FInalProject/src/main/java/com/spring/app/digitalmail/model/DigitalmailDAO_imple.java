@@ -309,6 +309,13 @@ public class DigitalmailDAO_imple implements DigitalmailDAO {
 		return del;
 	}
 
+	@Override
+	public int email_totalcnt_update(Map<String, String> paraMap) {
+		int n = sqlsession.update("digitalmail.email_totalcnt_update", paraMap);
+		return n;
+	}
+
+
 	
 	
 

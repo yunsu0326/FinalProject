@@ -102,6 +102,22 @@ public class DigitalmailService_imple implements DigitalmailService {
 		EmailVO emailVO = dao.SelectEmail(paraMap);
 		System.out.println("이거 떠야되는데 =>"+emailVO.getEmail_subject());
 		EmailVO emailVO2 = dao.getseqfav(paraMap);
+		String cnt = emailVO2.getEmail_receipt_read_count();
+		String receipt_mail_seq = emailVO2.getReceipt_mail_seq();
+		System.out.println(cnt);
+		if (cnt.equals("0")) {
+			System.out.println("이거되나?");
+			int n = dao.email_receipt_read_count_update(receipt_mail_seq);
+			System.out.println("n=>"+n);
+			if(n == 1) {
+				int totalcnt = dao.email_totalcnt_update(paraMap);
+				if(totalcnt == 1) {
+					System.out.println("totalcnt=>"+totalcnt);
+					emailVO = dao.SelectEmail(paraMap);
+					emailVO2 = dao.getseqfav(paraMap);
+				}
+			}
+		} 
 		mav.addObject("emailVO", emailVO);
 		mav.addObject("emailVO2", emailVO2);
 		mav.setViewName("digitalmailview/digitalmailview.tiles_digitalmail");
