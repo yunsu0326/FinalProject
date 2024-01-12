@@ -309,14 +309,43 @@
 	    border-radius: 2px;
 		background-color:#4F6F52;
 	}
+	#afterheart2,
+	#afterheart{
+		width:80px;
+		position:relative;
+		top:50px;
+	}
+	#myImage{
+		width:80px;
+		position:relative:
+		bottom:30px;
+	}
+	#afterbutton2,
+	#beforebutton,
+	#afterbutton{
+		background-color:whitesmoke
+	}
 	
+	#myImage{
+		position:relative;
+		top:40px;
 	
+	}
+
+	#mycontent > div > div > button:nth-child(6){
+		background-color:whitesmoke;
+	}
 	
+	.attached{
+		position:relative;
+		top:70px;
+	}
 	</style>
 
 <script type="text/javascript">
   
 $(document).ready(function(){
+	$("#afterheart2").hide();
 	goViewComment(1); // 페이징 처리한 댓글 읽어오기 
 	
     $("span.move").hover(function(){
@@ -369,6 +398,23 @@ $(document).ready(function(){
             $(this).val("");
         }
     });
+    
+    $("#myImage").on("click", function() {
+       	golike();
+    });
+    
+    $("#afterheart").on("click", function() {
+    	$("#afterheart").hide();
+    	$("#afterheart2").hide();
+    	like_del();
+    });
+    
+    $("#afterheart2").on("click", function() {
+    	$("#afterheart").hide();
+    	$("#afterheart2").hide();
+    	like_del()
+    });
+    
     
     
 });// end of $(document).ready(function(){})-------------
@@ -740,7 +786,49 @@ $(document).ready(function(){
 	
     }// end of function goView2(seq)---------------
   
+    function golike() {
+        $.ajax({
+            url: "<%= ctxPath %>/like_add.gw",
+            type: "post",
+            data: { 
+                "seq": "${requestScope.boardvo.seq}",
+                "fk_email": "${sessionScope.loginuser.email}",
+                "name": "${sessionScope.loginuser.name}"
+            },
+            dataType: "json",
+            success: function (json) {
+				alert("좋아요 성공!");
+				$('#myImage').hide();
+				$("#afterheart2").show();
 
+            },
+            error: function (request, status, error) {
+                alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
+            }
+        });
+    }
+    
+    
+    function like_del() {
+        $.ajax({
+            url: "<%= ctxPath %>/like_del.gw",
+            type: "post",
+            data: { 
+                "fk_email": "${sessionScope.loginuser.email}",
+            },
+            dataType: "json",
+            success: function (json) {
+				alert("좋아요 취소 성공!");
+				$('#myImage').show();
+				$("#afterheart2").hide();
+				$("#afterheart1").hide();
+            },
+            error: function (request, status, error) {
+                alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
+            }
+        });
+    }
+    
 </script>
 
 
@@ -748,7 +836,6 @@ $(document).ready(function(){
 	<div style="margin: auto; padding-left: 3%;">	
 		<c:if test="${not empty requestScope.boardvo}">
 			
-	
 			<div class="text-left" style="margin-top: 80px;">
 		      <div name="subject_name" style="font-weight: bold; font-size: 30px;">${requestScope.boardvo.subject}<br>
 			  	<div style="margin-bottom:20px;"></div>
@@ -766,26 +853,45 @@ $(document).ready(function(){
 			</div>
 				<p>${requestScope.boardvo.content}</p>
 				<div style="height:220px;"></div>
+				
 			</c:if>  		
 				<!-- 첨부파일 -->	
 				<c:if test="${requestScope.boardvo.attachfile == 1}">	
 					<p style='margin-top: 30px; margin-right:15px;' class='text-small text-right'>
-						<span>첨부파일: </span>
+						<span class="attached" >첨부파일: </span>
 							<c:if test="${sessionScope.loginuser != null}">
-							    <a href="<%= ctxPath%>/download.gw?seq=${requestScope.boardvo.seq}">${requestScope.fileboardvo.orgFilename}</a>  
+							    <a class="attached" href="<%= ctxPath%>/download.gw?seq=${requestScope.boardvo.seq}">${requestScope.fileboardvo.orgFilename}</a>  
 							</c:if>
 							<c:if test="${sessionScope.loginuser == null}">
 							    ${requestScope.fileboardvo.orgFilename}
 							</c:if>
 							<c:forEach items="${fileList}" var="file" varStatus="sts">
-							<a href="<%= ctxPath%>/download.gw?fileno=${file.fileno}">${file.orgFilename}</a>
+								<a class="attached" href="<%= ctxPath%>/download.gw?fileno=${file.fileno}">${file.orgFilename}</a>
 							<c:if test="${sts.count != fn:length(fileList) }">,</c:if>
 						    </c:forEach>
 					</p>
 				</c:if> 
 				
+				<button id = "beforebutton">
+					<img id="myImage" src="<%= ctxPath%>/resources/images/좋아요 안한 버튼.png" alt="이미지 설명">
+				</button>
+				<c:forEach items="${likesvo}" var="like" varStatus="sts">
+				    <c:if test="${like.fk_email == sessionScope.loginuser.email}">
+				    	<button id = "afterbutton">
+				    		<img id="afterheart" src="<%= ctxPath%>/resources/images/좋아요 한 버튼.png" alt="이미지 설명">
+				    	</button>
+				        <script>
+				        	document.getElementById('myImage').style.display = 'none';
+				        </script>
+				        
+				    </c:if>
+				</c:forEach>
+				<button id = "afterbutton2">
+					<img id="afterheart2" src="<%= ctxPath%>/resources/images/좋아요 한 버튼.png" alt="이미지 설명">
+				</button>
 				<%-- 버튼 모음 시작 --%>
 				<div style="text-align: right;">
+					
 					<button type="button" id="showList" class="btn btn-secondary btn-sm mr-3"  onclick="javascript:location.href='<%= ctxPath%>${requestScope.goBackURL}'"><i class="fa-solid fa-list"></i>&nbsp;목록 보기</button>
 					<button type="button" id="reply-write" class="btn btn-secondary btn-sm mr-3" onclick="javascript:location.href='<%= ctxPath%>/add.gw?subject=${requestScope.boardvo.subject}&groupno=${requestScope.boardvo.groupno}&fk_seq=${requestScope.boardvo.seq}&depthno=${requestScope.boardvo.depthno}'"><i class="fa-solid fa-pen-fancy"></i>&nbsp;답변글쓰기</button>
 					<c:if test="${(sessionScope.loginuser.email == requestScope.boardvo.fk_email or sessionScope.loginuser.gradelevel == 10)}">
@@ -801,7 +907,7 @@ $(document).ready(function(){
 						<div style="padding: 20px 0; font-size: 16pt; color: red;" >존재하지 않습니다</div> 
 					</c:if>
 				</div>
-									
+				<div>좋아요 갯수 : ${requestScope.liketotalCount}</div> 					
 					<%-- 버튼 모음 끝 --%>
 		
 		    	<hr style="border-top: solid 1.2px black ">

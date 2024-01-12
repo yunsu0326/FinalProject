@@ -39,6 +39,7 @@ import com.spring.app.domain.BoardFileVO;
 import com.spring.app.domain.BoardVO;
 import com.spring.app.saehan.service.SaehanService;
 import com.spring.app.domain.EmployeesVO;
+import com.spring.app.domain.FreeBoard_likesVO;
 import com.spring.app.domain.NoticeboardFileVO;
 import com.spring.app.domain.NoticeboardVO;
 
@@ -332,12 +333,12 @@ public class BoardController {
 
 	// ====== 스마트에디터. 드래그앤드롭을 사용한 다중사진 파일 업로드 시작 ====== //
 	// 스마트에디터, 드래그앤드롭을 사용한 다중사진 파일 업로드
-	@RequestMapping(value="/image/multiplePhotoUpload.gw")
+	@RequestMapping(value="/approval/image/multiplePhotoUpload.gw")
     public void multiplePhotoUpload(HttpServletRequest request, HttpServletResponse response) {    
 	      // WAS의 webapp의 절대경로
 	      HttpSession session = request.getSession();
 	      String root = session.getServletContext().getRealPath("/");
-	      String path = root + "resources"+File.separator+"smart_editer_upload";
+	      String path = root + "resources"+File.separator+"board_photo_upload";
 	      
 	      File dir = new File(path);
 	      
@@ -363,7 +364,7 @@ public class BoardController {
 	         String strURL = "";
 	         strURL += "&bNewLine=true&sFileName="+newFilename; 
 	         strURL += "&sWidth="+width;
-	         strURL += "&sFileURL="+ctxPath+"/resources/smart_editer_upload/"+newFilename;
+	         strURL += "&sFileURL="+ctxPath+"/resources/board_photo_upload/"+newFilename;
 	         
 	         // === 웹브라우저 상에 사진 이미지를 쓰기 === //
 	         PrintWriter out = response.getWriter();
@@ -704,10 +705,12 @@ public class BoardController {
 
 		BoardVO boardvo = service.getView(paraMap);
 		List<BoardFileVO> fileList = service.getView_files(seq);
-
+		List<FreeBoard_likesVO> freeboard_likesvo = service.getView_likes(seq);
+		
 		int n = 0;
 		int n2 = 0;
 		int n3 = 0;
+		int n4 = 0;
 
 		HttpSession session = request.getSession();
 		String root = session.getServletContext().getRealPath("/");
@@ -721,16 +724,22 @@ public class BoardController {
 	        paraMap.put("fileno", fileno1);
 	        n = service.del_attach(paraMap);
 	    }
+	    
+	    for (FreeBoard_likesVO likeVO : freeboard_likesvo) {
+	        String like_no = likeVO.getLike_no(); 
+	        paraMap.put("like_no", like_no);
+	        n2 = service.del_likes(paraMap);
+	    }
 
-	    if (n == 1) {
-	        n2 = service.del(paraMap);
+	    if (n == 1 || n2 == 1) {
+	        n4 = service.del(paraMap);
 	    }
 	
 	    // 파일이 첨부되지 않은 경우에도 n3에 값을 대입한다.
 	    n3 = service.del(paraMap);
 	    // === 파일첨부가 된 글이라면 글 삭제시 먼저 첨부파일을 삭제해주어야 한다. 끝 === //
 
-		if (n3 == 1 || n2 == 1) {
+		if (n3 == 1 || n4 == 1) {
 		    mav.addObject("message", "글 삭제 성공!!");
 		    mav.addObject("loc", request.getContextPath() + "/freeboard.gw");
 		    mav.setViewName("msg");
@@ -806,26 +815,33 @@ public class BoardController {
 			Map<String, String> paraMap = new HashMap<>();	
 			paraMap.put("seq", seq);
 			paraMap.put("login_email", login_email);
-
+			
 			paraMap.put("searchType", searchType);
 			paraMap.put("searchWord", searchWord);
 
 			BoardVO boardvo = null;
 			List<BoardFileVO> fileList = null;
+			List<FreeBoard_likesVO> likesvo = null;
+			int liketotalCount = 0;
 			
 			if ("yes".equals((String) session.getAttribute("readCountPermission"))) {
 				// 글목록보기인 /freeboard.gw 페이지를 클릭한 다음에 특정글을 조회해온 경우이다.
-
+				
 				boardvo = service.getView(paraMap);
 				fileList = service.getView_files(seq);
+				likesvo = service.getView_likes(seq);
+				liketotalCount = service.getliketotalCount(seq);
 				session.removeAttribute("readCountPermission");
 			}
 
 			else {
 				boardvo = service.getView_no_increase_readCount(paraMap);
 				fileList = service.getView_files(seq);
+				likesvo = service.getView_likes(seq);
+				liketotalCount = service.getliketotalCount(seq);
 			}
-	
+			mav.addObject("liketotalCount",liketotalCount);
+			mav.addObject("likesvo",likesvo);
 			mav.addObject("boardvo", boardvo);
 			mav.addObject("paraMap", paraMap);
 			mav.addObject("fileList", fileList);
@@ -1247,7 +1263,51 @@ public class BoardController {
 	} // end of public String CommentTotalPage(HttpServletRequest request) {------------
 	// === 원게시물에 딸린 댓글의 totalPage 수 알아오기(JSON 으로 처리) 끝 === //
 	
-	//////////////////////////////////다시시작//////////////////////////////////////////////
+	//자유게시판 좋아요 추가하기 
+	@ResponseBody
+	@PostMapping("/like_add.gw")
+	public String like_add(FreeBoard_likesVO freeBoard_likesvo,HttpServletRequest request) {
+	    int success = 0;
+	    
+	    String fk_seq = request.getParameter("seq");
+	    String fk_email = request.getParameter("fk_email");
+	    String name = request.getParameter("name");
+	    
+	    freeBoard_likesvo.setFk_email(fk_email);
+	    freeBoard_likesvo.setFk_seq(fk_seq);
+	    freeBoard_likesvo.setName(name);
+
+	    try {
+	        success = service.getlike_add(freeBoard_likesvo);
+	    } catch (Throwable e) {
+	        e.printStackTrace();
+	    }
+
+	    JSONObject jsonObj = new JSONObject();
+	    jsonObj.put("success", success > 0);
+
+	    return jsonObj.toString();
+	}
+	
+	//자유게시판 좋아요한 유저의 좋아요 취소하기 
+	@ResponseBody
+	@PostMapping("/like_del.gw")
+	public String like_del(HttpServletRequest request) {
+	    int success = 0;
+	    String fk_email = request.getParameter("fk_email");
+
+	    try {
+	        success = service.getlike_del(fk_email);
+	    } catch (Throwable e) {
+	        e.printStackTrace();
+	    }
+
+	    JSONObject jsonObj = new JSONObject();
+	    jsonObj.put("success", success > 0);
+
+	    return jsonObj.toString();
+	}
+	//////////////////////////////////공지사항 다시시작//////////////////////////////////////////////
 	
 	// ========== 공지사항 리스트 페이지 만들기 시작 =============
 	@GetMapping("/noticeboard.gw")
@@ -2085,4 +2145,6 @@ public class BoardController {
 		}	
 
 	// ========== 글을 수정하는 페이지에서 첨부파일 삭제 끝 =============//
+		
+	
 }

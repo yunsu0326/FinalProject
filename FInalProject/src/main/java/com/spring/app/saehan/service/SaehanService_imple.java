@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.domain.CommentVO;
+import com.spring.app.domain.FreeBoard_likesVO;
 import com.spring.app.domain.NoticeboardFileVO;
 import com.spring.app.domain.NoticeboardVO;
 import com.spring.app.common.AES256;
@@ -353,8 +354,40 @@ public class SaehanService_imple implements SaehanService{
 		CommentVO commentvo = dao.getComment_One(paraMap); 
 		return commentvo;
 	}
-		
+	
+	//자유게시판 좋아요 더하기
+	@Override
+	public int getlike_add(FreeBoard_likesVO freeBoard_likesvo) {
+		int n = dao.getlike_add(freeBoard_likesvo);
+		return n;
+	}
+	
+	//좋아요한 유저 검색하기 
+	@Override
+	public List<FreeBoard_likesVO> getView_likes(String seq) {
+		return dao.getView_likes(seq);
+	}
+	
+	//게시물에 있는 좋아요 갯수 구하기
+	@Override
+	public int getliketotalCount(String seq) {
+		int n = dao.getliketotalCount(seq);
+		return n;
+	}
 
+	//자유게시판 글 삭제하면서 좋아요 전부 취소하기
+	@Override
+	public int del_likes(Map<String, String> paraMap) {
+		int n = dao.del_likes(paraMap);
+		return n;
+	}
+	
+	//좋아요한 유저의 좋아요 취소하기 
+	@Override
+	public int getlike_del(String fk_email) {
+		int n = dao.getlike_del(fk_email);
+		return n;
+	}
 	////////////////// 공지사항 시작 //////////////////////////////////
 	
 	
@@ -626,6 +659,10 @@ public class SaehanService_imple implements SaehanService{
 		int n = dao.getnoticeboard_filename_add(paraMap);
 		return n;
 	}
+
+
+
+	
 
 
 

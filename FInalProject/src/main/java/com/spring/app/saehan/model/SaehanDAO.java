@@ -7,6 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.domain.CommentVO;
 import com.spring.app.domain.EmployeesVO;
+import com.spring.app.domain.FreeBoard_likesVO;
 import com.spring.app.domain.NoticeboardFileVO;
 import com.spring.app.domain.NoticeboardVO;
 import com.spring.app.domain.BoardFileVO;
@@ -107,9 +108,23 @@ public interface SaehanDAO {
 	// 자유게시판 첨부 파일 유무 확인 
 	String freeboard_update_attachfile(String fk_seq);
 
-	//////////////////////////////////////////////
+
+	//자유게시판 좋아요 더하기
+	int getlike_add(FreeBoard_likesVO freeBoard_likesvo);
 	
+	//좋아요한 유저 검색하기 
+	List<FreeBoard_likesVO> getView_likes(String seq);
 	
+	//좋아요한 갯수 가져오기
+	int getliketotalCount(String seq);
+
+	//자유게시판 글 삭제하면서 좋아요 전부 취소하기
+	int del_likes(Map<String, String> paraMap);
+
+	//자유게시판 좋아요한 유저의 좋아요 취소하기
+	int getlike_del(String fk_email);
+
+	////////////////////여기 까지가 공지사항//////////////////////////
 	
 	//공지사항의 총 게시물 건수(totalCount) 구하기 - 검색이 있을 때와 검색이 없을때 로 나뉜다.
 	int getNoticeTotalCount(Map<String, String> paraMap);
@@ -155,8 +170,8 @@ public interface SaehanDAO {
 	//공지사항에 첨부파일 하나만 가져오기
 	NoticeboardFileVO getNotice_Each_view_files(String fileno);
 
+	//공지사항 수정하기
 	int Noticeboard_edit(NoticeboardVO boardvo);
-
 	
 	// 공지사항 첨부 파일 유무 확인 
 	String noticeboard_update_attachfile(String fk_seq);
@@ -166,6 +181,8 @@ public interface SaehanDAO {
 
 	//공지사항 글 파일유무를 1로 만들기
 	int getnoticeboard_filename_add(Map<String, String> paraMap);
+
+
 
 	
 	
