@@ -40,7 +40,7 @@
     	  
     	  
     	  
-    	  alert("war=>"+war);    	  
+    	  // alert("war=>"+war);    	  
     	  // 시간 검사
           var date = "";
           var time ="";
@@ -145,7 +145,7 @@
 	      */
 	      
 	      let type = "${requestScope.type}";
-	      alert(type);
+	      // alert(type);
 	      if(type=="null"){
 	      	 
 	      }
@@ -253,7 +253,7 @@
       
   	function selectOneEmail(send_email_seq){
 		
-    	alert(send_email_seq);  
+    	//alert(send_email_seq);  
     	// 패스워드 체크
 		$.ajax({
 			url:"<%= ctxPath%>/getEmailPwd.gw",
@@ -424,7 +424,7 @@
 			});
 
 			
-        	alert("uniqueArray=>"+uniqueArray);
+        	//alert("uniqueArray=>"+uniqueArray);
 			
           	console.log("삭제 이메일 번호: " + uniqueArray);
           
@@ -435,7 +435,7 @@
   		
             const bool = confirm("정말로 삭제하시겠습니까?");
          	
-            alert("deltype=>"+deltype);
+            //alert("deltype=>"+deltype);
           	if(bool) {   
                 $.ajax({
               		url:"<%= ctxPath%>/email_del.gw",

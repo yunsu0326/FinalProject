@@ -190,15 +190,15 @@ function showPopup() {
                 <span class="nav-link-text">프로필</span>
             </a>
         </li>
-        <li class="nav-item">
+          <li class="nav-item">
             <a href="<%= ctxPath %>/chart.gw">
-                <i class="fa-solid fa-id-card nav-icon nav-icon"></i>
+                <i class="fa-solid fa-sitemap nav-icon"></i>
                 <span class="nav-link-text">조직도</span>
             </a>
         </li>
         <li class="nav-item">
             <a href="<%= ctxPath %>/digitalmail.gw">
-                <i class="fa-solid fa-id-card nav-icon nav-icon"></i>
+                <i class="fa-solid fa-envelope nav-icon"></i>
                 <span class="nav-link-text">웹메일</span>
             </a>
         </li>

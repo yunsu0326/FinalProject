@@ -33,7 +33,6 @@
 		     frm.method = "get";
 		     frm.submit();
 	   	  
-	   	  
 	   	  });
       });
       

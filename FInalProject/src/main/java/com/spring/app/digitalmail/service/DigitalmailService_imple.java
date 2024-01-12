@@ -32,7 +32,7 @@ public class DigitalmailService_imple implements DigitalmailService {
 	public ModelAndView digitalmail(ModelAndView mav, Map<String, String> paraMap) {
 		List<EmailVO> emailVOList = null;
 		emailVOList = dao.SelectMyEmail_withPaging(paraMap);
-		// System.out.println("이거 떠야되는데 =>"+emailVOList.size());
+		// ////System.out.println("이거 떠야되는데 =>"+emailVOList.size());
 		mav.addObject("emailVOList", emailVOList);
 		mav.setViewName("digitalmail/digitalmail.tiles_digitalmail");	
 		return mav;
@@ -60,19 +60,19 @@ public class DigitalmailService_imple implements DigitalmailService {
 		
 		String email_seq = dao.getEmailseq();
 		
-		// System.out.println(email_seq);
+		// ////System.out.println(email_seq);
 		
 		paraMap.put("email_seq", email_seq);
 		
-		System.out.println("paraMap.get(\"send_emailstop_seq\")=>"+paraMap.get("send_emailstop_seq")); 
+		////System.out.println("paraMap.get(\"send_emailstop_seq\")=>"+paraMap.get("send_emailstop_seq")); 
 		
 		int n = dao.emailsucadd(paraMap);
 		
 		int lastsuc=0;
 		int stopemaildel = 0;
-		System.out.println("이름=>"+paraMap.get("email_seq"));
-		System.out.println("중요도=>"+paraMap.get("impt"));
-		System.out.println("이메일타입=>"+paraMap.get("emailType"));
+		////System.out.println("이름=>"+paraMap.get("email_seq"));
+		////System.out.println("중요도=>"+paraMap.get("impt"));
+		////System.out.println("이메일타입=>"+paraMap.get("emailType"));
 		
 		if(n == 1) {
 			lastsuc = dao.emailspilt(paraMap);
@@ -89,7 +89,7 @@ public class DigitalmailService_imple implements DigitalmailService {
 	public int emailaddstop(Map<String, Object> paraMap) {
 		
 		String send_emailstop_seq = dao.getEmailStopseq();
-		System.out.println("send_emailstop_seq=>"+send_emailstop_seq);
+		////System.out.println("send_emailstop_seq=>"+send_emailstop_seq);
 		paraMap.put("send_emailstop_seq", send_emailstop_seq);
 		int addStop = dao.emailaddStop(paraMap);
 		
@@ -100,19 +100,19 @@ public class DigitalmailService_imple implements DigitalmailService {
 	@Override
 	public ModelAndView digitalmailview(ModelAndView mav, Map<String, String> paraMap) {
 		EmailVO emailVO = dao.SelectEmail(paraMap);
-		System.out.println("이거 떠야되는데 =>"+emailVO.getEmail_subject());
+		////System.out.println("이거 떠야되는데 =>"+emailVO.getEmail_subject());
 		EmailVO emailVO2 = dao.getseqfav(paraMap);
 		String cnt = emailVO2.getEmail_receipt_read_count();
 		String receipt_mail_seq = emailVO2.getReceipt_mail_seq();
-		System.out.println(cnt);
+		////System.out.println(cnt);
 		if (cnt.equals("0")) {
-			System.out.println("이거되나?");
+			////System.out.println("이거되나?");
 			int n = dao.email_receipt_read_count_update(receipt_mail_seq);
-			System.out.println("n=>"+n);
+			////System.out.println("n=>"+n);
 			if(n == 1) {
 				int totalcnt = dao.email_totalcnt_update(paraMap);
 				if(totalcnt == 1) {
-					System.out.println("totalcnt=>"+totalcnt);
+					////System.out.println("totalcnt=>"+totalcnt);
 					emailVO = dao.SelectEmail(paraMap);
 					emailVO2 = dao.getseqfav(paraMap);
 				}
@@ -150,7 +150,7 @@ public class DigitalmailService_imple implements DigitalmailService {
 	public ModelAndView addstopView(ModelAndView mav, Map<String, String> paraMap) {
 		List<EmailStopVO> emailstopList = null;
 		emailstopList = dao.SelectMyStopEmail_withPaging(paraMap);
-		// System.out.println("이거 떠야되는데 =>"+emailVOList.size());
+		// ////System.out.println("이거 떠야되는데 =>"+emailVOList.size());
 		mav.addObject("emailstopList", emailstopList);
 		mav.setViewName("digitalmailstop/digitalmailstop.tiles_digitalmail");	
 		return mav;
@@ -170,14 +170,14 @@ public class DigitalmailService_imple implements DigitalmailService {
 		String reference = emailstopVo.getFk_reference_email();
 		String hidden_reference = emailstopVo.getFk_hidden_reference_email();
 		
-		System.out.println("recipient =>"+recipient);
+		////System.out.println("recipient =>"+recipient);
 		
 		List<String> recipientEmailList = dao.getrecipientEmailList(recipient);
 		mav.addObject("recipientEmailList", recipientEmailList);
 		
-		// System.out.println("recipientEmailList=>" + recipientEmailList.get(0));
+		// ////System.out.println("recipientEmailList=>" + recipientEmailList.get(0));
 		
-		System.out.println("reference=>"+reference);
+		////System.out.println("reference=>"+reference);
 		
 		
 		if(reference != null){
@@ -187,7 +187,7 @@ public class DigitalmailService_imple implements DigitalmailService {
 		else {
 			mav.addObject("referenceEmailList", "null");	
 		}
-		System.out.println("referenceEmailList=>"+referenceEmailList);
+		////System.out.println("referenceEmailList=>"+referenceEmailList);
 				
 		if(hidden_reference != null){
 			hidden_referenceEmailList = dao.gethidden_referenceEmailList(hidden_reference);
@@ -196,14 +196,14 @@ public class DigitalmailService_imple implements DigitalmailService {
 		else {
 			mav.addObject("hidden_referenceEmailList", "null");
 		}
-		System.out.println("hidden_referenceEmailList=>"+hidden_referenceEmailList);
-		// System.out.println("hidden_reference=>"+hidden_reference);
+		////System.out.println("hidden_referenceEmailList=>"+hidden_referenceEmailList);
+		// ////System.out.println("hidden_reference=>"+hidden_reference);
 
 		mav.addObject("EmailList", EmailList);
 		
 		//mav.addObject("referenceEmailList", referenceEmailList);
 		//mav.addObject("hidden_referenceEmailList", hidden_referenceEmailList);
-		// System.out.println("이거 떠야되는데 =>"+emailstopVo.getEmail_subject());
+		// ////System.out.println("이거 떠야되는데 =>"+emailstopVo.getEmail_subject());
 		mav.addObject("emailstopVo", emailstopVo);
 		mav.setViewName("digitalmailstopwrite/digitalmailstopwrite.tiles_digitalmail");
 		return mav;
@@ -269,8 +269,8 @@ public class DigitalmailService_imple implements DigitalmailService {
 			paraMap.put("email_content",emailvo.getEmail_contents());
 			paraMap.put("email_subject",emailvo.getEmail_subject());
 			
-			System.out.println("email_content =>"+emailvo.getEmail_contents());
-			System.out.println("email_subject =>"+emailvo.getEmail_subject());
+			////System.out.println("email_content =>"+emailvo.getEmail_contents());
+			////System.out.println("email_subject =>"+emailvo.getEmail_subject());
 			return paraMap;
 		}
 		@Override

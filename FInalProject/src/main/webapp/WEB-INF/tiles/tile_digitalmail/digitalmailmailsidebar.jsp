@@ -14,7 +14,7 @@
 	  // 클릭 이벤트 리스너 등록
 	  $('div.more').click(function(){
           // 알람 메시지 표시
-   		  alert('더보기 클릭됨!');
+   		  //alert('더보기 클릭됨!');
        	  /*
        	  var menu_html = "<div class='sidebarOption'>"
        	  menu_html += "<span class='material-icons-outlined'>drafts</span>"

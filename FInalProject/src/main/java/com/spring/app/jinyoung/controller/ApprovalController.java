@@ -184,9 +184,9 @@ public class ApprovalController {
 		mav.addObject("internalList", String.valueOf(internalList));
 		mav.addObject("externalList", String.valueOf(externalList));
 		
-//		System.out.println("avoList => " + avoList);
-//		System.out.println("internalList => " + internalList);
-//		System.out.println("externalList => " + externalList);
+//		//System.out.println("avoList => " + avoList);
+//		//System.out.println("internalList => " + internalList);
+//		//System.out.println("externalList => " + externalList);
 		
 		return mav;
 	}
@@ -242,9 +242,9 @@ public class ApprovalController {
 		mav.addObject("internalList", String.valueOf(internalList));
 		mav.addObject("externalList", String.valueOf(externalList));
 		
-//		System.out.println("avoList => " + avoList);
-//		System.out.println("internalList => " + internalList);
-//		System.out.println("externalList => " + externalList);
+//		//System.out.println("avoList => " + avoList);
+//		//System.out.println("internalList => " + internalList);
+//		//System.out.println("externalList => " + externalList);
 		
 		return mav;
 	}
@@ -559,7 +559,7 @@ public class ApprovalController {
 				else {
 					recipientArr = null;
 					
-				//	System.out.println("recipientArr =>" + String.valueOf(recipientArr).toUpperCase());
+				//	//System.out.println("recipientArr =>" + String.valueOf(recipientArr).toUpperCase());
 					
 					break;
 				}
@@ -774,7 +774,7 @@ public class ApprovalController {
 				else {
 					recipientArr = null;
 					
-		//			System.out.println("recipientArr =>" + String.valueOf(recipientArr).toUpperCase());
+		//			//System.out.println("recipientArr =>" + String.valueOf(recipientArr).toUpperCase());
 					
 					break;
 				}
@@ -1045,7 +1045,7 @@ public class ApprovalController {
 			aprvArray.put(json);
 		}
 		
-	//	System.out.println("확인용 aprvArray => " + aprvArray);
+	//	//System.out.println("확인용 aprvArray => " + aprvArray);
 		
 		return aprvArray.toString();
 		
@@ -1083,11 +1083,11 @@ public class ApprovalController {
 	public ModelAndView editApprovalLine(ModelAndView mav, HttpServletRequest request, SavedAprvLineVO sapVO) {
 		
 		// update
-		System.out.println("확인용 getAprv_line_name => " + sapVO.getAprv_line_name());
-		System.out.println("확인용 getAprv_line_no => " + sapVO.getAprv_line_no());
-		System.out.println("확인용 getFk_approval_empno1 => " + sapVO.getFk_approval_empno1());
-		System.out.println("확인용 getFk_approval_empno2 => " + sapVO.getFk_approval_empno2());
-		System.out.println("확인용 getFk_empno => " + sapVO.getFk_empno());
+		//System.out.println("확인용 getAprv_line_name => " + sapVO.getAprv_line_name());
+		//System.out.println("확인용 getAprv_line_no => " + sapVO.getAprv_line_no());
+		//System.out.println("확인용 getFk_approval_empno1 => " + sapVO.getFk_approval_empno1());
+		//System.out.println("확인용 getFk_approval_empno2 => " + sapVO.getFk_approval_empno2());
+		//System.out.println("확인용 getFk_empno => " + sapVO.getFk_empno());
 		int n = service.editApprovalLine(sapVO);
 		
 		if (n == 0) {
