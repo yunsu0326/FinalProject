@@ -34,7 +34,7 @@ public class YosubService_imple implements YosubService {
 		
 		Map<String, Object> paraMap = new HashMap<>();
 		
-		System.out.println("loginuser.getEmployee_id()"+loginuser.getEmployee_id());
+		// System.out.println("loginuser.getEmployee_id()"+loginuser.getEmployee_id());
 		
 		paraMap.put("empno", loginuser.getEmployee_id());
 		paraMap.put("email", loginuser.getEmail());
