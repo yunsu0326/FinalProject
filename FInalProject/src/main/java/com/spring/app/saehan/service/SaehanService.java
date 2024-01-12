@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.domain.CommentVO;
+import com.spring.app.domain.FreeBoard_likesVO;
 import com.spring.app.domain.NoticeboardFileVO;
 import com.spring.app.domain.NoticeboardVO;
 import com.spring.app.domain.BoardFileVO;
@@ -91,9 +92,24 @@ public interface SaehanService {
 	//원래 적혀있던 댓글 내용 불러오기
 	CommentVO getComment_One(Map<String, String> paraMap);
 	
+	//좋아요 추가하기
+	int getlike_add(FreeBoard_likesVO freeBoard_likesvo);
+
+	//좋아요 한 사람 불러오기
+	List<FreeBoard_likesVO> getView_likes(String seq);
+
+	//게시물에 있는 좋아요 갯수 구하기
+	int getliketotalCount(String seq);
+
+	//자유게시판 좋아요 삭제하기
+	int del_likes(Map<String, String> paraMap);
+	
+	//좋아요한 유저의 좋아요 취소하기 
+	int getlike_del(String fk_email);
 	
 	
-	////공지사항/////
+	
+	///공지사항/////
 	
 	//공지사항의 총 게시물 수 가져오기
 	int getNoticeTotalCount(Map<String, String> paraMap);
@@ -145,7 +161,6 @@ public interface SaehanService {
 
 	//공지사항 글 파일유무를 1로 만들기
 	int getnoticeboard_filename_add(Map<String, String> paraMap);
-
 
 
 }

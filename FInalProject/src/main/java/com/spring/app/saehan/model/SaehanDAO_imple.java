@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.domain.CommentVO;
+import com.spring.app.domain.FreeBoard_likesVO;
 import com.spring.app.domain.NoticeboardFileVO;
 import com.spring.app.domain.NoticeboardVO;
 import com.spring.app.domain.BoardFileVO;
@@ -246,6 +247,45 @@ public class SaehanDAO_imple implements SaehanDAO{
 
 	}
 	
+	//자유게시판 좋아요 더하기
+	@Override
+	public int getlike_add(FreeBoard_likesVO freeBoard_likesvo) {
+		int n = sqlsession.insert("saehan.getlike_add", freeBoard_likesvo);
+		return n;	
+	}
+
+	//좋아요한 유저 검색하기 
+	@Override
+	public List<FreeBoard_likesVO> getView_likes(String seq) {
+		return sqlsession.selectList("saehan.getView_likes", seq);
+	}
+
+	//게시물에 있는 좋아요 갯수 구하기
+	@Override
+	public int getliketotalCount(String seq) {
+		int n = sqlsession.selectOne("saehan.getlikeTotalCount", seq);
+		return n;
+	}
+
+	//자유게시판 글 삭제하면서 좋아요 전부 취소하기
+	@Override
+	public int del_likes(Map<String, String> paraMap) {
+		int n = sqlsession.delete("saehan.getlikedelete", paraMap);
+		return n;
+	}
+
+	//좋아요한 유저의 좋아요 취소하기 
+	@Override
+	public int getlike_del(String fk_email) {
+		int n = sqlsession.delete("saehan.getlike_del", fk_email);
+		return n;
+	}
+	
+	
+	///////// 공지사항  끝 ///////////////////
+	
+	
+	
 	//공지사항의 총 게시물 건수(totalCount) 구하기 - 검색이 있을 때와 검색이 없을때 로 나뉜다.
 	@Override
 	public int getNoticeTotalCount(Map<String, String> paraMap) {
@@ -383,6 +423,9 @@ public class SaehanDAO_imple implements SaehanDAO{
 		int n = sqlsession.update("saehan.noticeboard_filename_add", paraMap);
 		return n;
 	}
+
+
+	
 
 
 	

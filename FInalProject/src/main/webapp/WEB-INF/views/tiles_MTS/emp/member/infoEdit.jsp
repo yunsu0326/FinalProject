@@ -171,7 +171,7 @@ $(document).ready(function(){
 	    const selectedJobId = $(this).val();
 	    const selectedOption = $(this).find("option[value='" + selectedJobId + "']");
 	    const fkTeamId = selectedOption.data("fk_team_id");
-	    alert("Selected Job ID: " + selectedJobId + ", FK Team ID: " + fkTeamId);
+	    //alert("Selected Job ID: " + selectedJobId + ", FK Team ID: " + fkTeamId);
 	});
 
 
@@ -179,7 +179,7 @@ $(document).ready(function(){
 	
 	$("select[name='fk_department_id']").change(function () {
 		    const selectedDepartmentId = $(this).val();
-		     alert(selectedDepartmentId);
+		     //alert(selectedDepartmentId);
 		     job_id_select(selectedDepartmentId);
 		});
 	
@@ -193,7 +193,7 @@ function job_id_select(department_id) {
 	        data: { "department_id": department_id },
 	        dataType: "json",
 	        success: function (json) {
-	            console.log(JSON.stringify(json));
+	            //console.log(JSON.stringify(json));
 	            //
 	            
 	            let dropdownOptions = "<option value=''>직책 선택</option>";
@@ -271,7 +271,7 @@ function populateDepartmentsDropdown() {
 		<div style="display: flex; justify-content: center;">
 		
 			<div id="photo">
-				<img src="<%= ctxPath%>/resources/empImg/${requestScope.empOneDetail.photo}" id="previewImg" />
+				<img src="<%= ctxPath%>/resources/images/empImg/${requestScope.empOneDetail.photo}" id="previewImg" />
 			</div>
 				
 			<table id="table1" class="myinfo_tbl">
@@ -292,7 +292,7 @@ function populateDepartmentsDropdown() {
 				
 				<tr>
 					<th>직급</th>
-					<td>${requestScope.empOneDetail.job_name}<input type="text" name="gradelevel"/></td><td><select name="fk_job_id"></select></td>
+					<td>${requestScope.empOneDetail.job_name}<input type="hidden" name="gradelevel"/></td><td><select name="fk_job_id"></select></td>
 					<th>입사일자</th>
 					<td>${requestScope.empOneDetail.hire_date}</td>
 				</tr>

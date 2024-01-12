@@ -51,7 +51,7 @@
       	  <%-- === 잡 기능 보이고 말고 등등 === --%>	
           // 각 섹션에 대한 클릭 이벤트 리스너 등록
           $('div.section').click(function() {
-              alert('섹션 클릭됨!');
+              //alert('섹션 클릭됨!');
               // 기존에 선택된 섹션들에서 'section_selected' 클래스 제거
               $('div.section').removeClass('section_selected');
 			  // 현재 클릭된 섹션에 'section_selected' 클래스 추가
@@ -201,7 +201,7 @@
 			   
 			<%-- === 글내용 유효성 검사(스마트 에디터 사용 할 경우) 시작 === --%>
 			var contentval = $("textarea#contents").val();
-           	alert("contentval=>"+contentval);
+           	// alert("contentval=>"+contentval);
 			//contentval = contentval.replace(/&nbsp;/gi, ""); // 공백을 "" 으로 변환         
             //contentval = contentval.substring(contentval.indexOf("<p>")+3);   // "             </p>"
             //contentval = contentval.substring(0, contentval.indexOf("</p>")); // "             "
@@ -356,7 +356,7 @@
                // contentval = contentval.replace(/&nbsp;/gi, ""); // 공백을 "" 으로 변환         
                // contentval = contentval.substring(contentval.indexOf("<p>")+3);   // "             </p>"
                // contentval = contentval.substring(0, contentval.indexOf("</p>")); // "             "
-               alert("contentval=>"+contentval);
+               // alert("contentval=>"+contentval);
                
                if(contentval.trim().length == 0) {
             	   alert("글내용을 입력하세요!!");

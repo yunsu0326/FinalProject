@@ -29,10 +29,6 @@
 		</choose>
 	</select>
 	
-	
-	
-	
-
 	<!-- 페이징 처리한 글목록 가져오기(검색이 있든지, 검색이 없든지 모두 다 포함 한 것) -->
 	<select id="boardListSearch_withPaging" parameterType="HashMap" resultType="com.spring.app.domain.BoardVO"> 
 		SELECT rno, seq, fk_email, name, subject, readCount, regDate, commentCount
@@ -115,7 +111,7 @@
 	</select>
 	
 	
-	<!-- 글쓰기(파일첨부가 없는 글쓰기) -->
+	<!-- 자유게시판 글쓰기(파일첨부가 없는 글쓰기) -->
 	<insert id="add_nofile" parameterType="com.spring.app.domain.BoardVO">
 		<!-- 원글쓰기인 경우 -->
 	    <if test='fk_seq.equals("")'>
@@ -131,7 +127,7 @@
 	</insert>
 
 
-	<!-- 글쓰기(파일첨부가 있는 글쓰기) -->
+	<!-- 자유게시판 글쓰기(파일첨부가 있는 글쓰기) -->
 	<insert id="addEnd" parameterType="com.spring.app.domain.BoardVO" >
 	    <!-- 원글쓰기인 경우 -->
 	    <if test='fk_seq.equals("")'>
@@ -203,7 +199,18 @@
 	        ) T1
 	    ) T2
 	    WHERE T2.seq = #{seq}
+	
 	</select>
+	
+	<!--  자유게시판 첨부파일 등록하기  -->
+	<insert id="insertFiles" parameterType="java.util.List">
+		insert into TBL_FREEBOARD_FILE (fileno, fk_seq, orgFilename, FileName, FileSize) SELECT TBL_FREEBOARD_FILE_SEQ.NEXTVAL AS fileno, A.* FROM (
+		<foreach collection="list" item="file" separator="union all"> SELECT #{file.fk_seq} AS fk_seq, #{file.orgFilename} AS orgFilename, #{file.fileName} AS FILENAME, #{file.fileSize} AS FILESIZE FROM DUAL </foreach>
+		) A
+	</insert>
+	
+	<!--  자유게시판 글번호 얻어오기   -->
+	<select id="getfreeboardSeq" resultType="String"> select max(seq) from tbl_freeboard </select>
 	
 	<!-- === 자유게시판 수정할떄 첨부파일 삭제하기 === -->
 	<update id="delete_file" parameterType="com.spring.app.domain.BoardVO">
@@ -211,7 +218,6 @@
 
 	    where seq = #{seq}
 	</update>
-	
 	
 	<!-- === 글조회수 1증가 하기 === -->
 	<update id="increase_readCount" parameterType="String">
@@ -224,13 +230,63 @@
 	    delete from tbl_freeboard
 	    where seq = #{seq}
 	</delete>
+	
+	<!-- === 파일테이블 첨부파일 행 삭제하기 === -->
+	<delete id="del_attach" parameterType="HashMap">
+	    delete from TBL_FREEBOARD_FILE
+	    where fileno = #{fileno}
+	</delete>
+	
+	<!-- 자유게시판 파일 하나만 가져오기 = -->
+	<select id="getEach_view_files" parameterType="HashMap" resultType="com.spring.app.domain.BoardFileVO">
+		select fileno, fk_seq, orgFilename, FileName, FileSize
+		from TBL_FREEBOARD_FILE
+		where fileno = #{fileno}
+	</select>
+	
+	<!-- 자유게시판 파일 목록 가져오기 -->
+	<select id="getView_files" parameterType="HashMap" resultType="com.spring.app.domain.BoardFileVO">
+		select fileno, fk_seq, orgFilename, FileName, FileSize
+		from TBL_FREEBOARD_FILE
+		where fk_seq = #{seq}
+	</select>
 
+	<!--  글 수정하기   -->
+	<update id="freeboard_edit" parameterType="com.spring.app.domain.BoardVO"> 
+		update TBL_FREEBOARD set subject = #{subject}, content = #{content} 
+		where seq = #{seq} 
+	</update>
+
+	
+	<!-- 수정에서 첨부파일 하나 삭제하기 -->
+	<delete id="file_delete" parameterType="String">
+	    delete from TBL_FREEBOARD_FILE
+	    where fileno = #{fileno}
+	</delete>
+	
+	
+	<!--  파일 삭제하면 글테이블의 filename 유무 0으로 만들기  (1은 파일 존재 , 0은 파일존재 하지 않음)   -->
+	<update id="freeboard_filename_clear" parameterType="HashMap"> 
+		update TBL_FREEBOARD set attachfile = 0
+		where seq = #{fk_seq} 
+	</update>
+	
+	
+	
+	<!--  파일 삭제하면 글테이블의 filename 유무 1으로 만들기  (1은 파일 존재 , 0은 파일존재 하지 않음)   -->
+	<update id="freeboard_filename_add" parameterType="HashMap"> 
+		update TBL_FREEBOARD set attachfile = 1
+		where seq = #{fk_seq} 
+	</update>
+	
+	
 	<!-- === 원글 글번호(parentSeq)에 해당하는 댓글의 totalPage 수 알아오기 === -->
 	<select id="getCommentTotalPage" parameterType="HashMap" resultType="int">
 		select ceil(count(*)/#{sizePerPage})
 		from tbl_free_comment
 		where parentseq = #{parentSeq}
 	</select> 
+	
 	
 	<!-- === 원게시물에 딸린 댓글들을 페이징 처리해서 조회해오기 === -->
 	<select id="getCommentList_Paging" parameterType="HashMap" resultType="com.spring.app.domain.CommentVO"> 
@@ -330,6 +386,48 @@
 	    where seq = #{parentSeq}
 	</update>
 	
+	
+	<!-- === tbl_freeboard 테이블에 commentCount 컬럼이 1 감소(update)  === -->
+	<insert id="getlike_add" parameterType="com.spring.app.domain.FreeBoard_likesVO">
+	    insert into tbl_freeboard_likes(like_no, fk_email, fk_seq, name)
+	    values(tbl_freeboard_likes_seq.nextval, #{fk_email}, #{fk_seq}, #{name}) 
+	</insert>
+	
+	<!-- 자유게시판 파일 목록 가져오기 -->
+	<select id="getView_likes" parameterType="HashMap" resultType="com.spring.app.domain.FreeBoard_likesVO">
+		select like_no, fk_email, fk_seq, name
+		from tbl_freeboard_likes
+		where fk_seq = #{seq}
+	</select>
+	
+	<!-- 자유게시판 첨부파일 있는지 확인 -->
+	<select id="freeboard_update_attachfile" resultType="String" parameterType="String"> 
+		select count(*)
+		from tbl_freeboard_file
+		where FK_SEQ = #{fk_seq} 
+	</select>
+	
+	<!-- 자유게시판 좋아요 갯수 가져오기 -->
+	<select id="getlikeTotalCount" parameterType="String" resultType="int">
+		select count(*)
+		from tbl_freeboard_likes
+		where fk_seq = #{seq}
+	</select>
+	
+	<!-- ===좋아요 1개 삭제하기 === -->
+	<delete id="getlikedelete" parameterType="HashMap">
+	    delete from tbl_freeboard_likes
+	    where like_no = #{like_no}
+	</delete>
+
+	
+	<!-- ===좋아요한 유저의 좋아요 취소 하기 === -->
+	<delete id="getlike_del" parameterType="String">
+	    delete from tbl_freeboard_likes
+	    where fk_email  = #{fk_email}
+	</delete>
+	<!--  여기까지가 자유게시판 -->
+	
 	<!-- 총 공지사항 게시물 건수(NoticeTotalCount) 구하기 - 검색이 있을 때와 검색이 없을때 로 나뉜다. -->
 	<select id="getNoticeTotalCount" parameterType="HashMap" resultType="int">
 		select count(*)
@@ -393,18 +491,19 @@
 	</select>
 	
 	
-	<!-- 글쓰기(파일첨부가 있는 글쓰기) -->
+	<!-- 공지사항 글쓰기(파일첨부가 있는 글쓰기) -->
 	<insert id="notice_add" parameterType="com.spring.app.domain.NoticeboardVO">
 	    insert into tbl_noticeboard(seq, fk_emp_id, name, subject, content, pw, read_Count, reg_Date, status, attachfile)
 	    values(noticeboard_Seq.nextval, #{fk_emp_id}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, 1) 
 	</insert>
 	
-	<!-- 글쓰기(파일첨부가 없는 글쓰기) -->
+	<!-- 공지사항 글쓰기(파일첨부가 없는 글쓰기) -->
 	<insert id="notice_add_noFile" parameterType="com.spring.app.domain.NoticeboardVO">
 		insert into tbl_noticeboard(seq, fk_emp_id, name, subject, content, pw, read_Count, reg_Date, status, attachfile)
 	    values(noticeboard_Seq.nextval, #{fk_emp_id}, #{name}, #{subject}, #{content}, #{pw}, default, default, default, default) 
 	</insert>
 	
+	<!-- 공지사항 상세페이지 보여주기 -->
 	<select id="getNotice_View" parameterType="HashMap" resultType="com.spring.app.domain.NoticeboardVO">
 		SELECT T2.previousseq, T2.previoussubject
 	     , T2.seq, T2.fk_emp_id, T2.name, T2.subject, T2.content, T2.read_Count, T2.reg_Date, T2.pw
@@ -501,21 +600,10 @@
 		</choose> 
 	</select>
 	
-	<!--  자유게시판 글번호 얻어오기   -->
-	<select id="getfreeboardSeq" resultType="String"> select max(seq) from tbl_freeboard </select>
 
      <!--  공지사항 글번호 얻어오기   -->
 	<select id="getNoitceboardSeq" resultType="String"> select max(seq) from tbl_noticeboard </select>
 
-
-	<!--  자유게시판 첨부파일 등록하기  -->
-	<insert id="insertFiles" parameterType="java.util.List">
-	insert into TBL_FREEBOARD_FILE (fileno, fk_seq, orgFilename, FileName, FileSize) SELECT TBL_FREEBOARD_FILE_SEQ.NEXTVAL AS fileno, A.* FROM (
-	<foreach collection="list" item="file" separator="union all"> SELECT #{file.fk_seq} AS fk_seq, #{file.orgFilename} AS orgFilename, #{file.fileName} AS FILENAME, #{file.fileSize} AS FILESIZE FROM DUAL </foreach>
-	) A
-	</insert>
-	
-	
 	<!--  공지사항 첨부파일 등록하기  -->
 	<insert id="notice_insertFiles" parameterType="java.util.List">
 	insert into TBL_noticeboard_FILE (fileno, fk_seq, orgFilename, FileName, FileSize) SELECT TBL_noticeboard_FILE_SEQ.NEXTVAL AS fileno, A.* FROM (
@@ -523,35 +611,6 @@
 	) A
 	</insert>
 	
-	<!-- 자유게시판 파일 목록 가져오기 -->
-	<select id="getView_files" parameterType="HashMap" resultType="com.spring.app.domain.BoardFileVO">
-		select fileno, fk_seq, orgFilename, FileName, FileSize
-		from TBL_FREEBOARD_FILE
-		where fk_seq = #{seq}
-	</select>
-
-
-
-	<select id="getEach_view_files" parameterType="HashMap" resultType="com.spring.app.domain.BoardFileVO">
-		select fileno, fk_seq, orgFilename, FileName, FileSize
-		from TBL_FREEBOARD_FILE
-		where fileno = #{fileno}
-		
-	</select>
-
-	<!-- === 파일테이블 첨부파일 행 삭제하기 === -->
-	<delete id="del_attach" parameterType="HashMap">
-	    delete from TBL_FREEBOARD_FILE
-	    where fileno = #{fileno}
-	</delete>
-
-
-	<!--  글 수정하기   -->
-	<update id="freeboard_edit" parameterType="com.spring.app.domain.BoardVO"> 
-		update TBL_FREEBOARD set subject = #{subject}, content = #{content} 
-		where seq = #{seq} 
-	</update>
-
 	<!-- === 공지사항 게시판 수정할떄 첨부파일 삭제하기 === -->
 	<delete id="notice_delete_file" parameterType="com.spring.app.domain.NoticeboardFileVO">
 	     delete from TBL_NOTICEBOARD_FILE
@@ -559,25 +618,6 @@
 	</delete>
 	
 	
-	<delete id="file_delete" parameterType="String">
-	    delete from TBL_FREEBOARD_FILE
-	    where fileno = #{fileno}
-	</delete>
-	
-	
-	<!--  파일 삭제하면 글테이블의 filename 유무 0으로 만들기  (1은 파일 존재 , 0은 파일존재 하지 않음)   -->
-	<update id="freeboard_filename_clear" parameterType="HashMap"> 
-		update TBL_FREEBOARD set attachfile = 0
-		where seq = #{fk_seq} 
-	</update>
-	
-	
-	
-	<!--  파일 삭제하면 글테이블의 filename 유무 1으로 만들기  (1은 파일 존재 , 0은 파일존재 하지 않음)   -->
-	<update id="freeboard_filename_add" parameterType="HashMap"> 
-		update TBL_FREEBOARD set attachfile = 1
-		where seq = #{fk_seq} 
-	</update>
 	
 	
 	<!-- 공지사항 파일 목록 가져오기 -->
@@ -586,10 +626,7 @@
 		from TBL_NOTICEBOARD_FILE
 		where fk_seq = #{seq}
 	</select>
-	
-	
-	
-	
+
 	<!-- === 공지사항 파일테이블 첨부파일 행 삭제하기 === -->
 	<delete id="notice_del_attach" parameterType="HashMap">
 	    delete from TBL_NOTICEBOARD_FILE
@@ -603,7 +640,7 @@
 	    where fileno = #{fileno}
 	</delete>
 	
-	
+	<!-- 공지사항의 첨부파일 하나만 가져오기 -->
 	<select id="getNotice_Each_view_files" parameterType="HashMap" resultType="com.spring.app.domain.NoticeboardFileVO">
 		select fileno, fk_seq, orgFilename, FileName, FileSize
 		from TBL_NOTICEBOARD_FILE
@@ -637,13 +674,6 @@
 		where seq = #{fk_seq} 
 	</update>
 	
-	<!-- 자유게시판 첨부파일 있는지 확인 -->
-	<select id="freeboard_update_attachfile" resultType="String" parameterType="String"> 
-		select count(*)
-		from tbl_freeboard_file
-		where FK_SEQ = #{fk_seq} 
-	</select>
 	
-	
-	
+		
 </mapper>

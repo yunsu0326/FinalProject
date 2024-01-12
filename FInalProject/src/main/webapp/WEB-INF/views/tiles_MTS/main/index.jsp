@@ -695,7 +695,7 @@ function getMyWorkTime(myWorkDate){
                   <div >
             
                <div id="photo" class="mx-2">
-                  <img src="<%= ctxPath%>/resources/empImg/${requestScope.loginuser.photo}" style="width: 100px; height: 100px; border-radius: 50%;" />
+                  <img src="<%= ctxPath%>/resources/images/empImg/${requestScope.loginuser.photo}" style="width: 100px; height: 100px; border-radius: 50%;" />
                </div>
                   
                <table id="table1" class="myinfo_tbl">
@@ -711,7 +711,7 @@ function getMyWorkTime(myWorkDate){
                </table>
                
                <ul>
-               <li class="ml-auto mt-2" style="margin-right: 13%;">
+               <li class="ml-auto mt-2 text-center" style="margin-right: 13%;">
                <button id="goToWork" class="btn btn-sm btn-success" style="width: 50px;">출근</button>
                    <button id="leaveWork" class="btn btn-sm btn-danger ml-3" style="width: 50px;">퇴근</button>
                    

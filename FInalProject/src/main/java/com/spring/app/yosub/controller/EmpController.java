@@ -49,10 +49,10 @@ import com.spring.app.yosub.service.*;
 		   //employees 테이블의 근무중 사원 부서명 가져오기
 		   List<Map<String, String>> deptNameList = service.deptNameList();
 
-		   //System.out.println("확인용 : " + deptName);
+		   ////System.out.println("확인용 : " + deptName);
 		   // 확인용 : 개발부, 마케팅부
 		   
-		   //System.out.println("확인용 : " + gender);
+		   ////System.out.println("확인용 : " + gender);
 		   // 확인용 : 남자
 		   
 		   Map<String, String> paraMap = new HashedMap<>();
@@ -67,7 +67,7 @@ import com.spring.app.yosub.service.*;
 		   
 			
 			String goBackURL = MyUtil.getCurrentURL(request);
-		 	// System.out.println("~~~ 확인용(list.action) goBackURL : " + goBackURL);
+		 	// //System.out.println("~~~ 확인용(list.action) goBackURL : " + goBackURL);
 		
 			request.setAttribute("goBackURL", goBackURL);
 					
@@ -84,19 +84,19 @@ import com.spring.app.yosub.service.*;
 	   public String empOneDetail(HttpServletRequest request) {
 			
 		   String employee_id = request.getParameter("employee_id");
-		   System.out.println("employee_id" + employee_id);
+		   ////System.out.println("employee_id" + employee_id);
 		   //employee_id9999
 		   
 		   Map<String, String> empOneDetail = service.oneMemberMap(employee_id);
 		   
 		   String name = empOneDetail.get("name");
-		   System.out.println("name" + name);
+		   ////System.out.println("name" + name);
 		   //name이요섭
 		   
 		   JSONObject jsonObj = new JSONObject();
 		   jsonObj.put("empOneDetail", empOneDetail);
 		   
-		   //System.out.println("jsonObj.toString()" + jsonObj.toString());
+		   ////System.out.println("jsonObj.toString()" + jsonObj.toString());
 		   
 		   return jsonObj.toString();
 		   
@@ -114,10 +114,10 @@ import com.spring.app.yosub.service.*;
 		   //employees 테이블의 근무중 사원 부서명 가져오기
 		   List<Map<String, String>> deptNameList = service.deptNameList();
 		   
-		   //System.out.println("확인용 : " + deptName);
+		   ////System.out.println("확인용 : " + deptName);
 		   // 확인용 : 개발부, 마케팅부
 		   
-		   //System.out.println("확인용 : " + gender);
+		   ////System.out.println("확인용 : " + gender);
 		   // 확인용 : 남자
 		   
 		   
@@ -138,7 +138,7 @@ import com.spring.app.yosub.service.*;
 			 
 			 // 총 게시물 건수(totalCount)
 			 totalCount = service.getTotalCount(paraMap);
-		//	 System.out.println("~~~~ 확인용 totalCount : " + totalCount); 
+		//	 //System.out.println("~~~~ 확인용 totalCount : " + totalCount); 
 
 			 
 			 totalPage = (int) Math.ceil((double)totalCount/sizePerPage); 
@@ -214,7 +214,7 @@ import com.spring.app.yosub.service.*;
 			request.setAttribute("pageBar", pageBar);
 			
 			String goBackURL = MyUtil.getCurrentURL(request);
-		 	// System.out.println("~~~ 확인용(list.action) goBackURL : " + goBackURL);
+		 	// //System.out.println("~~~ 확인용(list.action) goBackURL : " + goBackURL);
 		
 			request.setAttribute("goBackURL", goBackURL);
 			request.setAttribute("empList", empList);
@@ -251,7 +251,7 @@ import com.spring.app.yosub.service.*;
 					JsonObject jsonObj = new JsonObject(); // {}
 					jsonObj.addProperty("manager_id", map.get("employee_id"));
 					jsonObj.addProperty("name", map.get("name"));
-					System.out.println(map.get("name"));
+					////System.out.println(map.get("name"));
 					jsonArr.add(jsonObj); 
 				}// end of for-------------------------
 			}
@@ -308,9 +308,9 @@ import com.spring.app.yosub.service.*;
 	     public String department_add(@RequestParam(defaultValue = "") String department_id,
                                       @RequestParam(defaultValue = "") String department_name,
                                       @RequestParam(defaultValue = "") String manager_id) {
-		 	System.out.println("department_id"+department_id);
-		 	System.out.println("department_name"+department_name);
-		 	System.out.println("manager_id"+manager_id);
+		 	////System.out.println("department_id"+department_id);
+		 	////System.out.println("department_name"+department_name);
+		 	////System.out.println("manager_id"+manager_id);
 		 		
 	 		try {
 	 			return service.department_add(department_id, department_name, manager_id);
@@ -330,7 +330,7 @@ import com.spring.app.yosub.service.*;
 					JsonObject jsonObj = new JsonObject(); // {}
 					jsonObj.addProperty("manager_id", map.get("employee_id"));
 					jsonObj.addProperty("name", map.get("name"));
-					System.out.println(map.get("name"));
+					////System.out.println(map.get("name"));
 					jsonArr.add(jsonObj); 
 				}// end of for-------------------------
 			}
@@ -344,7 +344,7 @@ import com.spring.app.yosub.service.*;
 	 	    
 	 		int team_id_max_by_department = service.team_id_max_by_department(department_id);
 
-	 	    // System.out.println( "team_id_max_by_department" + team_id_max_by_department);
+	 	    // //System.out.println( "team_id_max_by_department" + team_id_max_by_department);
 	 	    JsonObject jsonObj = new JsonObject();
 	 	    jsonObj.addProperty("team_id_max_by_department", team_id_max_by_department);
 			return new Gson().toJson(jsonObj);
@@ -356,7 +356,7 @@ import com.spring.app.yosub.service.*;
 	 	@GetMapping(value = "/emp/team_id_select_by_department.gw", produces = "text/plain;charset=UTF-8")
 	 	public String team_id_select_by_department(@RequestParam(defaultValue = "") String department_id) {
 	 	    
-	 		System.out.println(department_id);
+	 		////System.out.println(department_id);
 	 		List<Map<String, String>> team_id_select_by_department = service.team_id_select_by_department(department_id);
 
 	 		JsonArray jsonArr = new JsonArray(); // []
@@ -382,10 +382,10 @@ import com.spring.app.yosub.service.*;
                                   @RequestParam(defaultValue = "") String team_name,
                                   @RequestParam(defaultValue = "") String t_manager_id) {
 		 	
-	 		System.out.println("department_id"+department_id);
-		 	System.out.println("team_id"+team_id);
-		 	System.out.println("team_name"+team_name);
-		 	System.out.println("t_manager_id"+t_manager_id);
+	 		////System.out.println("department_id"+department_id);
+		 	////System.out.println("team_id"+team_id);
+		 	////System.out.println("team_name"+team_name);
+		 	////System.out.println("t_manager_id"+t_manager_id);
 			
 
 		   Map<String, String> paraMap = new HashedMap<>();
@@ -406,7 +406,7 @@ import com.spring.app.yosub.service.*;
 	 	@ResponseBody
 	 	@GetMapping(value = "/emp/get_department_info.gw", produces = "text/plain;charset=UTF-8")
 	 	public String get_department_info(@RequestParam(defaultValue = "") String department_id) {
-	 		// System.out.println("department_id" + department_id);
+	 		// //System.out.println("department_id" + department_id);
 	 		
 	 		List<Map<String, String>> get_department_info = service.get_department_info(department_id);
 			JsonArray jsonArr = new JsonArray(); // []
@@ -427,7 +427,7 @@ import com.spring.app.yosub.service.*;
 	 	@ResponseBody
 	 	@GetMapping(value = "/emp/get_team_info.gw", produces = "text/plain;charset=UTF-8")
 	 	public String get_team_info(@RequestParam(defaultValue = "") String team_id) {
-	 		 System.out.println("team_id" + team_id);
+	 		 //System.out.println("team_id" + team_id);
 	 		
 	 		List<Map<String, String>> get_team_info = service.get_team_info(team_id);
 			JsonArray jsonArr = new JsonArray(); // []
@@ -479,13 +479,13 @@ import com.spring.app.yosub.service.*;
 			public ModelAndView requiredLogin_myinfoEdit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 				
 					String employee_id = request.getParameter("employee_id");
-				   System.out.println("employee_id" + employee_id);
+				   ////System.out.println("employee_id" + employee_id);
 				   //employee_id9999
 				   
 				   Map<String, String> empOneDetail = service.oneMemberMap(employee_id);
 				   
 				   String name = empOneDetail.get("name");
-				   System.out.println("name" + name);
+				   ////System.out.println("name" + name);
 				   //name이요섭
 				   
 				   
@@ -502,7 +502,7 @@ import com.spring.app.yosub.service.*;
 		 	@GetMapping(value = "/emp/job_id_select_by_department.gw", produces = "text/plain;charset=UTF-8")
 		 	public String job_id_select_by_department(@RequestParam(defaultValue = "") String department_id) {
 		 	    
-		 		//System.out.println(department_id);
+		 		//////System.out.println(department_id);
 		 		
 		 		List<Map<String, String>> job_id_select_by_department = service.job_id_select_by_department(department_id);
 
@@ -525,15 +525,15 @@ import com.spring.app.yosub.service.*;
 			@PostMapping("/emp/infoEditEnd.gw")
 			public ModelAndView requiredLogin_myinfoEditEnd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav, EmployeesVO evo, MultipartHttpServletRequest mrequest) {
 			
-				System.out.println(request.getParameter("fk_department_id"));
-				System.out.println(request.getParameter("fk_team_id"));
-				System.out.println(request.getParameter("fk_job_id"));
-				System.out.println(request.getParameter("employee_id"));
+				//System.out.println(request.getParameter("fk_department_id"));
+				//System.out.println(request.getParameter("fk_team_id"));
+				//System.out.println(request.getParameter("fk_job_id"));
+				//System.out.println(request.getParameter("employee_id"));
 
 				
 				int n = service.infoEditEnd(evo);
 					
-					System.out.println("n" + n);
+					//System.out.println("n" + n);
 				
 				if(n==1) {
 					mav.addObject("message","부서발령 성공!!");

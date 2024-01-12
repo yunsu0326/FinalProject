@@ -55,9 +55,9 @@ public class DigitalmailController {
     	if(type == null) {
     		type = "null";
     	}
-    	System.out.println("type=>"+type);
+    	//System.out.println("type=>"+type);
     	
-    	// System.out.println("new 프린트"+searchType+searchWord); // 검색바
+    	// //System.out.println("new 프린트"+searchType+searchWord); // 검색바
 		
 		String str_currentShowPageNo = request.getParameter("currentShowPageNo");
 				
@@ -76,7 +76,7 @@ public class DigitalmailController {
 		String email = loginuser.getEmail();
 		String fk_team_id = loginuser.getFk_team_id();
 		String fk_dept_id = loginuser.getFk_department_id();
-		// System.out.println("email=>"+email);
+		// //System.out.println("email=>"+email);
 		
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("searchType", searchType);
@@ -96,7 +96,7 @@ public class DigitalmailController {
 		
 		totalCount = service.getTotalCount(paraMap);
 		
-		System.out.println("totalCount=>"+totalCount);
+		//System.out.println("totalCount=>"+totalCount);
 		
 		totalPage = (int) Math.ceil((double)totalCount/sizePerPage); 
     	
@@ -139,8 +139,8 @@ public class DigitalmailController {
 		 paraMap.put("startRno", String.valueOf(startRno));
 		 paraMap.put("endRno", String.valueOf(endRno));
 		 
-		 System.out.println("시작=>"+paraMap.get("startRno"));
-		 System.out.println("끝=>"+paraMap.get("endRno"));
+		 //System.out.println("시작=>"+paraMap.get("startRno"));
+		 //System.out.println("끝=>"+paraMap.get("endRno"));
 		 
 		 mav.addObject("type",type);
 		 
@@ -166,8 +166,8 @@ public class DigitalmailController {
 		int pageNo = ((currentShowPageNo - 1)/blockSize) * blockSize + 1;
 		// === 페이지바 만들기 (만들거면 해야되는데 굳이...?)  === //
 		
-		System.out.println("currentShowPageNoplus=>"+currentShowPageNoplus);
-		System.out.println("currentShowPageNodel=>"+currentShowPageNodel);
+		//System.out.println("currentShowPageNoplus=>"+currentShowPageNoplus);
+		//System.out.println("currentShowPageNodel=>"+currentShowPageNodel);
 		
 		String url = "/FinalProject/digitalmail.gw";
 		String pageBar = "<div class='emailList_settingsRight'>";
@@ -200,10 +200,10 @@ public class DigitalmailController {
  		String searchType = request.getParameter("searchType");
  		String searchWord = request.getParameter("searchWord");
  		String myEmail = request.getParameter("myEmail");
- 		System.out.println("searchType=>"+searchType);
- 		System.out.println("searchType=>"+searchWord);
+ 		//System.out.println("searchType=>"+searchType);
+ 		//System.out.println("searchType=>"+searchWord);
  		
- 	    System.out.println("myEmail=>"+myEmail);
+ 	    //System.out.println("myEmail=>"+myEmail);
  		
  		Map<String, String> paraMap = new HashMap<>();
  		paraMap.put("searchType", searchType);
@@ -238,7 +238,7 @@ public class DigitalmailController {
     	String senderEmail = null;
     	//String subject = request.getParameter("subject");
     	
-    	//System.out.println("sender + send_email_seq" + sender + send_email_seq);
+    	////System.out.println("sender + send_email_seq" + sender + send_email_seq);
     	
     	
     	if(sender == null) {
@@ -269,7 +269,7 @@ public class DigitalmailController {
     public String addMail(MultipartHttpServletRequest mrequest) {
     	List<MultipartFile> fileList = mrequest.getFiles("fileList");
     	String send_emailstop_seq = mrequest.getParameter("send_emailstop_seq");
-    	System.out.println("send_emailstop_seq=>"+send_emailstop_seq);
+    	//System.out.println("send_emailstop_seq=>"+send_emailstop_seq);
     	
 		StringBuilder originalFilenameB =new StringBuilder();
 		StringBuilder newFileNameB =new StringBuilder();
@@ -290,9 +290,9 @@ public class DigitalmailController {
 				HttpSession session = mrequest.getSession();
 				// String root = session.getServletContext().getRealPath("/");
 				String root = "C:\\git\\FinalProject\\FInalProject\\src\\main\\webapp";
-				// System.out.println("~~~~ 확인용 webapp 의 절대경로 => " + root);
+				// //System.out.println("~~~~ 확인용 webapp 의 절대경로 => " + root);
 				String path = root+"\\resources\\file\\email"+ File.separator;
-				System.out.println("~~~~ 확인용 path => " + path);		
+				//System.out.println("~~~~ 확인용 path => " + path);		
 				
 				byte[] bytes = null;
 				// 첨부파일의 내용물을 담는 것	
@@ -314,17 +314,17 @@ public class DigitalmailController {
 			newFileName = newFileNameB.toString();
 			fileSize = fileSizeB.toString();
 			
-			System.out.println("originalFilename=>"+originalFilename+"newFileName=>"+newFileName+"fileSize=>"+fileSize);
+			//System.out.println("originalFilename=>"+originalFilename+"newFileName=>"+newFileName+"fileSize=>"+fileSize);
 			
 			originalFilename = 	SWUtil.removeComma(originalFilename);
 			newFileName = 	SWUtil.removeComma(newFileName);
 			fileSize = 	SWUtil.removeComma(fileSize);
 			
-			System.out.println("originalFilename=>"+originalFilename+"newFileName=>"+newFileName+"fileSize=>"+fileSize);
+			//System.out.println("originalFilename=>"+originalFilename+"newFileName=>"+newFileName+"fileSize=>"+fileSize);
 		
 		}// 파일 업로드 끝
     	
-		System.out.println("업로드 완료");
+		//System.out.println("업로드 완료");
 		
 		if(fileUploadCK) {// 업로드 잘 됐으면 메일 보내기 실행
 			
@@ -383,12 +383,12 @@ public class DigitalmailController {
 			}
 			
 			paraMap.put("originalFilename",originalFilename);
-			System.out.println("originalFilename"+paraMap.get("originalFilename"));
+			//System.out.println("originalFilename"+paraMap.get("originalFilename"));
 			paraMap.put("newFileName",newFileName);
-			System.out.println("newFileName"+paraMap.get("newFileName"));
+			//System.out.println("newFileName"+paraMap.get("newFileName"));
 			paraMap.put("fileSize",mrequest.getParameter("fileSize"));
-			System.out.println("fileSize"+paraMap.get("fileSize"));
-			System.out.println("파일사이즈 어떻게 뜨냐? =>"+paraMap.get("fileSize"));
+			//System.out.println("fileSize"+paraMap.get("fileSize"));
+			//System.out.println("파일사이즈 어떻게 뜨냐? =>"+paraMap.get("fileSize"));
 			
 			if(mrequest.getParameter("password") != null) {
 				String email_pwd = mrequest.getParameter("password");
@@ -403,7 +403,7 @@ public class DigitalmailController {
 			lastsuc = service.emailsucadd(paraMap);
 			
 			
-			System.out.println("emailsucadd=>"+lastsuc);
+			//System.out.println("emailsucadd=>"+lastsuc);
 		}
 		else {// 업로드중 문제 발생
 
@@ -426,10 +426,10 @@ public class DigitalmailController {
     	String categoryno = mrequest.getParameter("categoryno");
     	fileSize = mrequest.getParameter("fileSize");
     	
-    	System.out.println("categoryno=>"+categoryno+"individualval=>"+individualval+"impt=>"+impt+"receieve_Email=>"+receieve_Email+"receieveplus_Email=>"+receieveplus_Email+"receievehidden_Email=>"+receievehidden_Email);
+    	//System.out.println("categoryno=>"+categoryno+"individualval=>"+individualval+"impt=>"+impt+"receieve_Email=>"+receieve_Email+"receieveplus_Email=>"+receieveplus_Email+"receievehidden_Email=>"+receievehidden_Email);
     	
 	
-		 System.out.println("fileList=>"+fileList+"contents=>"+contents+"subject=>"+
+		 //System.out.println("fileList=>"+fileList+"contents=>"+contents+"subject=>"+
 		 subject+"receieveEmailList=>"+receieve_Email + "date=>" + date + "rehour=>" +
 		 rehour + "remi=>" + remi + "send_time=>" + send_time + "password =>"+
 		 password + "fileSize=>" + fileSize);
@@ -499,7 +499,7 @@ public class DigitalmailController {
 		addStop = service.emailaddstop(paraMap);
 			
 			
-		System.out.println("addStop=>"+addStop);
+		//System.out.println("addStop=>"+addStop);
 		    	
     	jsonObj.put("addStop", addStop);
 
@@ -512,7 +512,7 @@ public class DigitalmailController {
     @PostMapping(value="/addMailupdate.gw", produces="text/plain;charset=UTF-8")
     public String addMailupdate(HttpServletRequest request) {
     	String upsend_emailstop_seq = request.getParameter("upsend_emailstop_seq");
-    	System.out.println("upsend_emailstop_seq=>"+upsend_emailstop_seq);
+    	//System.out.println("upsend_emailstop_seq=>"+upsend_emailstop_seq);
     	
     	int addupdate = 0;
     	
@@ -564,12 +564,12 @@ public class DigitalmailController {
 		
 		paraMap.put("upsend_emailstop_seq",upsend_emailstop_seq);
 		
-		System.out.println("upsend_emailstop_seq=>"+paraMap.get("upsend_emailstop_seq"));
+		//System.out.println("upsend_emailstop_seq=>"+paraMap.get("upsend_emailstop_seq"));
 		
 		
 		addupdate = service.emailaddupdate(paraMap);
 		
-		System.out.println("addupdate=>"+addupdate);
+		//System.out.println("addupdate=>"+addupdate);
 		
     	jsonObj.put("addupdate", addupdate);
 
@@ -589,9 +589,9 @@ public class DigitalmailController {
 		
 		JSONObject jsonObj = new JSONObject();
 		String send_email_seq = request.getParameter("send_email_seq");
-		// System.out.println("send_email_seq=>"+send_email_seq);
+		// //System.out.println("send_email_seq=>"+send_email_seq);
 		String pwd = service.getEmailPwd(send_email_seq);
-		// System.out.println("pwd=>"+pwd);
+		// //System.out.println("pwd=>"+pwd);
 		jsonObj.put("pwd", pwd);
 		return jsonObj.toString();
 		
@@ -605,7 +605,7 @@ public class DigitalmailController {
     	HttpSession session = request.getSession();
 		
     	EmployeesVO loginuser = (EmployeesVO)session.getAttribute("loginuser");
-    	// System.out.println(loginuser.getEmail());
+    	// //System.out.println(loginuser.getEmail());
 		Map<String, String> paraMap = new HashMap<>();
 		
 		paraMap.put("send_email_seq", send_email_seq);
@@ -622,9 +622,9 @@ public class DigitalmailController {
 	public void downloadfile(HttpServletRequest request, HttpServletResponse response) {
 		
 		String send_email_seq = request.getParameter("send_email_seq");
-		System.out.println(send_email_seq);
+		//System.out.println(send_email_seq);
 		int idx = Integer.parseInt(request.getParameter("index"));
-		System.out.println(send_email_seq+idx);
+		//System.out.println(send_email_seq+idx);
 		// 첨부파일이 있는 글번호 
 		/*
 		     첨부파일이 있는 글번호를 가지고
@@ -662,16 +662,16 @@ public class DigitalmailController {
 		    	 // 정상적으로 다운로드를 할 경우 
 		    	 String orgFilename = emailVO.getFilename_split().get(idx);
 		    	 
-		    	 System.out.println("orgFilename+>"+orgFilename);
+		    	 //System.out.println("orgFilename+>"+orgFilename);
 		    	 
 			     String fileName  = emailVO.getOrgfilename_split().get(idx);
 			     
-			     System.out.println("fileName+>"+fileName);
+			     //System.out.println("fileName+>"+fileName);
 			     
 				 // String path = "C:\\NCS\\workspace_spring_framework\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\GW\\resources\\emailfiles";
 				 String path = "C:\\git\\FinalProject\\FInalProject\\src\\main\\webapp\\resources\\file\\email";
 				 
-				 System.out.println("path=>"+path);
+				 //System.out.println("path=>"+path);
 				 
 				 // **** file 다운로드 하기 **** //
 				 boolean flag = false;  // file 다운로드 성공, 실패를 알려주는 용도
@@ -716,7 +716,7 @@ public class DigitalmailController {
 		EmployeesVO loginuser = (EmployeesVO)session.getAttribute("loginuser");
 		String email = loginuser.getEmail();
 		
-		// System.out.println("email=>"+email);
+		// //System.out.println("email=>"+email);
 		
 		Map<String, String> paraMap = new HashMap<>();
 		paraMap.put("email", email);
@@ -730,7 +730,7 @@ public class DigitalmailController {
     	
 		addstopCount = service.addstopCount(paraMap);
 		
-		System.out.println("totalCount=>"+addstopCount);
+		//System.out.println("totalCount=>"+addstopCount);
 		
 		totalPage = (int) Math.ceil((double)addstopCount/sizePerPage); 
     	
@@ -755,8 +755,8 @@ public class DigitalmailController {
 		 paraMap.put("startRno", String.valueOf(startRno));
 		 paraMap.put("endRno", String.valueOf(endRno));
 		 
-		 System.out.println("시작=>"+paraMap.get("startRno"));
-		 System.out.println("끝=>"+paraMap.get("endRno"));
+		 //System.out.println("시작=>"+paraMap.get("startRno"));
+		 //System.out.println("끝=>"+paraMap.get("endRno"));
 		 
 		 mav= service.addstopView(mav,paraMap);
 		 
@@ -816,7 +816,7 @@ public class DigitalmailController {
 		
     	EmployeesVO loginuser = (EmployeesVO)session.getAttribute("loginuser");
     	
-    	// System.out.println(loginuser.getEmail());
+    	// //System.out.println(loginuser.getEmail());
 		Map<String, String> paraMap = new HashMap<>();
 		
 		paraMap.put("send_emailstop_seq", send_emailstop_seq);
@@ -841,7 +841,7 @@ public class DigitalmailController {
 		
 		paraMap.put("receipt_mail_seq", receipt_mail_seq);
 		paraMap.put("receipt_favorites", receipt_favorites);
-		//System.out.println(paraMap);
+		////System.out.println(paraMap);
 		
 		int n = service.receipt_favorites_update(paraMap);
 		
@@ -885,7 +885,7 @@ public class DigitalmailController {
 		
 		paraMap.put("receipt_mail_seq", receipt_mail_seq);
 		paraMap.put("receipt_important", receipt_important);
-		//System.out.println(paraMap);
+		////System.out.println(paraMap);
 		
 		int n = service.receipt_important_update(paraMap);
 		
@@ -903,7 +903,7 @@ public class DigitalmailController {
 		
 		String receipt_mail_seq_join = request.getParameter("receipt_mail_seq_join");
     	String deltable = request.getParameter("deltype");
-    	System.out.println("deltable=>"+deltable);
+    	//System.out.println("deltable=>"+deltable);
     	String seqtype = "";
     	String delname = "";
     	int cnt = 0;
@@ -942,8 +942,8 @@ public class DigitalmailController {
     		seqtype = "receipt_mail_seq";
     		delname = "receipt_delete";
     	}
-		System.out.println(receipt_mail_seq_join);
-		System.out.println(deltable+seqtype+delname);
+		//System.out.println(receipt_mail_seq_join);
+		//System.out.println(deltable+seqtype+delname);
 		
     	String[] receipt_mail_seq_arr = receipt_mail_seq_join.split("\\,");
     	
@@ -970,7 +970,7 @@ public class DigitalmailController {
 		jsonObj.put("delsuc", delsuc);      
     	String json = jsonObj.toString();       
     	
-    	System.out.println(json);
+    	//System.out.println(json);
     	
     	return jsonObj.toString();
 		
@@ -982,7 +982,7 @@ public class DigitalmailController {
 	public String emailstop_del(HttpServletRequest request) {
 		
 		String receipt_mail_seq_join = request.getParameter("send_emailstop_seq");
-    	System.out.println(receipt_mail_seq_join);
+    	//System.out.println(receipt_mail_seq_join);
 		
     	String[] receipt_mail_seq_arr = receipt_mail_seq_join.split("\\,");
     	
@@ -1003,7 +1003,7 @@ public class DigitalmailController {
 		jsonObj.put("delsuc", delsuc);      
     	String json = jsonObj.toString();       
     	
-    	System.out.println(json);
+    	//System.out.println(json);
     	
     	return jsonObj.toString();
 		
@@ -1015,7 +1015,7 @@ public class DigitalmailController {
 	public String total_email_receipt_read_count_update(HttpServletRequest request) {
 		
 		String receipt_mail_seq_join = request.getParameter("receipt_mail_seq_join");
-    	System.out.println(receipt_mail_seq_join);
+    	//System.out.println(receipt_mail_seq_join);
     	String readcnt = request.getParameter("readcnt");
     	String[] receipt_mail_seq_arr = receipt_mail_seq_join.split("\\,");
     	
@@ -1037,7 +1037,7 @@ public class DigitalmailController {
 		jsonObj.put("readCountcnt", readCountcnt);      
     	String json = jsonObj.toString();       
     	
-    	System.out.println(json);
+    	//System.out.println(json);
     	
     	return jsonObj.toString();
 		
@@ -1055,7 +1055,7 @@ public class DigitalmailController {
 
 		int n = service.onedel(receipt_mail_seq);
 		
-		System.out.println("onedel n =>"+n);
+		//System.out.println("onedel n =>"+n);
 		
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("n", n);

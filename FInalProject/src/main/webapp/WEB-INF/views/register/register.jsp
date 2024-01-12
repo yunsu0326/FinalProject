@@ -538,7 +538,7 @@ function goRegister() {
 				<span class="title s_display">주민번호</span>
 				<div class="div2 div2_display">
 					<span class="icon"><i class="fa-regular fa-calendar"></i></span>
-					<input type="text" name="jubun" class="requiredInfo" placeholder="앞자리 6자리와 뒷자리 1자리만 입력해주세요."  />
+					<input type="text" name="jubun" class="requiredInfo" maxlength="7" placeholder="앞자리 6자리와 뒷자리 1자리만 입력해주세요."  />
 					<span class="clear"><i class="fa-solid fa-circle-xmark" style="color: #6f6d6d;"></i></span>
 				</div>
 				<span class="error">올바른 주민번호를 입력해 주세요.</span>

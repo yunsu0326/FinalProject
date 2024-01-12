@@ -17,7 +17,7 @@
 	      
 	      // 각 섹션에 대한 클릭 이벤트 리스너 등록
 	      $('div.section').click(function() {
-		      alert('섹션 클릭됨!');
+		      // alert('섹션 클릭됨!');
 	      	  // 기존에 선택된 섹션들에서 'section_selected' 클래스 제거
 	          $('div.section').removeClass('section_selected');
 	          // 현재 클릭된 섹션에 'section_selected' 클래스 추가
@@ -37,7 +37,7 @@
 		  
 	      // 각 섹션에 대한 클릭 이벤트 리스너 등록
 	  	  $('div.opt').click(function() {
-	          alert('섹션 클릭됨!');
+	          // alert('섹션 클릭됨!');
 	          $('div.hide').show();
 	   	      // 기존에 선택된 섹션들에서 'section_selected' 클래스 제거
 	       	  $('div.section').removeClass('section_selected');
@@ -80,7 +80,7 @@
       
   	function selectStoprEmail(send_emailstop_seq){
 		
-    	alert(send_emailstop_seq);  
+    	// alert(send_emailstop_seq);  
     	location.href="<%=ctxPath%>/digitalmailstopwrite.gw?send_emailstop_seq="+send_emailstop_seq;
 	}
 	

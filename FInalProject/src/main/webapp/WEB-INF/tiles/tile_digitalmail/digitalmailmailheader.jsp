@@ -34,7 +34,7 @@
 
       $("input:text[name='searchWord']").bind("keyup", function(e){
 		  if(e.keyCode == 13){ // 엔터를 했을 경우 
-			  alert("가보자고");
+			  //alert("가보자고");
 			  goSearch();
 		  }  
 	  });
@@ -176,8 +176,8 @@
 		</div>
 
 		<div class="icon_set mr-3">
-			<span class="material-icons-outlined icon_img" style="font-size: 28pt;">logout</span>
-			<span class="icon_text">로그아웃</span>
+			<a href="<%= ctxPath%>/index.gw"><span class="material-icons-outlined icon_img" style="font-size: 28pt;">logout</span>
+			<span class="icon_text">로그아웃</span></a>
 		</div>
 
 	</div>

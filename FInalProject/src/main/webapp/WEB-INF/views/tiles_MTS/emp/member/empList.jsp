@@ -196,7 +196,7 @@ $(document).ready(function(){
 				
 				        // 모달에 데이터 삽입
    				        
-       					$("#modal_photo").html("<img src='<%= ctxPath %>/resources/empImg/" + empData.photo + "'>");
+       					$("#modal_photo").html("<img src='<%= ctxPath %>/resources/images/empImg/" + empData.photo + "'>");
        					$("#modal_employee_id").text(empData.employee_id);
 				        $("#modal_department_name").text(empData.department_name);
 				        $("#modal_job_name").text(empData.job_name);
@@ -396,7 +396,7 @@ function btnUpdate() {
 <div style="display: flex; justify-content: center;">
 		
 		<div id="photo">
-			<img src="<%= ctxPath%>/resources/empImg/${requestScope.loginuser.photo}" />
+			<img src="<%= ctxPath%>/resources/images/empImg/${requestScope.loginuser.photo}" />
 		</div>
 			
 		<table id="table1" class="myinfo_tbl">
