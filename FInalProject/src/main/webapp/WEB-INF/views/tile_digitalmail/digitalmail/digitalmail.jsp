@@ -261,7 +261,7 @@
 			data:{"send_email_seq":send_email_seq },
 	        success:function(json){
 	        	if(json != "" && json != null){
-	        		alert("비밀 메일입니다. 암호를 입력해주세요.");
+	        		 // alert("비밀 메일입니다. 암호를 입력해주세요.");
 	        		location.href="<%=ctxPath%>/digitalmailview.gw?send_email_seq="+send_email_seq;
 	  				<%--  
 	        		if(value == json.pwd){
