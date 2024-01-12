@@ -711,7 +711,7 @@ function getMyWorkTime(myWorkDate){
                </table>
                
                <ul>
-               <li class="ml-auto mt-2" style="margin-right: 13%;">
+               <li class="ml-auto mt-2 text-center" style="margin-right: 13%;">
                <button id="goToWork" class="btn btn-sm btn-success" style="width: 50px;">출근</button>
                    <button id="leaveWork" class="btn btn-sm btn-danger ml-3" style="width: 50px;">퇴근</button>
                    
