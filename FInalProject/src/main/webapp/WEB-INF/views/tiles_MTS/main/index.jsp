@@ -226,7 +226,15 @@ $(document).ready(function(){
 
    const FullDate = year+"-"+month+"-"+day;     // 2023-12-27
    const FullTime = hour+":"+minute+":"+second; // 16:31:25
-    
+
+   // 출, 퇴근, 누적 시간 display 숨겨놓기
+   $('#start_time_dis').hide();
+   $('#end_time_dis').hide();
+   $('#append_time_dis').hide();
+   
+	// 출, 퇴근, 누적 시간 뿌리는 함수 호출
+	getMyWorkTime(FullDate);
+   
     // 출근 버튼 클릭시  근무 테이블에 insert
     $("button#goToWork").click(function(){
 
@@ -243,12 +251,12 @@ $(document).ready(function(){
     // 퇴근 버튼 클릭시  근무 테이블 update
     $("button#leaveWork").click(function(){
        
-       $("input[name='work_date']").val(FullDate);
-       $("input:hidden[name='work_end_time']").val(FullTime);
+       $("input[name='work_date_ex']").val(FullDate); // 오늘 날짜
+       $("input:hidden[name='work_end_time']").val(FullTime); // 현재 시간
        
       /////////////////////////////////////////////////////
       // 출근시간 날짜형식으로 변환
-       var TodayStartTime = $('#todayST').val(); // 로그인 한 사원의 오늘 출근 시간
+       var TodayStartTime = $('#start_time').text(); // 로그인 한 사원의 오늘 출근 시간
        
        var TodayHour = TodayStartTime.substr(0, 2); // 출근 시 구하기
        
@@ -265,7 +273,7 @@ $(document).ready(function(){
        /////////////////////////////////////////////////////
        // 근무 시간 가져오기
        var workTimeNow = now - todayStartTimeVal;
-     
+       
        var workTimeH = Math.floor(workTimeNow / (1000 * 60 * 60)); // 근무 시간
        
        var workTimeM = Math.floor(workTimeNow / (1000 * 60) % 60); // 근무 분
@@ -273,6 +281,7 @@ $(document).ready(function(){
        var workTimeC = Math.floor((workTimeNow / 1000) % 60);       // 근무 초
        
        var workTimeVal = padZero(workTimeH)+":"+padZero(workTimeM)+":"+padZero(workTimeC);
+       
        ///////////////////////////////////////////////////////////////
        // 연장 근무 시간 구하기
        // 9시간의 밀리초는 32400000 - 23611081 = 12345125
@@ -301,6 +310,9 @@ $(document).ready(function(){
           frm.action = "<%= ctxPath %>/goToWorkUpdateIndex.gw";
          frm.submit();
        }
+       
+       document.getElementById('end_time_dis').style.display = 'show';
+       document.getElementById('append_time_dis').style.display = 'show';
     }); // end of $("button#goToWork").click(function()--------------------
     // 출근, 퇴근 신청 [끝]
 
@@ -394,7 +406,9 @@ $(document).ready(function(){
                                    }); // end of events.push({})---------
                                                                                  
                                   
-                                 
+                      			 if(item.joinuser == null){
+                              	   item.joinuser = "";
+                                 }
                                   // 공유받은 캘린더(다른 사용자가 내캘린더로 만든 것을 공유받은 경우임)
                                    if (item.fk_lgcatgono==1 && item.fk_employee_id != "${sessionScope.loginuser.employee_id}" && (item.joinuser).indexOf("${sessionScope.loginuser.userid}") != -1 ){  
                                         
@@ -628,25 +642,60 @@ function selectOneEmail(send_email_seq){
         },
         error: function(request, status, error){
             alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-        } 
-   });
+        }
+    });
+   
 }
 // 주어진 값이 10보다 작을 경우 그 앞에 0을 붙여서 두 자리 수로 만드는 함수
 function padZero(value) {
     return value < 10 ? "0" + value : value;
 }
 
+//출,퇴근 시간 뿌리는 함수
+function getMyWorkTime(myWorkDate){
+	
+	$.ajax({
+		url:"<%= ctxPath%>/getMyWorkTime.gw",
+		type:"post",
+		data:{"myWorkDate":myWorkDate},
+		dataType:"JSON",
+		success:function(json){
+			$("span#start_time").text(json.work_start_time);
+			$("span#end_time").text(json.work_end_time);	
+			
+			const startTimeVal = $("span#start_time").text();
+			const endTimeVal = $("span#end_time").text();
+			const appendTimeVal = $("span#end_time").text();
+			
+			if(startTimeVal != "") {
+				$('#start_time_dis').show();
+			}
+			if(endTimeVal != "") {
+				$('#end_time_dis').show();
+			}
+			if(startTimeVal != " " && endTimeVal != " ") {
+				$("span#append_time").text(json.timeDiff);
+			}
+			if(appendTimeVal != "") {
+				$('#append_time_dis').show();
+			}
+        },
+        error: function(request, status, error){
+            alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+        }
+	});
+}
 </script>
    
     
 <body>
    <div class="parent">
       <div class="widget-container div4">
-               <div class="widget-header mb-2">프로필  <a class="btn btn-info btn-sm" href="<%=ctxPath%>/myinfo.gw"></a></div>
+               <div class="widget-header mb-2">프로필  <a href="<%=ctxPath%>/myinfo.gw"><i class="fa-solid fa-share-from-square"></i></a></div>
                   <div >
             
                <div id="photo" class="mx-2">
-                  <img src="<%= ctxPath%>/resources/images/${requestScope.loginuser.photo}" style="width: 100px; height: 100px; border-radius: 50%;" />
+                  <img src="<%= ctxPath%>/resources/empImg/${requestScope.loginuser.photo}" style="width: 100px; height: 100px; border-radius: 50%;" />
                </div>
                   
                <table id="table1" class="myinfo_tbl">
@@ -674,7 +723,7 @@ function padZero(value) {
                    
                    <%-- 연장근무인 경우 보낼 form --%>
                    <form name="goToWorkUpdateWithExtended">
-                      <input type="hidden" name="work_date"/>
+                      <input type="hidden" name="work_date_ex"/>
                       <input type="hidden" name="work_end_time"/>
                       <input type="hidden" name="extended_end_time"/>
                       <input type="hidden" name="fk_employee_id" value="${sessionScope.loginuser.employee_id}"/>
@@ -682,12 +731,26 @@ function padZero(value) {
                    <input type='hidden' id='todayST' value='${requestScope.myTodayStartTime}'/>
             </li>
             </ul>
+            <table style='width: 100%;'>
+				<tr id='start_time_dis'>
+					<th style='width: 45%;'>출근시간</th>
+					<td><span id='start_time'></span></td>
+				</tr>
+				<tr id='end_time_dis'>	
+					<th>퇴근시간</th>
+					<td><span id='end_time'></span></td>
+				</tr>
+				<tr id='append_time_dis'>	
+					<th>근무누적시간</th>
+					<td><span id='append_time'></span></td>
+				</tr>
+			</table>
             
          </div>
         </div>
        <!-- todo -->
        <div class="widget-container div5">
-           <div class="widget-header mb-2">결제 / 승인 <a class="btn btn-info btn-sm" href="<%=ctxPath%>/approval/home.gw"></a></div>
+           <div class="widget-header mb-2">결제 / 승인 <a href="<%=ctxPath%>/approval/home.gw"><i class="fa-solid fa-share-from-square"></i></a></div>
               <div class="listContainer " style="font-size: 9pt;">
                <c:if test="${sessionScope.loginuser.gradelevel != 1}">
                <div class='listContainer'>
@@ -729,49 +792,51 @@ function padZero(value) {
                   </table>
                </div>
                
-                  <div class='listContainer'>
-      <h5 class='mb-3'>결재 완료 문서</h5>
-
-      <table class="table" style="font-size: 9pt;">
-         <thead>
-            <tr class='tr'>
-               <th>결재상태</th>
-               <th>제목</th>
-               
-            </tr>
-         </thead>
-         <tbody>
-            <c:choose>
-                     <c:when test="${not empty processedDraftList}">
-                    <c:forEach items="${processedDraftList}" var="processed" >
-                        <tr>
-                     <td>
-                               <c:if test="${processed.draft_status == '1'}">
-                                  <span class="badge badge-secondary">완료</span>
-                               </c:if>
-                               <c:if test="${processed.draft_status == '2'}">
-                                  <span class="badge badge-danger">반려</span>
-                               </c:if>
-                            </td>
-                     <td>
-                            <a href='<%=ctxPath%>/approval/draftDetail.gw?draft_no=${processed.draft_no}&fk_draft_type_no=${processed.fk_draft_type_no}'>
-                            <c:if test="${processed.urgent_status == '1'}"><span style='font-size:x-small;' class="badge badge-pill badge-danger">긴급</span></c:if>
-                            ${processed.draft_subject}</a></td>
-                     
-                            
-                        </tr>
-                    </c:forEach>
-                   </c:when>
-                <c:otherwise>
-                    <tr>
-                        <td colspan='6' class='text-center'>진행 중인 문서가 없습니다.</td>
-                    </tr>
-                </c:otherwise>            
-            </c:choose>
-         </tbody>
-      </table>
-      
-   </div>
+               <div class='listContainer'>
+		      <h5 class='mb-3'>결재 완료 문서</h5>
+		
+		      <table class="table" style="font-size: 9pt;">
+		         <thead>
+		            <tr class='tr'>
+		               <th>결재상태</th>
+		               <th>제목</th>
+		               
+		            </tr>
+		         </thead>
+		         <tbody>
+		            <c:choose>
+		                     <c:when test="${not empty processedDraftList}">
+		                    <c:forEach items="${processedDraftList}" var="processed" >
+		                        <tr>
+		                     <td>
+                                <c:if test="${processed.draft_status == '1'}">
+                                   <span class="badge badge-secondary">완료</span>
+                                </c:if>
+                                <c:if test="${processed.draft_status == '2'}">
+                                   <span class="badge badge-danger">반려</span>
+                                </c:if>
+                             </td>
+		                     <td>
+	                            <a href='<%=ctxPath%>/approval/draftDetail.gw?draft_no=${processed.draft_no}&fk_draft_type_no=${processed.fk_draft_type_no}'>
+		                            <c:if test="${processed.urgent_status == '1'}"><span style='font-size:x-small;' class="badge badge-pill badge-danger">긴급</span></c:if>
+		                            ${processed.draft_subject}
+		                        </a>
+	                          </td>
+		                     
+		                            
+		                        </tr>
+		                    </c:forEach>
+		                   </c:when>
+		                <c:otherwise>
+		                    <tr>
+		                        <td colspan='6' class='text-center'>진행 중인 문서가 없습니다.</td>
+		                    </tr>
+		                </c:otherwise>            
+		            </c:choose>
+		         </tbody>
+		      </table>
+		      
+		   </div>
       
             </div>
             
@@ -779,7 +844,7 @@ function padZero(value) {
        
            <!-- 일정관리 -->
            <div class="widget-container div1 ">
-               <div class="widget-header mb-2">일정관리  <a class="btn btn-info btn-sm" href="<%=ctxPath%>/schedule/scheduleManagement.gw"></a></div>
+               <div class="widget-header mb-2">일정관리  <a href="<%=ctxPath%>/schedule/scheduleManagement.gw"><i class="fa-solid fa-share-from-square"></i></a></div>
                
                <div style="margin-left: 40px; width: 88%; margin-top: 100px;">
                 <%-- 풀캘린더가 보여지는 엘리먼트  --%>
@@ -790,7 +855,7 @@ function padZero(value) {
            </div>
             <!--  웹메일 -->     
           <div class="widget-container div6">
-             <div class="widget-header mb-2">웹메일  <a class="btn btn-info btn-sm" href="<%=ctxPath%>/digitalmail.gw"></a></div>
+             <div class="widget-header mb-2">웹메일  <a href="<%=ctxPath%>/digitalmail.gw"><i class="fa-solid fa-share-from-square"></i></a></div>
              <!-- 이메일 리스트 -->
              <div class="emailList_list">
                  <table class="table">

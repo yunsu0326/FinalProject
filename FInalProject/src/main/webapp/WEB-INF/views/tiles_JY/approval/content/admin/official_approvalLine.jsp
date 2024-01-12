@@ -2,6 +2,7 @@
 <% String ctxPath=request.getContextPath(); %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>	
 <style>
+
 .accordion {
 	background-color: white;
 	color: #444;
@@ -17,7 +18,7 @@
 }
 
 #editBtn {
-	background-color: #E3F2FD;
+	background-color: #E0F8EB;
 }
 
 #editBtn:hover {
@@ -71,6 +72,7 @@
 
 </style>
 <script>
+
 $(document).ready(function(){
 	$('a#officialApprovalLine').css('color','#086BDE');
 	$('.adminMenu').show();
@@ -94,68 +96,73 @@ $(document).ready(function(){
 	    
 	  });
 	}
-});
+	
+});// end of $(document).ready(function(){})-----------------------------------
 
 /* 결재라인 삭제하기 */
 function delAprvLine(official_aprv_line_no, draft_type_no) {
 	
 	if(confirm("이 결재라인을 삭제하시겠습니까?")){
-		    // 삭제
-			$.ajax({
-			      url : "<%=ctxPath%>/approval/admin/delOfficialAprvLine.gw",
-			      type:'POST',
-			      data: {'official_aprv_line_no': official_aprv_line_no,
-			    	  	'draft_type_no': draft_type_no},
-			      dataType:'json',
-			      cache:false,
-			      success : function(json){
-			    	  if(json.result == true) {
-					      	alert('결재라인이 삭제되었습니다.');
-					      	location.href="javascript:history.go(0);";
-						}
-			    	  else{
-			    		  alert('오류로 인해 결재라인 삭제를 실패하였습니다. 다시 시도해주세요.');
-			    	  }
-					},
-			      error: function(request, status, error){
-						alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-					}
-			  });
+		// 삭제
+		$.ajax({
+			url : "<%=ctxPath%>/approval/admin/delOfficialAprvLine.gw",
+			type:'POST',
+			data: {'official_aprv_line_no': official_aprv_line_no,
+				   'draft_type_no': draft_type_no},
+			dataType:'json',
+			cache:false,
+			success : function(json){
+				if(json.result == true) {
+					alert('결재라인이 삭제되었습니다.');
+					location.href="javascript:history.go(0);";
+				}
+			    else{
+			    	alert('오류로 인해 결재라인 삭제를 실패하였습니다. 다시 시도해주세요.');
+			    }
+			},
+			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			}
+		});
 			
-		  } else {
-		    alert("삭제가 취소되었습니다.");
-		  }
-}
+	} else {
+		alert("삭제가 취소되었습니다.");
+	}
+	
+}// end of function delAprvLine(official_aprv_line_no, draft_type_no)------------------------
+
 
 /* 결재라인 추가하기 */
 function setOfficialLine(draft_type_no) {
 	
 	if(confirm("이 양식에 공통 결재라인을 추가하시겠습니까?")) {
-		    // 삭제
-			$.ajax({
-			      url : "<%=ctxPath%>/approval/admin/setOfficialLine.gw",
-			      type:'POST',
-			      data: {'draft_type_no': draft_type_no},
-			      dataType:'json',
-			      cache:false,
-			      success : function(json){
-			    	  if(json.result == true) {
-						alert("이 양식에 공통 결재라인이 기본값으로 추가되었습니다. \r\n 수정을 통해 설정해주세요.")
-							location.href="javascript:history.go(0);";
-						}
-			    	  else{
-			    		  alert('오류로 인해 공통 결재라인 추가를 실패하였습니다.\n다시 시도해주세요.');
-			    	  	}
-					},
-			      error: function(request, status, error){
-						alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
-					}
-			  });
+		// 삭제
+		$.ajax({
+			url : "<%=ctxPath%>/approval/admin/setOfficialLine.gw",
+			type:'POST',
+			data: {'draft_type_no': draft_type_no},
+			dataType:'json',
+			cache:false,
+			success : function(json){
+				if(json.result == 1) {
+					alert("이 양식에 공통 결재라인이 기본값으로 추가되었습니다. \r\n 수정을 통해 설정해주세요.")
+					location.href="javascript:history.go(0);";
+				}
+				else{
+					alert('오류로 인해 공통 결재라인 추가를 실패하였습니다.\n다시 시도해주세요.');
+				}
+			},
+			error: function(request, status, error){
+				alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+			}
+		});
 			
-		  } else {
-		    alert("공통 결재라인 추가를 취소하였습니다.");
-		  }
-}
+	} else {
+		alert("공통 결재라인 추가를 취소하였습니다.");
+	}
+	
+}// end of function setOfficialLine(draft_type_no)-----------------------------------------
+
 
 /* 결재라인 수정하기(결재자 새로 선택하기) */
 function selectApprovalLine(official_aprv_line_no) {
@@ -172,34 +179,37 @@ function selectApprovalLine(official_aprv_line_no) {
 	const popupY= (window.screen.height / 2) - (popupHeight / 2);
 	
 	window.open('<%=ctxPath%>/approval/selectApprovalLine.gw?type=official','결재라인 선택','height=' + popupHeight  + ', width=' + popupWidth  + ', left='+ popupX + ', top='+ popupY);
-}
+	
+}// end of function selectApprovalLine(official_aprv_line_no)------------------------------
+
 
 /* 자식창에서 넘겨준 데이터를 받아 출력함 */
 async function receiveMessage(e) {
 	
-   	const jsonArr = e.data;
-    const no = sessionStorage.getItem("official_aprv_line_no")
+	const jsonArr = e.data;
+	const no = sessionStorage.getItem("official_aprv_line_no")
 	const body = $('#body'+no);
 
-    body.empty();
+	body.empty();
     
 	// 선택된 사원을 테이블에 표시함
 	jsonArr.forEach(function(emp, index) {
 
 		var html = "<tr>"
-	 			+ "<td class='levelno'>" + emp.levelno + "</td>"
-				+ "<td class='department'>" + emp.department_name + "</td>"
-				+ "<td class='position'>" + emp.gradelevel + "</td>"
-				+ "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.employee_id + "'></td>"
-				+ "<td class='name'>" + emp.name + "</td></tr>";
+				 + "<td class='levelno'>" + emp.levelno + "</td>"
+				 + "<td class='department'>" + emp.position + "</td>"
+				 + "<td class='position'>" + emp.position + "</td>"
+				 + "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.empno + "'/></td>"
+				 + "<td class='name'>" + emp.name + "</td></tr>";
 		
 		body.append(html);
 		
 	});
 	
-}
+}// end of async function receiveMessage(e)-----------------------------
 
-window.addEventListener("message", receiveMessage, false);
+window.addEventListener("message", receiveMessage, false); // receiveMessage 함수의 값을 message 에 담아서 부모창에 넘겨준다.
+
 
 /* 결재라인 저장하기 */
 function saveAprvLine(official_aprv_line_no) {
@@ -209,7 +219,7 @@ function saveAprvLine(official_aprv_line_no) {
 	
 	const length = body.find('tr').length;
 	if (length == 0){
-		swal("결재자가 선택되지 않았습니다.");
+		alert("결재자가 선택되지 않았습니다.");
 		return;
 	}
 	
@@ -217,38 +227,46 @@ function saveAprvLine(official_aprv_line_no) {
 	frm.method = "post";
 	frm.action = "<%=ctxPath%>/approval/admin/approvalLine/save.gw";
 	frm.submit();
-}
+	
+}// end of saveAprvLine(official_aprv_line_no)------------------------
+
 
 // 결재라인 불러오기
 function getAprvLine(official_aprv_line_no) {
 	
     $.ajax({
-        url : "<%=ctxPath%>/approval/admin/getOneOfficialAprvLine.gw",
-        type:'GET',
-        data: {'official_aprv_line_no': official_aprv_line_no},
-        dataType:'json',
-        cache:false,
-        success : function(json){
+		url : "<%=ctxPath%>/approval/admin/getOneOfficialAprvLine.gw",
+		type:'GET',
+		data: {'official_aprv_line_no': official_aprv_line_no},
+		dataType:'json',
+		cache:false,
+		success : function(json){
 			const aprvTblBody = $("#body"+official_aprv_line_no);
 			aprvTblBody.empty();
         	
+			console.log(json);
+			
 			json.forEach(function(emp, index) {
 
 				var html = "<tr class='listTr'>"
-			 			+ "<td class='levelno'>" + (index+1) + "</td>"
-						+ "<td class='department'>" + emp.department_name + "</td>"
-						+ "<td class='position'>" + emp.gradelevel + "</td>"
-						+ "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.employee_id + "'></td>"
-						+ "<td class='name'>" + emp.name + "</td></tr>";
-					
+			 			 + "<td class='levelno'>" + (index+1) + "</td>"
+						 + "<td class='department'>" + emp.fk_department_id + "</td>"
+						 + "<td class='position'>" + emp.gradelevel + "</td>"
+						 + "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.employee_id + "'/></td>"
+						 + "<td class='name'>" + emp.name + "</td></tr>";
+
+				console.log(html);
+						 
 				aprvTblBody.append(html);
 			});
 		},
-        error: function(request, status, error){
-		alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+		error: function(request, status, error){
+			alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
 		}
-    });
-}
+	});
+    
+}// end of function getAprvLine(official_aprv_line_no)-------------------------------------
+
 </script>
 
 <div style='margin: 1% 0 5% 1%'>

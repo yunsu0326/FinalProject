@@ -116,7 +116,7 @@
 	    		 
 	    		 $("div#chatMessage").append("<div style='background-color: #cce0ff; display: inline-block; width: 100%; padding: 7px; text-align:center; margin-bottom:50px;  word-break: break-all;'>1:1 채팅을 하시려면 상대방의 이름을 클릭하시면 됩니다.</div>");
 	    		 
-	    		 var html= '<img style="width:300px; height:100px;" src="<%=ctxPath%>/resources/img/logo.png"/>';
+	    		 var html= '<img style="width:300px; height:100px;" src="<%=ctxPath%>/resources/images/logo.png"/>';
 	    		 $("span#chatStatus").html(html);
 	    		// $("span#chatStatus").text("☆★그룹웨어 채팅방 입니다.★☆");
 	    		

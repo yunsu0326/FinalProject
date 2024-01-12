@@ -57,6 +57,11 @@ $(() => {
 			return;
 		}
 		
+		if(start_date > end_date) {
+			alert("출장 출발일 설정에 오류가 있습니다!");
+			return;
+		}
+		
 	    // 출장정보 유효성검사
 	    if ($("#trip_purpose").val() == "" || $("input[name='trip_start_date']").val() == "" ||
 	    	$("input[name='trip_end_date']").val() == "" ||$("#trip_location").val() == "") {
@@ -79,7 +84,7 @@ $(() => {
 	    let aprvLineInfo = aprvTblBody.html();
 	    if (aprvLineInfo.indexOf('tr') == -1) {
 	    	alert("결재라인을 설정하세요!");
- 			return;
+ 		return;
 	    }
 		
 		// 의견 및 긴급 여부 체크 모달 띄우기
@@ -97,7 +102,7 @@ $(() => {
 
 	    if( draft_content == ""  || draft_content == null || draft_content == '&nbsp;' || draft_content == '<p>&nbsp;</p>')  {
 			obj.getById["draft_content"].exec("FOCUS"); //포커싱
-			alert("출장결과를 작성하세요!!")
+			alert("출장결과를 작성하세요!!");
 			obj.getById["draft_content"].exec("FOCUS"); //포커싱
 			return;
 	         
@@ -120,7 +125,7 @@ $(() => {
 	const $drop = document.querySelector(".dropBox");
 	
 	// 드래그한 파일 객체가 해당 영역에 놓였을 때
-	$drop.gwdrop = function(e) {
+	$drop.ondrop = function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		
@@ -156,20 +161,20 @@ $(() => {
 		}
 	}
 
-	$drop.gwdragover = (e) => {
+	$drop.ondragover = (e) => {
 	  e.preventDefault();
 	  e.stopPropagation();
 	}
 	
 	// 드래그한 파일이 최초로 진입했을 때
-	$drop.gwdragenter = (e) => {
+	$drop.ondragenter = (e) => {
 	  e.preventDefault();
 	  e.stopPropagation();
 	  $drop.classList.add("active");
 	}
 
 	// 드래그한 파일이 영역을 벗어났을 때
-	$drop.gwdragleave = (e) => {
+	$drop.ondragleave = (e) => {
 	  e.preventDefault();
 	  e.stopPropagation();
 	  $drop.classList.remove("active");
@@ -284,10 +289,9 @@ const saveTemp = () => {
 		cache:false,
 		success:function(json){
    	     	if(json.temp_draft_no != "" && json.temp_draft_no !== undefined) {
-   	     		alert("저장 완료", "임시저장 되었습니다.", "success")
-   	     		.then((value) => {
-   	 	    		$("input[name='temp_draft_no']").val(json.temp_draft_no); // 임시저장 번호 대입
- 	     		});
+   	     		alert("저장 완료\n임시저장 되었습니다.");
+				$("input[name='temp_draft_no']").val(json.temp_draft_no); // 임시저장 번호 대입
+				location.href = "<%=ctxPath%>/approval/personal/saved.gw";
    	     	}
 	    	else
 	    		alert("저장 실패\n임시저장 실패하였습니다.");

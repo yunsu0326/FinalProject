@@ -16,14 +16,12 @@ public interface DocumentService {
 	// 문서 테이블에 문서 정보 넣기
 	int insertDocument(DocumentVO documentvo);
 	
-	// 문서 정보 가져오기
-	List<Map<String, String>> selectDocument();
 	
 	//삭제할 문서 서버  파일이름 가져오기
 	String deleteDocumentSelect(String seq);
 	
 	// 문서 삭제 하기
-	int deleteDocument(Map<String, String> paraMap) throws Throwable ;
+	int deleteDocument(Map<String, String> paraMap) throws Throwable;
 	
 	//다운받을 문서 조회하기
 	DocumentVO viewDocument(Map<String, String> paraMap);
@@ -36,6 +34,14 @@ public interface DocumentService {
 	
 	// 문서 업데이트
 	int updateDocument(DocumentVO documentvo);
+	
+	// 문서 갯수 가져오기
+	int getDocuSearchCnt(Map<String, Object> paraMap);
+	
+	// 문서 페이지 내역 가져오기
+	List<Map<String, String>> getDocumentList(Map<String, Object> paraMap);
+	
+	
 	
 	
 	

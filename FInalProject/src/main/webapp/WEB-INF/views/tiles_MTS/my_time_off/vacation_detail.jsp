@@ -125,10 +125,10 @@
 	.table_tr {background-color: #ccff99;}
 	table.table ml-5 {width: 90%;}
 	input#frm_vacation_reason {border: solid 1px gray;}
+	input[name='frm_vacation_reason'] {border: solid 1px gray;}
 </style>
 
 <script type="text/javascript">
-<%-- --%>
    	$(document).ready(function(){
       	
    		// 해당 행을 클릭하면 모달창을 띄움
@@ -192,8 +192,6 @@
 	   		$("input:hidden[name='manager_id']").val(manager);
 	   		$("input:hidden[name='employee_id']").val(fk_employee_id);
 	   		
-	   		
-	   		
     	  	$('div#openModal').modal('show', vacation_seq); // 모달창에 태워서 보낼 해당 항목의 seq
     	  	
     	 	// 휴가신청시 띄울 달력 
@@ -214,19 +212,13 @@
     	  	
     	 	// 승인 버튼 클릭시 tbl_vacation 테이블에 update
     		$("input#return_insert").click(function(){
-    			
     		    const frm = document.modal_frm; 
-				
 				frm.method = "post";
 				frm.action = "<%= ctxPath %>/vac_insert_insert.gw";
 				frm.submit();	
-    		    
     		});
-    	  	
       	}); // end of $(document).on("click", "table#emptbl tr#empinfo", function (e) -----------------
       
-     	
-      	
 	 	// return_reset 버튼 클릭 시 모달 닫기
    		$("input#return_reset").click(function(){
    		    closeModal();
@@ -239,25 +231,18 @@
    		
    		// 휴지통 클릭시 삭제하기
    		$("i#deleteIcon").click(function() {
-   			
    			var vac_approved = confirm("휴가 철회 하시겠습니까?");
-			
 			if(vac_approved) {
-				
 				// 승인 대기중인 휴가 삭제하기
 		   		const seq_frm = $("input:hidden[id='seq_frm']").val();
 		   		$("input:hidden[name='vacation_seq']").val(seq_frm);
 		   		
 				const frm = document.seq_delete; 
-				
 				frm.method = "post";
 				frm.action = "<%= ctxPath %>/seq_delete.gw";
 				frm.submit();
 			}
    		}); 
-   		
-   		
-      	
    	});// end of $(document).ready(function(){})--------
    
     // Function Decalation
@@ -267,7 +252,6 @@
 </script>
 
 <div id="container">
-
    <%-- 상단 메뉴바 시작 --%>
    <nav class="navbar navbar-expand-lg mt-5 mb-4">
 		<div class="collapse navbar-collapse">

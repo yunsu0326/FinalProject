@@ -270,7 +270,7 @@
 				now_hours = "0"+now_hours;
 			} 
 			
-			if(Number(now_hours +1) > Number(selectTime)) {
+			if(Number(now_hours)+1 > Number(selectTime)) {
 				alert("지난 시간은 예약할 수 없습니다.");
 				return false;
 			}

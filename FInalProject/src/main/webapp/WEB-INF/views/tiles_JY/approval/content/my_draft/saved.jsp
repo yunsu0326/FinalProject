@@ -5,9 +5,6 @@
 
 <link rel = "stylesheet" href = "<%=ctxPath%>/resources/css/draft_list_style.css">
 
-<%-- sweet alert --%>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
 <style>
 
 label {
@@ -75,7 +72,7 @@ const goSearch = () => {
 	const frm = document.searchFrm;
 	
 	frm.method = "get";
-	frm.action = "<%=ctxPath%>/approval/personal/saved.on";
+	frm.action = "<%=ctxPath%>/approval/personal/saved.gw";
 	frm.submit();
 }
 
@@ -101,10 +98,8 @@ function deleteDraft() {
 	})
 	.then((response) => response.json())
 	.then((data) => {
-		swal(data.result + "건의 문서가 성공적으로 삭제되었습니다.")
-		.then((value) => {
-				location.href="javascript:history.go(0)"
-			});
+		alert(data.result + "건의 문서가 성공적으로 삭제되었습니다.")
+		location.href="javascript:history.go(0)"
 	})
 	.catch((err) => {
 	   console.error(err)

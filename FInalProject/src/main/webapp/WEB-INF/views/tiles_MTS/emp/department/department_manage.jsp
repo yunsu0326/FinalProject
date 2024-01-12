@@ -196,6 +196,8 @@
 				    	  
 				    	  select_department(); // 모든부서 출력해주기
 				    	  select_team();		// 모든 팀 출력해주기
+				    	  $("#departmentModal").modal("hide"); // 모달 끄기     
+
 				      }
 				 },
 				 error: function(request, status, error){
@@ -233,6 +235,7 @@
 				    	  
 				    	  select_department(); // 모든부서 출력해주기
 				    	  select_team(); // 모든팀 출력해주기
+				    	  $("#teamModal").modal("hide"); // 모달 끄기     
 				      }
 				 },
 				 error: function(request, status, error){
@@ -316,6 +319,11 @@
  		    // alert(selectedDepartmentId);
  		    team_id_max(selectedDepartmentId);
  		});
+ 		$("select[name='del_dept_id']").change(function () {
+ 		    const selectedDepartmentId = $(this).val();
+ 		    // alert(selectedDepartmentId);
+ 		    team_id_select(selectedDepartmentId);
+ 		});
  			
  		
  		  $("#deptdel").click(function(){
@@ -344,27 +352,31 @@
  						    	     department_id_max();  // 신규부서번호 입력해주기
  						    	     select_department(); // 모든부서 출력해주기
  							    	 select_team(); // 모든팀 출력해주기
+ 							   	 	 populateDepartmentsDropdown(); // 부서 이름 뿌리기
+ 	 						        $("#departmentDelModal").modal("hide"); // 모달 띄우기
+
  						         }
  						     },
- 						     error: function(request, status, error){
- 						    	alert("삭제하시려는 부서는 삭제가 불가합니다");
- 						     }
+ 							 error: function(request, status, error){
+ 								alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+ 							 }
+
  					 });	   
  			     }
  		    });
  		  
- 		 $("#deptdel").click(function(){
-		        const department_id = $("form[name='del_department_frm'] select[name='dept_id']").val();
-
-		        if(department_id === "") {
-		            alert("삭제할 부서를 선택해주세요.");
+ 		 $("#teamdel").click(function(){
+		        const team_id = $("form[name='del_team_frm'] select[name='del_team_id']").val();
+				alert(team_id);
+		        if(team_id === "") {
+		            alert("삭제할 팀을 선택해주세요.");
 		            return;
 		        }
 
-		        else if(confirm("부서번호 "+ department_id +"번 부서를 정말로 삭제하시겠습니까?")) {
+		        else if(confirm("팀 "+ team_id +"번 팀을 정말로 삭제하시겠습니까?")) {
 				     $.ajax({
-						     url:"<%= ctxPath%>/emp/department_del.gw",
-						     data:{"department_id":department_id},
+						     url:"<%= ctxPath%>/emp/team_del.gw",
+						     data:{"team_id":team_id},
 						     dataType:"json",
 						     success:function(json){
 						          console.log(JSON.stringify(json));
@@ -372,18 +384,21 @@
 						            {"n":1} 또는 {"n":0}
 						         */
 						         if(json.n == 0) {
-						    	     alert("삭제하시려는 부서번호 "+ department_id +"에 근무하는 사원이 존재하므로 부서번호 삭제가 불가합니다");
+						    	     alert("삭제하시려는 부서번호 "+ team_del +"에 근무하는 사원이 존재하므로 부서번호 삭제가 불가합니다");
 						         }
 						      
 						         if(json.n == 1) {
 						    	     department_id_max();  // 신규부서번호 입력해주기
 						    	     select_department(); // 모든부서 출력해주기
 							    	 select_team(); // 모든팀 출력해주기
+							    	 $("#teamDelModal").modal("hide"); // 모달 띄우기
 						         }
+						         
 						     },
-						     error: function(request, status, error){
-						    	alert("삭제하시려는 팀은 삭제가 불가합니다");
-						     }
+							 error: function(request, status, error){
+									alert("code: "+request.status+"\n"+"message: "+request.responseText+"\n"+"error: "+error);
+								 }
+
 					 });	   
 			     }
 		    });
@@ -419,7 +434,6 @@
 		 dataType:"json",
 		 success:function(json){
 		      //console.log(JSON.stringify(json));
-		      
 		      
 		      let v_html = "";
 
@@ -507,6 +521,7 @@
 	            }
 
 	            $("select[name='dept_id']").html(dropdownOptions);
+	            $("select[name='del_dept_id']").html(dropdownOptions);
 	        },
 	        error: function (request, status, error) {
 	            alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
@@ -538,6 +553,33 @@
 	        }
 	    });
  	}
+ 
+ function team_id_select(department_id) {
+	    // 부서에 따른 팀 값 아오기
+	    $.ajax({
+	        url: "<%= ctxPath%>/emp/team_id_select_by_department.gw",
+	        data: { "department_id": department_id },
+	        dataType: "json",
+	        success: function (json) {
+	            console.log(JSON.stringify(json));
+	            //[{"team_id":"101","team_name":"개발1팀","t_manager_id":"9901","name":"김진영"},{"team_id":"102","team_name":"개발2팀","t_manager_id":"9902","name":"이경영"},{"team_id":"103","team_name":"개발3팀","t_manager_id":"9903","name":"홍길동"}]
+	            
+	            let dropdownOptions = "<option value=''>팀 선택</option>";
+
+	            if (json.length > 0) {
+	                $.each(json, function (index, item) {
+	                    dropdownOptions += "<option value="+item.team_id+">"+item.team_name+"</option>";
+	                });
+	            }
+
+	            $("select[name='del_team_id']").html(dropdownOptions);
+	            
+	        },
+	        error: function (request, status, error) {
+	            alert("code: " + request.status + "\n" + "message: " + request.responseText + "\n" + "error: " + error);
+	        }
+	    });
+	}
  
  
  
@@ -727,6 +769,45 @@
 </div>
 
 
+
+<!-- 부서 관리 폼 모달 -->
+<div class="modal" id="teamDelModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">팀 삭제</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="modal-body">
+              
+                <form name="del_team_frm">
+				   <table class="table">
+				  
+				      <tr>
+				          <th>부서명</th>
+				          <td><select name="del_dept_id"> </select></td>
+				      </tr>
+				      <tr>
+				          <th>팀 명</th>
+				          <td><select name="del_team_id"> </select></td>
+				      </tr>
+				      
+				   </table>
+				</form>
+			
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" id="teamdel" class="btn btn-success mr-3">삭제</button>
+                <button type="button" class="btn btn-danger btn_reset" data-dismiss="modal">취소</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- 모달 창 -->
 <div class="modal fade" id="deptInfoModal">

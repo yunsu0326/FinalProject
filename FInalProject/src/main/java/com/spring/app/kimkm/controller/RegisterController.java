@@ -61,7 +61,7 @@ public class RegisterController {
 		    evo.setUserid(userid);
 		}
 		
-		evo.setPostcode("사원증기본이미지.png");
+		evo.setPhoto("사원증기본이미지.png");
 		evo.setSignimg("승인.png");
 		
 		int n = service.add_register(evo);

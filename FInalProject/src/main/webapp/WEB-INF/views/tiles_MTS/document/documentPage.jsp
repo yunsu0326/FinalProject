@@ -54,9 +54,19 @@ button#updateDocument,button#deleteDocument{
 					return false;
 				}
 			}
+		});// end of $("input[name=attach]").off().on("change", function()
+		
+		$("input#searchWord").keyup(function(event){
+			if(event.keyCode == 13){ 
+				goSearch();
+			}
 		});
 		
-	});
+		
+		
+	});// end of $(document).ready(function()
+	
+	
 // function declaration
 
 //재직증명서 모달 열기
@@ -181,11 +191,21 @@ function goupdateDocument(){
 	  frm.action = "<%= ctxPath%>/updateDocument.gw";
 	  frm.submit();
 }
+
+// 검색 메소드
+function goSearch() {
+	
+	var frm = document.searchDucFrm;
+	frm.method = "GET";
+	frm.action = "<%= ctxPath %>/document.gw";
+	frm.submit();
+	
+} // end of function goSearch
 </script>
 
-<div class="container" style="margin-top:50px;  text-align:center; padding-bottom:200px;">
+<div class="container" style="margin-top:50px;  text-align:center; padding-bottom:100px;">
 	<h3>증명서 발급</h3>
-	<table style="margin-bottom:100px;">
+	<table style="margin-bottom:50px;">
 	 <thead>
 		<tr>
 			<th>결제양식</th>
@@ -223,7 +243,7 @@ function goupdateDocument(){
 		</tr>
 	 </thead>
 	 
-	 <c:if test="${sessionScope.loginuser.gradelevel != '10'}">
+	 <c:if test="${sessionScope.loginuser.gradelevel != '10' && not empty requestScope.documentList }">
 	 <c:forEach var="paraMap" items="${requestScope.documentList}">
 		 <tbody>	
 			<tr>
@@ -238,7 +258,7 @@ function goupdateDocument(){
 	 
 	 
 	 
-	 <c:if test="${sessionScope.loginuser.gradelevel == '10'}">
+	 <c:if test="${sessionScope.loginuser.gradelevel == '10' && not empty requestScope.documentList }">
 	 
 	 <c:forEach var="paraMap" items="${requestScope.documentList}">
 		 <tbody>	
@@ -255,7 +275,28 @@ function goupdateDocument(){
 	</c:forEach>
 	</c:if>
 	
+	<c:if test="${empty requestScope.documentList }">
+	 <tbody>	
+			<tr>
+				<td colspan=2> 문서가 존재하지 않습니다.</td>
+				
+			</tr>
+		</tbody>
+	
+	</c:if>
+	
 	</table>
+	<div style="margin-top:20px;">
+		${requestScope.pagebar}
+	</div>
+	
+	
+	<div id="search">
+		<form name ="searchDucFrm">
+		<input type="text" name="searchWord" placeholder="문서 제목을 검색하세요"/>
+		<button type="button" onclick="goSearch()">검색</button>
+		</form>
+	</div>
 	
 	
 	</div>

@@ -127,7 +127,7 @@ public interface ApprovalService {
 	boolean delOfficialAprvLine(Map<String, String> paraMap);
 
 	// 공통결재라인 여부 사용으로 변경하기
-	boolean setUseOfficialLine(String draft_type_no);
+	int setUseOfficialLine(String draft_type_no);
 
 	// 공통결재라인 없는 양식 목록 불러오기
 	List<Map<String, String>> getNoOfficialAprvList();

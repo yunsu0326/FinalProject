@@ -183,5 +183,12 @@ public class WorkDAO_Imple implements WorkDAO {
 		String todayEndTime = sqlsession.selectOne("work.todayEndTime", fk_employee_id);
 		return todayEndTime;
 	}
+
+	// 출근한 날짜를 가져와 출근한 시간 가져오기 
+	@Override
+	public Map<String, String> getMyWorkTime(Map<String, String> paraMap) {
+		Map<String, String> getMyWorkTime = sqlsession.selectOne("work.getMyWorkTime", paraMap);
+		return getMyWorkTime;
+	}
 	
 }

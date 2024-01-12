@@ -101,7 +101,7 @@ function deleteRequest(seq){
 				</li>
 				
 				<li class="nav-item">
-					<a class="nav-link ml-5" href="<%= ctxPath %>/my_work_manage.gw">근퇴관리</a>
+					<a class="nav-link ml-5" href="<%= ctxPath %>/my_work_manage.gw">근퇴신청관리</a>
 				</li>
 				
 				<c:if test="${sessionScope.loginuser.gradelevel >= 5}">

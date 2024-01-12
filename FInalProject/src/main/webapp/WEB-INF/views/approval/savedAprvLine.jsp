@@ -45,21 +45,23 @@ ul {
 // 저장된 결재라인 목록
 let aprvLineArray = JSON.parse('${aprvLineArray}');
 
-$(()=>{
+$(document).ready(function(){
 	
 	console.log(aprvLineArray);
 	
 	let html = "";
-	aprvLineArray.forEach((el) => {
+	aprvLineArray.forEach(function(el) {
 		html += "<li>"
 				+ "<label><input type='radio' name='aprvLine' value=" + el.aprv_line_no + ">" + el.aprv_line_name + "</label>"
 				+ "</li>";
 	});
 	
 	$("#aprvList").html(html);
-});
+	
+});// end of $(document).ready(function(){})-------------------------
 
-const submitAprvLine = () => {
+
+function submitAprvLine() {
 	
 	// 선택된 결재라인 알아오기
 	const selectedAprvLine = $('input[name=aprvLine]:checked').val();
@@ -68,7 +70,9 @@ const submitAprvLine = () => {
 	
  	window.opener.postMessage(json, '*');
 	window.self.close();
-}
+	
+}// end of function submitAprvLine()----------------------------------
+
 </script>
 
 </head>

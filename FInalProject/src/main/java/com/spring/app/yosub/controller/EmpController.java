@@ -4,20 +4,26 @@ package com.spring.app.yosub.controller;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.spring.app.common.MyUtil;
+import com.spring.app.domain.EmployeesVO;
 import com.spring.app.yosub.service.*;
 		
 	
@@ -39,7 +45,7 @@ import com.spring.app.yosub.service.*;
 			   									@RequestParam(defaultValue = "") String gender,
 			   									@RequestParam(defaultValue = "") String employee_id) {
 		   
-		   
+		    
 		   //employees 테이블의 근무중 사원 부서명 가져오기
 		   List<Map<String, String>> deptNameList = service.deptNameList();
 
@@ -331,7 +337,7 @@ import com.spring.app.yosub.service.*;
 			return new Gson().toJson(jsonArr);
 	 	}
 	 	
-	 	
+	 	// 부서별 최대 팀값 알아오기
 	 	@ResponseBody
 	 	@GetMapping(value = "/emp/team_id_max_by_department.gw", produces = "text/plain;charset=UTF-8")
 	 	public String team_id_max_by_department(@RequestParam(defaultValue = "") String department_id) {
@@ -344,6 +350,28 @@ import com.spring.app.yosub.service.*;
 			return new Gson().toJson(jsonObj);
 	 	}
 	 	
+	 	
+	 	// 부서별 팀 이름 및 번호알아오기
+	 	@ResponseBody
+	 	@GetMapping(value = "/emp/team_id_select_by_department.gw", produces = "text/plain;charset=UTF-8")
+	 	public String team_id_select_by_department(@RequestParam(defaultValue = "") String department_id) {
+	 	    
+	 		System.out.println(department_id);
+	 		List<Map<String, String>> team_id_select_by_department = service.team_id_select_by_department(department_id);
+
+	 		JsonArray jsonArr = new JsonArray(); // []
+			if(team_id_select_by_department != null && team_id_select_by_department.size() > 0) {
+				for(Map<String, String> map : team_id_select_by_department) {
+					JsonObject jsonObj = new JsonObject(); // {}
+					jsonObj.addProperty("team_id", map.get("team_id"));
+					jsonObj.addProperty("team_name", map.get("team_name"));
+					jsonObj.addProperty("t_manager_id", map.get("t_manager_id"));
+					jsonObj.addProperty("name", map.get("name"));
+					jsonArr.add(jsonObj); 
+				}// end of for-------------------------
+			}
+			return new Gson().toJson(jsonArr);
+	 	}
 	 	
 	 	
 	 	 // 신규부서 입력하기 
@@ -421,19 +449,100 @@ import com.spring.app.yosub.service.*;
 	 	@ResponseBody
 	 	@GetMapping(value = "/emp/department_del.gw", produces = "text/plain;charset=UTF-8")
 		public String department_del(String department_id) {
-	 		int n = service.department_del(department_id);
-			try {
-	 			return "{\"n\":1}";
-	 		} catch(Exception e) { // 부서번호 삭제시  department_id 컬럼에 Foreign Key 제약에 의해 자식 테이블인 employees 테이블에 사원들이 존재하는 경우  
-	 			return "{\"n\":0}";
+	 		 try {
+	             int result = service.department_del(department_id);
+	             return "{\"n\":" + result + "}";
+	         } catch (Exception e) {
+	             return "{\"n\":0}";
 	 		}
 	 	}
 	 	
+
+	 	
+		 // 부서삭제하기
+		 	@ResponseBody
+		 	@GetMapping(value = "/emp/team_del.gw", produces = "text/plain;charset=UTF-8")
+			public String team_del(String team_id) {
+		 		 try {
+		             int result = service.team_del(team_id);
+		             return "{\"n\":" + result + "}";
+		         } catch (Exception e) {
+		             return "{\"n\":0}";
+		 		}
+		 	}
 	 	
 	 	
-	   
 	 	
+		 	
+		 // 수정페이지 요청
+			@GetMapping("/infoEdit.gw")
+			public ModelAndView requiredLogin_myinfoEdit(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
+				
+					String employee_id = request.getParameter("employee_id");
+				   System.out.println("employee_id" + employee_id);
+				   //employee_id9999
+				   
+				   Map<String, String> empOneDetail = service.oneMemberMap(employee_id);
+				   
+				   String name = empOneDetail.get("name");
+				   System.out.println("name" + name);
+				   //name이요섭
+				   
+				   
+		        	mav.addObject("empOneDetail", empOneDetail);
+		        	mav.setViewName("emp/member/infoEdit.tiles_MTS");
+				
+				return mav;
+			}
+			
+			
+			
+			// 부서별 팀 이름 및 번호알아오기
+		 	@ResponseBody
+		 	@GetMapping(value = "/emp/job_id_select_by_department.gw", produces = "text/plain;charset=UTF-8")
+		 	public String job_id_select_by_department(@RequestParam(defaultValue = "") String department_id) {
+		 	    
+		 		//System.out.println(department_id);
+		 		
+		 		List<Map<String, String>> job_id_select_by_department = service.job_id_select_by_department(department_id);
+
+		 		JsonArray jsonArr = new JsonArray(); // []
+				if(job_id_select_by_department != null && job_id_select_by_department.size() > 0) {
+					for(Map<String, String> map : job_id_select_by_department) {
+						JsonObject jsonObj = new JsonObject(); // {}
+						jsonObj.addProperty("job_id", map.get("job_id"));
+						jsonObj.addProperty("job_name", map.get("job_name"));
+						jsonObj.addProperty("fk_team_id", map.get("fk_team_id"));
+						jsonObj.addProperty("gradelevel", map.get("gradelevel"));
+						jsonArr.add(jsonObj); 
+					}// end of for-------------------------
+				}
+				return new Gson().toJson(jsonArr);
+		 	}
+			
 	 	
+		 // 프로필 수정하기 
+			@PostMapping("/emp/infoEditEnd.gw")
+			public ModelAndView requiredLogin_myinfoEditEnd(HttpServletRequest request, HttpServletResponse response, ModelAndView mav, EmployeesVO evo, MultipartHttpServletRequest mrequest) {
+			
+				System.out.println(request.getParameter("fk_department_id"));
+				System.out.println(request.getParameter("fk_team_id"));
+				System.out.println(request.getParameter("fk_job_id"));
+				System.out.println(request.getParameter("employee_id"));
+
+				
+				int n = service.infoEditEnd(evo);
+					
+					System.out.println("n" + n);
+				
+				if(n==1) {
+					mav.addObject("message","부서발령 성공!!");
+					mav.addObject("loc", request.getContextPath()+"/emp/empList.gw");
+					mav.setViewName("msg");
+				}
+				
+				return mav;
+			}
 	 	
 	 	
 	 	

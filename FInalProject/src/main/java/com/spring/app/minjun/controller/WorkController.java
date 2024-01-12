@@ -227,7 +227,7 @@ public class WorkController {
 	public ModelAndView goToWorkUpdateWithExtendedIndex(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		
 		String fk_employee_id = request.getParameter("fk_employee_id");
-		String work_date = request.getParameter("work_date");
+		String work_date = request.getParameter("work_date_ex");
 		String extended_end_time = request.getParameter("extended_end_time");
 		
 		Map<String, String> paraMap = new HashMap<>();
@@ -343,7 +343,7 @@ public class WorkController {
 	public ModelAndView goToWorkUpdateIndex(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
 		
 		String fk_employee_id = request.getParameter("fk_employee_id");
-		String work_date = request.getParameter("work_date");
+		String work_date = request.getParameter("work_date_ex");
 		
 		Map<String, String> paraMap = new HashMap<>();
         
@@ -642,6 +642,41 @@ public class WorkController {
 		return mav;
 	}
 	
+	// 오늘 출근, 퇴근 시간 가져오기
+	@ResponseBody
+	@PostMapping("/getMyWorkTime.gw")
+	public String getMyWorkTime(HttpServletRequest request) {
+		
+		HttpSession session = request.getSession();
+        EmployeesVO loginuser = (EmployeesVO) session.getAttribute("loginuser");
+        String employee_id = loginuser.getEmployee_id();
+		String myWorkDate = request.getParameter("myWorkDate");
+        
+        Map<String, String> paraMap = new HashMap<>();
+        
+        paraMap.put("employee_id", employee_id);
+        paraMap.put("myWorkDate", myWorkDate);
+		
+        Map<String, String> workDate = service.getMyWorkTime(paraMap);
+
+    	JSONObject jsonObj = new JSONObject();
+    	
+        if(workDate != null) {
+        	String start = workDate.get("work_start_time");
+            String end = workDate.get("work_end_time");
+            String timeDiff = workDate.get("timeDiff");
+            
+            jsonObj.put("work_start_time", start);
+            jsonObj.put("work_end_time", end);
+            jsonObj.put("timeDiff", timeDiff);
+        }
+        else {
+        	jsonObj.put("work_start_time", "");
+            jsonObj.put("work_end_time", "");
+            jsonObj.put("timeDiff", "");
+        }
+        return jsonObj.toString();
+	}
 	
 	// ======= 부서 근무 관리 페이지 [끝] ======= //
 	

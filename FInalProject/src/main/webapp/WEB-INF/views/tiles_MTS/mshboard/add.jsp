@@ -137,6 +137,15 @@
    		align-items: center; 
     }
     
+    #dropzone > div:nth-child(1){
+		position:relative;
+		right:34px;
+	}
+  
+  	#mycontent > div > form > div:nth-child(3) > span{
+		margin-right:13px;
+	}
+    
 </style>    
 
 <script type="text/javascript">
@@ -164,7 +173,6 @@ $(document).ready(function(){
 	
 	        var files = e.originalEvent.dataTransfer.files;  
 	        
-	        console.log(files); // object
 	        
 	        if(files != null && files != undefined){
 
@@ -205,7 +213,6 @@ $(document).ready(function(){
 	    // == Drop 되어진 파일목록 제거하기 == // 
 	    $(document).on("click", "span.delete", function(e){
 	    	let idx = $("span.delete").index($(e.target));
-	    //	alert("인덱스 : " + idx );
 	    
 	    	file_arr.splice(idx,1); // 드롭대상인 박스 안에 첨부파일을 드롭하면 파일들을 담아둘 배열인 file_arr 에서 파일을 제거시키도록 한다.
 	    
@@ -303,13 +310,11 @@ $(document).ready(function(){
            contentType:false,  // 파일 전송시 설정 
            dataType:"json",
            success:function(json){
-         	  //console.log("~~~ 확인용 : " + JSON.stringify(json));
-               // ~~~ 확인용 : {"result":1}
                if(json.result == 1) {
             	   location.href="<%= ctxPath%>/freeboard.gw"; 
                }
                else {
-             	  alert("메일보내기가 실패했습니다.");
+             	  alert("글쓰기가 실패했습니다.");
                }
            },
            error: function(request, status, error){
@@ -327,7 +332,6 @@ $(document).ready(function(){
               contentType:false,  // 파일 전송시 설정 
               dataType:"json",
               success:function(json){
-            	  console.log("~~~ 확인용 : " + JSON.stringify(json));
                   // ~~~ 확인용 : {"result":1}
                	   location.href="<%= ctxPath%>/freeboard.gw"; 
                  
@@ -394,8 +398,8 @@ $(document).ready(function(){
 		            <div class="filebox">
 						<div class="dropBox mt-2">
 							<div class=row id="dropzone" style="margin-left:-1.5%; display: flex; align-items: center; justify-content: center; margin-bottom: 30px;">
-					        	<div style="margin-right:610px; ">여기에 첨부 파일을 끌어 오세요</div>
-					            <div id="file" name="file" style="display: inline-block; border: solid 2px; margin-left: 10px; width:850px; height:80px; background-color:white;"></div>
+					        	<div style="margin-right:640px; ">여기에 첨부 파일을 끌어 오세요</div>
+					            <div id="file" name="file" style="display: inline-block; border: solid 2px; margin-right:90px; width:850px; height:80px; background-color:white; overflow-y: auto;"></div>
 					        </div>
 						</div>
 					</div>

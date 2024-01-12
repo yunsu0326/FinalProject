@@ -92,6 +92,7 @@ public class Pagination {
 	public Map<String, Object> getPageRange(int listCnt) {
 
 		// 총 페이지 수 계산
+		//System.out.println("listCnt =>"+listCnt);
 		totalPage = (int) Math.ceil((double) listCnt / pageSize);
 		
 		currentPage = (currentPage > totalPage)? 1 : currentPage;
@@ -115,7 +116,7 @@ public class Pagination {
 	
 	// 인스턴스에 페이지 정보 설정하기
 	public void setPageInfo(int listCnt) {
-		
+		//System.out.println("listCnt =>" +listCnt);
 		// 총 페이지 수 계산
 		totalPage = (int) Math.ceil((double) listCnt / pageSize);
 		
@@ -134,7 +135,7 @@ public class Pagination {
 		int pageNo = ((currentPage - 1) / blockSize) * blockSize + 1;
 
 		String pageBar = "<ul class='pagination justify-content-center'>";
-
+		//System.out.println("pageNo =>" +pageNo);
 		// === [맨처음][이전] 만들기 === //
 		if (pageNo != 1) {
 			pageBar += "<li class='page-item'><a style='background-color: #03C75A;' class='page-link' href='" + url + "?searchType="
@@ -143,7 +144,8 @@ public class Pagination {
 					+ searchType + "&searchWord=" + searchWord + "&currentPage=" + (pageNo - 1) + "&pageSize=" + pageSize + queryString
 					+ "'><i class='fas fa-angle-left'></i></i></a></li>";
 		}
-
+		//System.out.println("blockSize =>" +blockSize);
+		//System.out.println("totalPage =>" +totalPage);
 		while (!(loop > blockSize || pageNo > totalPage)) {
 
 			if (pageNo == currentPage) {

@@ -38,19 +38,15 @@ public class DocumentDAO_imple implements DocumentDAO {
 		return n;
 	}
 	
-	//문서 정보 가져오기
-	@Override
-	public List<Map<String, String>> selectDocument() {
-		List<Map<String, String>> documentList =  sqlsession.selectList("yunsu.selectDocument");
-		return documentList;
-	}
-
+	
+	// 삭제할 문서 정보 가져오기
 	@Override
 	public String deleteDocumentSelect(String seq) {
 		String fileName = sqlsession.selectOne("yunsu.deleteDocumentSelect", seq);
 		return fileName;
 	}
-
+	
+	// 문서 삭제하기
 	@Override
 	public int deleteDocument(Map<String, String> paraMap) {
 		int n = sqlsession.delete("yunsu.deleteDocument", paraMap); 
@@ -83,6 +79,20 @@ public class DocumentDAO_imple implements DocumentDAO {
 	public int updateDocument(DocumentVO documentvo) {
 		int n = sqlsession.update("yunsu.updateDocument", documentvo);
 		return n;
+	}
+	
+	// 문서 갯수 가져오기
+	@Override
+	public int getDocuSearchCnt(Map<String, Object> paraMap) {
+		int n = sqlsession.selectOne("yunsu.getDocuSearchCnt", paraMap);
+		return n;
+	}
+	
+	//문서 내역 가져오기
+	@Override
+	public List<Map<String, String>> getDocumentList(Map<String, Object> paraMap) {
+		List<Map<String, String>> documentList = sqlsession.selectList("yunsu.getDocumentList", paraMap);
+		return documentList;
 	}
 	
 	
