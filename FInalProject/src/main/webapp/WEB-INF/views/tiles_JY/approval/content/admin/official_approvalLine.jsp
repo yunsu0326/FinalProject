@@ -22,7 +22,8 @@
 }
 
 #editBtn:hover {
-	background-color: #cfe9fc;
+	background-color: #03C75A;
+	color: white;
 }
 
 .active, .accordion:hover {
@@ -37,7 +38,7 @@
 }
 
 #saveBtn {
-	background-color: #086BDE;
+	background-color: #03C75A;
 	color: white;
 }
 
@@ -51,8 +52,12 @@
 }
 
 .table th {
-	background-color: #E3F2FD;
+	background-color: #E0F8EB;
 	vertical-align: middle;
+	text-align: center;
+}
+
+.table td {
 	text-align: center;
 }
 
@@ -196,11 +201,11 @@ async function receiveMessage(e) {
 	jsonArr.forEach(function(emp, index) {
 
 		var html = "<tr>"
-				 + "<td class='levelno'>" + emp.levelno + "</td>"
-				 + "<td class='department'>" + emp.position + "</td>"
-				 + "<td class='position'>" + emp.position + "</td>"
-				 + "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.empno + "'/></td>"
-				 + "<td class='name'>" + emp.name + "</td></tr>";
+	 			+ "<td class='levelno'>" + emp.levelno + "</td>"
+				+ "<td class='department'>" + emp.department + "</td>"
+				+ "<td class='position'>" + emp.position + "</td>"
+				+ "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.empno + "'></td>"
+				+ "<td class='name'>" + emp.name + "</td></tr>";
 		
 		body.append(html);
 		
@@ -249,14 +254,11 @@ function getAprvLine(official_aprv_line_no) {
 			json.forEach(function(emp, index) {
 
 				var html = "<tr class='listTr'>"
-			 			 + "<td class='levelno'>" + (index+1) + "</td>"
-						 + "<td class='department'>" + emp.fk_department_id + "</td>"
-						 + "<td class='position'>" + emp.gradelevel + "</td>"
-						 + "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.employee_id + "'/></td>"
-						 + "<td class='name'>" + emp.name + "</td></tr>";
-
-				console.log(html);
-						 
+			 			+ "<td class='levelno'>" + (index+1) + "</td>"
+						+ "<td class='department'>" + emp.fk_department_id + "</td>"
+						+ "<td class='position'>" + emp.gradelevel + "</td>"
+						+ "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.employee_id + "'></td>"
+						+ "<td class='name'>" + emp.name + "</td></tr>";
 				aprvTblBody.append(html);
 			});
 		},

@@ -105,12 +105,11 @@ const updateApproval = approval_status => {
         cache:false,
         success:function(json){
         	if(json.result == true) {
-        		// 소켓
-				let result = '결재';
-				if (approval_status == 2) {
-					result = '반려';
-				}
-           		alert("처리 완료\n기안을 처리하였습니다.")
+        		let result = '결재';
+          		if (approval_status == 2) {
+          			result = '반려';
+          		}
+    	    	alert("처리 완료\n기안을 처리하였습니다.")
    	    		location.href = "<%=ctxPath%>/approval/draftDetail.gw?draft_no=${draftMap.dvo.draft_no}&fk_draft_type_no=${draftMap.dvo.fk_draft_type_no}";
         	}
         	else

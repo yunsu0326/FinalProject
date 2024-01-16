@@ -403,7 +403,7 @@ const saveTemp = () => {
 		success:function(json){
    	     	if(json.temp_draft_no != "" && json.temp_draft_no !== undefined) {
    	     		alert("저장 완료\n임시저장 되었습니다.")
-				$("input[name='temp_draft_no']").val(json.temp_draft_no); // 임시저장 번호 대입
+  	 	    	$("input[name='temp_draft_no']").val(json.temp_draft_no); // 임시저장 번호 대입
    	     		location.href = "<%=ctxPath%>/approval/personal/saved.gw";
    	     	}
 	    	else

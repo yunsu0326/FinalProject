@@ -84,10 +84,16 @@ function checkAllBtns (e) {
 
 function deleteDraft() {
 	
+	// 체크된 체크박스 요소들을 배열로 가져오기
 	let selectedArr = Array.from($(".checkboxes")).filter(el=>el.checked);
+
+	// 선택된 체크박스 요소들의 값(attribute: value)을 추출하여 배열로 만들기
 	let valueArr = selectedArr.map(el=>el.previousElementSibling.value);
+	
+	// 배열을 콤마로 구분된 문자열로 변환
 	const deleteList = valueArr.join(',');
 	
+	// FormData 객체를 생성하고 deleteList를 추가
 	let formData = new FormData();
 	formData.append('deleteList', deleteList);	
 	

@@ -30,7 +30,7 @@
 }
 
 #editBtn {
-	background-color: #E3F2FD;
+	background-color: ##E0F8EB;
 }
 
 #editBtn:hover {
