@@ -24,7 +24,7 @@ public class EmployeesVO {
 	private String fk_job_id;        // 직급번호
 	private String status;      	  // 근무현황   1: 퇴근 / 2:근무중 / 3:출장
 	private String register_status;  // 가입현황   0 : 가입대기 / 1 : 가입완료
-	private String idle;        	  // 가입유무      0 : 일하는중  /  1 : 휴직 / 2: 퇴사 
+	private String idle;        	  // 휴면여부      0 : 일하는중  /  1 : 휴직 / 2: 퇴사 
 	private String gradelevel;   	  // 사원등급  1: 사원 / 3:팀장 / 5: 부서장 / 10: 사장? 총관리자?
 	private String photo;         // 사원 사진
 	private String bank_name;     // 은행명

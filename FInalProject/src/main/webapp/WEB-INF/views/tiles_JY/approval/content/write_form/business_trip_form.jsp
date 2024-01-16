@@ -131,12 +131,9 @@ $(() => {
 		
 		// 드롭된 파일 리스트 가져오기
 		const files = Array.from(e.dataTransfer.files);
-		
-		if(files != null && files != undefined){
-		    let tag = "";
-		    
-	        let length = fileList.length;
 
+		if(files != null && files != undefined){
+		    
 		    for(i=0; i<files.length; i++){
 		        let f = files[i];
 
@@ -146,17 +143,21 @@ $(() => {
 		        let fileName = f.name;
 		        let fileSize = f.size / 1024 / 1024;
 		        fileSize = fileSize < 1 ? fileSize.toFixed(3) : fileSize.toFixed(1);
+		        
+		        console.log(fileSize);
+		        console.log(fileSize.substr(0,fileSize.indexOf('.')));
+		        
 		     	// 파일 정보 표시하기
-		        tag += 
-		                "<div class='fileList'>" +
-		                    "<span class='fileName'>" + fileName + "</span>" +
-		                    "<span class='fileSize'>" + fileSize +" MB</span>" +
-		                    "<span class='digitFileSize' style='display:none'>" + f.size + "</span>" +
-		                    "<span class='removeFile btn small name='removeFile'>삭제</span>" +
-		                "</div>";
+		     //   tag += 
+			    $(".dropBox").append("<div class='fileList'>" +
+	                    "<span class='fileName'>" + fileName + "</span>&nbsp;&nbsp;&nbsp;" +
+	                    "<span class='fileSize'>" + fileSize +" MB</span>" +
+	                    "<span class='digitFileSize' style='display:none;'>" + f.size + "</span>" +
+	                    "<span class='removeFile btn small' name='removeFile'>삭제</span>" +
+	                "</div>");
+			    
 		    }
-		    $(".dropBox span").hide();
-		    $(this).append(tag);
+		    $("span#a").hide();
 		    $(this).addClass('active');
 		}
 	}
@@ -182,9 +183,12 @@ $(() => {
 
 	// 파일 삭제 버튼 클릭시
 	$(document).on('click','[name=removeFile]', function(){
-   	 	const $this = $(this);
+
+		const $this = $(this);
    	 	delete_file_name = $this.parent().children('.fileName').text();
    	 	delete_file_size = $this.parent().children('.digitFileSize').text();
+   	 	
+   	 	$(this).parent().remove();
    	 	
    	 	for(let i = 0; i < fileList.length; i++) {
    	 		if(fileList[i].name = delete_file_name && delete_file_size == fileList[i].size )  {
@@ -193,7 +197,12 @@ $(() => {
    	 		    i--;
    	 		  }
    	 	}
-   	 $(this).parent().remove();
+   	 	
+   	 	
+   	 	if(fileList.length == 0) {
+   	 		$drop.classList.remove("active");
+   	 		$("span#a").show();
+   	 	}
    	 
 	});
 	
@@ -590,7 +599,7 @@ const emptyApprovalLine = () => {
 			<!-- 파일첨부 -->
 			<div class="filebox">
 				<div class="dropBox mt-2">
-					<span style='font-size: small'>이곳에 파일을 드롭해주세요.</span>
+					<span id="a" style='font-size: small'>이곳에 파일을 드롭해주세요.</span>
 				</div>
 			</div>
 			<!-- 결재의견 및 긴급여부 체크 모달 -->
