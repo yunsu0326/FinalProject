@@ -32,6 +32,9 @@ public class EmployeesVO {
 	private String userid;        // 아이디
 	private String signimg;			// 사인 이미지
 	
+	private String grade;			// 직책(join용)
+	private String department_name;			// 부서명(join용)
+	
 	
 	private MultipartFile attach;
 	
@@ -258,6 +261,22 @@ public class EmployeesVO {
 
 	public void setSignimg(String signimg) {
 		this.signimg = signimg;
+	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public String getDepartment_name() {
+		return department_name;
+	}
+
+	public void setDepartment_name(String department_name) {
+		this.department_name = department_name;
 	}
 	
 	

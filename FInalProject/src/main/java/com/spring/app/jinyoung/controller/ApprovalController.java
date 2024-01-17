@@ -534,6 +534,11 @@ public class ApprovalController {
 		
 		EmployeesVO loginuser = JYUtil.getLoginUser(request);
 		
+		String empno = loginuser.getEmployee_id();
+		
+		// JOIN 을 통해 가져올 로그인한 유저의 정보
+		loginuser = service.getLoginuser(empno);
+		
 		// 공통 결재라인 가져오기
 		List<EmployeesVO> recipientList = service.getRecipientList(type_no);
 		JSONArray recipientArr = new JSONArray();
@@ -556,6 +561,7 @@ public class ApprovalController {
 		}
 		
 		mav.addObject("recipientArr", String.valueOf(recipientArr));
+		mav.addObject("loginuser", loginuser);
 		
 		switch (type_no) {
 		

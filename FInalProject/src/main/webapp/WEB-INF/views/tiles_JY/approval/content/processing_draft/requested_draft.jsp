@@ -144,7 +144,7 @@ const excelDownLoad = () => {
                      <span class="badge badge-pill badge-danger">긴급</span>
                             </c:if>
                             ${draft.draft_subject}</a></td>
-                            <td class='col'>${draft.draft_department}</td>
+                            <td class='col'>${draft.draft_department_name}</td>
                             <td class='col'>${draft.draft_emp_name}</td>
                         </tr>
                     </c:forEach>

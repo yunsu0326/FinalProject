@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-// import com.nhncorp.lucy.security.xss.XssPreventer;
 import com.spring.app.domain.ApprovalVO;
 import com.spring.app.domain.BiztripReportVO;
 import com.spring.app.domain.DraftFileVO;
@@ -410,8 +409,6 @@ public class ApprovalService_imple implements ApprovalService {
 		dvo = dao.getDraftInfo(dvo);
 		
 		// 에디터로 작성한 내용은 태그를 되돌린다.
-//		String unescapedContent = XssPreventer.unescape(dvo.getDraft_content());
-//		dvo.setDraft_content(unescapedContent);
 		draftMap.put("dvo", dvo);
 		
 		// approval에서 select
@@ -425,9 +422,12 @@ public class ApprovalService_imple implements ApprovalService {
 		List<ApprovalVO> externalList = new ArrayList<ApprovalVO>();
 		
 		for(ApprovalVO avo : avoList) {
-			if (avo.getOutside() == 0)
+			if (avo.getOutside() == 0) {
 				internalList.add(avo);
-			else externalList.add(avo);
+			}
+			else {
+				externalList.add(avo);
+			}
 		}
 		draftMap.put("internalList", internalList);
 		draftMap.put("externalList", externalList);
@@ -481,6 +481,12 @@ public class ApprovalService_imple implements ApprovalService {
 		return n > 0? true: false; 
 	}
 
+	// JOIN 을 통해 가져올 로그인한 유저의 정보
+	@Override
+	public EmployeesVO getLoginuser(String empno) {
+		return dao.getLoginuser(empno);
+	}
+	
 	// 기안종류번호로 공통결재라인(수신처) 가져오기
 	@Override
 	public List<EmployeesVO> getRecipientList(String type_no) {
@@ -716,6 +722,8 @@ public class ApprovalService_imple implements ApprovalService {
 			return true;
 		}
 	}
+
+	
 
 }
 	

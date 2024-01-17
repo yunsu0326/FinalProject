@@ -212,7 +212,7 @@ function selectAprvMember(selectedEmpNo) {
 	
  	var html = "<tr class='listTr' id='" + emp.employee_id + "'>"
  			+ "<td class='levelno'></td>"
-			+ "<td class='department'>" + emp.fk_department_id + "</td>"
+			+ "<td class='department'>" + emp.department_name + "</td>"
 			+ "<td class='position'>" + emp.grade + "</td>"
 			+ "<td class='position_no' style='display : none;'>" + emp.gradelevel + "</td>"
 			+ "<td class='empno' style='display : none;'>" + emp.employee_id + "</td>"

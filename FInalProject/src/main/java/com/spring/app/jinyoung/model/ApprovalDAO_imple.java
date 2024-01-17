@@ -288,6 +288,12 @@ public class ApprovalDAO_imple implements ApprovalDAO {
 		return (int) approvalMap.get("o_updateCnt");
 	}
 	
+	// JOIN 을 통해 가져올 로그인한 유저의 정보
+	@Override
+	public EmployeesVO getLoginuser(String empno) {
+		return sqlsession.selectOne("approval.getLoginuser", empno);
+	}
+	
 	// 공통 결재라인 가져오기
 	@Override
 	public List<EmployeesVO> getRecipientList(String type_no) {
@@ -455,5 +461,8 @@ public class ApprovalDAO_imple implements ApprovalDAO {
 	public int deleteOneDraft(String draft_no) {
 		return sqlsession.delete("approval.deleteOneDraft", draft_no);
 	}
+
+
+	
 
 }

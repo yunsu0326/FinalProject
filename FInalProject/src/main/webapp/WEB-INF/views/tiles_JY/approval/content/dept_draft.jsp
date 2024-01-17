@@ -51,7 +51,7 @@ const excelDownLoad = () => {
 	
 	const frm = document.excelFrm;
 	frm.downloadList.value = downloadList;
-	frm.listName.value = '팀문서함';
+	frm.listName.value = '부서문서함';
 	
 	frm.method="get";
 	frm.action="<%=ctxPath%>/approval/excel/downloadExcelFile.gw";

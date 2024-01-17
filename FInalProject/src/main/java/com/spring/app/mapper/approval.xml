@@ -278,8 +278,9 @@
 	<select id="getRequestedDraftList" resultType="com.spring.app.domain.DraftVO" parameterType="HashMap" >
 		SELECT * 
 		FROM ( SELECT A.*, ROWNUM AS RNO
-		    FROM ( SELECT *
-		            FROM VIEW_DRAFT_APPROVAL
+		    FROM ( SELECT V.*, D.DEPARTMENT_NAME AS DRAFT_DEPARTMENT_NAME
+		            FROM VIEW_DRAFT_APPROVAL V JOIN TBL_DEPARTMENT D
+		            ON V.DRAFT_DEPARTMENT = D.DEPARTMENT_ID
 					WHERE DRAFT_NO IN
 					<foreach collection="draftNoList" item="list" open="(" close=")" separator=",">
 						#{list}
@@ -348,8 +349,9 @@
 	<select id="getUpcomingDraftList" resultType="com.spring.app.domain.DraftVO" parameterType="HashMap" >
 		SELECT * 
 		FROM ( SELECT A.*, ROWNUM AS RNO
-		    FROM ( SELECT *
-		            FROM VIEW_DRAFT_APPROVAL
+		    FROM ( SELECT V.*, D.DEPARTMENT_NAME AS DRAFT_DEPARTMENT_NAME
+		            FROM VIEW_DRAFT_APPROVAL V JOIN TBL_DEPARTMENT D
+		            ON V.DRAFT_DEPARTMENT = D.DEPARTMENT_ID
 					WHERE DRAFT_NO IN
 					<foreach collection="draftNoList" item="list" open="(" close=")" separator=",">
 						#{list}
@@ -384,13 +386,16 @@
 		<result property="gradelevel" column="gradelevel" javaType="String"/>
 		<result property="grade" column="grade" javaType="String"/>
 		<result property="fk_team_id" column="fk_team_id" javaType="String"/>
+		<result property="department_name" column="department_name" javaType="String"/>
 	</resultMap>
 	
 	<select id="getEmpList" resultMap="empMap" parameterType="HashMap">
 		SELECT DISTINCT E.EMPLOYEE_ID, E.FK_DEPARTMENT_ID, E.NAME, E.GRADELEVEL, E.FK_TEAM_ID
-			  ,CASE E.GRADELEVEL WHEN 1 THEN '사원' WHEN 3 THEN '팀장' WHEN 5 THEN '부서장' ELSE '사장' END AS GRADE
+			 , CASE E.GRADELEVEL WHEN 1 THEN '사원' WHEN 3 THEN '팀장' WHEN 5 THEN '부서장' ELSE '사장' END AS GRADE
+			 , D.DEPARTMENT_NAME
 		FROM TBL_EMPLOYEES U JOIN TBL_EMPLOYEES E
 		ON U.FK_DEPARTMENT_ID = E.FK_DEPARTMENT_ID
+		JOIN TBL_DEPARTMENT D ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
 		<if test='type == "personal"'>
 		WHERE U.EMPLOYEE_ID != #{loginuser.employee_id} AND U.FK_DEPARTMENT_ID = #{loginuser.fk_department_id}
 		AND E.GRADELEVEL > #{loginuser.gradelevel}
@@ -472,9 +477,11 @@
 	
 	<!-- 저장된 결재라인 결재자 정보 불러오기 -->
 	<select id="getSavedAprvEmpInfo" resultType="com.spring.app.domain.EmployeesVO" parameterType="java.util.List">
-		SELECT DEPARTMENT_ID, A.GRADELEVEL, NAME, DEPARTMENT_NAME, EMPLOYEE_ID, FK_DEPARTMENT_ID
-		FROM TBL_EMPLOYEES A JOIN TBL_DEPARTMENT D
-		ON A.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
+		SELECT DEPARTMENT_ID, E.GRADELEVEL, NAME, DEPARTMENT_NAME
+			 , CASE E.GRADELEVEL WHEN 1 THEN '사원' WHEN 3 THEN '팀장' WHEN 5 THEN '부서장' ELSE '사장' END AS GRADE
+			 , EMPLOYEE_ID, FK_DEPARTMENT_ID
+		FROM TBL_EMPLOYEES E JOIN TBL_DEPARTMENT D
+		ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
 		WHERE EMPLOYEE_ID IN
 		<foreach collection="list" item="list" open="(" close=")" separator=",">
 			#{list, jdbcType=VARCHAR}
@@ -484,7 +491,9 @@
 	
 	<!-- 저장된 결재라인 결재자 정보 - 결재라인번호로 조회 -->
 	<select id="getOneAprvLine" resultType="com.spring.app.domain.EmployeesVO" parameterType="String">
-		SELECT EMPLOYEE_ID, NAME, GRADELEVEL, FK_DEPARTMENT_ID
+		SELECT EMPLOYEE_ID, NAME
+			 , CASE E.GRADELEVEL WHEN 1 THEN '사원' WHEN 3 THEN '팀장' WHEN 5 THEN '부서장' ELSE '사장' END AS GRADE
+			 , GRADELEVEL, FK_DEPARTMENT_ID, DEPARTMENT_NAME
 		FROM TBL_EMPLOYEES E JOIN TBL_DEPARTMENT D
 		ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
 		WHERE EXISTS
@@ -530,8 +539,8 @@
 
 	<!-- 공통결재라인 이름으로 조회 -->	
 	<select id="getOneOfficialAprvLine" resultType="com.spring.app.domain.EmployeesVO" parameterType="String">
-		SELECT EMPLOYEE_ID, NAME
-			 , CASE E.GRADELEVEL WHEN 1 THEN '사원' WHEN 3 THEN '팀장' WHEN 5 THEN '부서장' ELSE '사장' END AS GRADELEVEL
+		SELECT EMPLOYEE_ID, NAME, GRADELEVEL
+			 , CASE E.GRADELEVEL WHEN 1 THEN '사원' WHEN 3 THEN '팀장' WHEN 5 THEN '부서장' ELSE '사장' END AS GRADE
 			 , FK_DEPARTMENT_ID, DEPARTMENT_NAME
 		FROM TBL_EMPLOYEES E JOIN TBL_DEPARTMENT D
 		ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
@@ -609,7 +618,7 @@
 	<select id="getDraftInfo" resultType="com.spring.app.domain.DraftVO" parameterType="com.spring.app.domain.DraftVO" >
 		SELECT D.*, FK_DRAFT_EMPNO, NAME as DRAFT_EMP_NAME
 			 , B.DEPARTMENT_NAME AS DRAFT_DEPARTMENT, E.FK_DEPARTMENT_ID AS DRAFT_DEPARTMENT_NO
-			 , GRADELEVEL AS POSITION, PHOTO AS EMPIMG
+			 , CASE E.GRADELEVEL WHEN 1 THEN '사원' WHEN 3 THEN '팀장' WHEN 5 THEN '부서장' ELSE '사장' END AS POSITION, PHOTO AS EMPIMG
 		FROM TBL_DRAFT D JOIN TBL_EMPLOYEES E
 		ON E.EMPLOYEE_ID = D.FK_DRAFT_EMPNO JOIN TBL_DEPARTMENT B
 		ON E.FK_DEPARTMENT_ID = B.DEPARTMENT_ID
@@ -617,10 +626,12 @@
 	</select>
 
 	<!-- 기안 결재 정보 조회 -->
-	<select id="getApprovalInfo" resultType="com.spring.app.domain.ApprovalVO" parameterType="com.spring.app.domain.EmployeesVO" >
-		SELECT A.*, NAME, FK_DEPARTMENT_ID, GRADELEVEL AS POSITION, PHOTO AS EMPIMG, SIGNIMG, OUTSIDE
-		FROM TBL_APPROVAL A JOIN TBL_EMPLOYEES
+	<select id="getApprovalInfo" resultType="com.spring.app.domain.ApprovalVO" parameterType="com.spring.app.domain.DraftVO" >
+		SELECT A.*, NAME, FK_DEPARTMENT_ID, GRADELEVEL AS POSITION, PHOTO AS EMPIMG, SIGNIMG, OUTSIDE, DEPARTMENT_NAME
+		     , CASE E.GRADELEVEL WHEN 1 THEN '사원' WHEN 3 THEN '팀장' WHEN 5 THEN '부서장' ELSE '사장' END AS GRADE
+		FROM TBL_APPROVAL A JOIN TBL_EMPLOYEES E
 		ON EMPLOYEE_ID = FK_APPROVAL_EMPNO
+		JOIN TBL_DEPARTMENT D ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
 		WHERE FK_DRAFT_NO = #{draft_no}
 		ORDER BY LEVELNO
 	</select>
@@ -632,13 +643,13 @@
 	</select>
 
 	<!-- 지출내역 조회 -->
-	<select id="getExpenseListInfo" resultType="com.spring.app.domain.ExpenseListVO" parameterType="com.spring.app.domain.EmployeesVO" >
+	<select id="getExpenseListInfo" resultType="com.spring.app.domain.ExpenseListVO" parameterType="com.spring.app.domain.DraftVO" >
 		SELECT * FROM TBL_EXPENSE_LIST
 		WHERE FK_DRAFT_NO = #{draft_no}
 	</select>
 	
 	<!-- 출장보고 조회 -->
-	<select id="getBiztripReportInfo" resultType="com.spring.app.domain.BiztripReportVO" parameterType="com.spring.app.domain.EmployeesVO" >
+	<select id="getBiztripReportInfo" resultType="com.spring.app.domain.BiztripReportVO" parameterType="com.spring.app.domain.DraftVO" >
 		SELECT * FROM TBL_BIZTRIP_REPORT
 		WHERE FK_DRAFT_NO = #{draft_no}
 	</select>
@@ -683,10 +694,20 @@
 		AND APPROVAL_STATUS = 1
 	</select>
 	
+	<!-- JOIN 을 통해 가져올 로그인한 유저의 정보 -->
+	<select id="getLoginuser" resultType="com.spring.app.domain.EmployeesVO" parameterType="String">
+		SELECT *
+		FROM TBL_EMPLOYEES E JOIN TBL_DEPARTMENT D
+		ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
+		WHERE EMPLOYEE_ID = #{empno}
+	</select>
+	
 	<!-- 양식번호로 공통 결재라인 조회 -->
 	<select id="getRecipientList" resultType="com.spring.app.domain.EmployeesVO" parameterType="String">
-		SELECT EMPLOYEE_ID, NAME, FK_DEPARTMENT_ID, GRADELEVEL, PHOTO
-		FROM TBL_EMPLOYEES
+		SELECT EMPLOYEE_ID, NAME, FK_DEPARTMENT_ID, GRADELEVEL, PHOTO, DEPARTMENT_NAME
+     		 , CASE E.GRADELEVEL WHEN 1 THEN '사원' WHEN 3 THEN '팀장' WHEN 5 THEN '부서장' ELSE '사장' END AS GRADE
+		FROM TBL_EMPLOYEES E JOIN TBL_DEPARTMENT D
+		ON E.FK_DEPARTMENT_ID = D.DEPARTMENT_ID
 		WHERE EXISTS
 					(SELECT 1
 					FROM TBL_OFFICIAL_APRV_LINE

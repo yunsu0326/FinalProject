@@ -109,3 +109,15 @@ label:hover {
 .removeFile {
 	font-size: small;
 }
+
+#modalBody td {
+	text-align: center;
+}
+
+#recipientTblBody td {
+	text-align: center;
+}
+
+#aprvTblBody td {
+	text-align: center;
+}

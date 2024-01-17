@@ -112,7 +112,7 @@ function goWriteForm() {
       		<li><a id="signature" class="nav-link" href="<%=ctxPath%>/approval/config/signature.gw">서명 관리</a></li>
       	</ul>
     </li>
-	<c:if test="${loginuser != null && loginuser.gradelevel > 3}">
+	<c:if test="${loginuser != null && loginuser.gradelevel > 3 && loginuser.fk_department_id == '200'}">
     <li style="margin-top: 7px;" class="nav-item topMenu">관리자메뉴
       	<ul class='subMenus adminMenu'>
       		<li style="margin-top: 7px;"><a id="officialApprovalLine" class="nav-link" href="<%=ctxPath%>/approval/admin/officialApprovalLine.gw">공통 결재라인 설정</a></li>

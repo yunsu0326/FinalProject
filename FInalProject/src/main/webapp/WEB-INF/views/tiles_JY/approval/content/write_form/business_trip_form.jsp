@@ -376,8 +376,8 @@ const getApprovalEmpInfo = aprvLine => {
 
 				var html = "<tr>"
 			 			+ "<td class='levelno'>" + (index+1) + "</td>"
-						+ "<td class='department'>" + emp.fk_department_id + "</td>"
-						+ "<td class='position'>" + emp.gradelevel + "</td>"
+						+ "<td class='department'>" + emp.department_name + "</td>"
+						+ "<td class='position'>" + emp.grade + "</td>"
 						+ "<input type='hidden' name='avoList[" + index + "].levelno' value='" + (index+1) + "'></td>"
 						+ "<input type='hidden' name='avoList[" + index + "].fk_approval_empno' value='" + emp.employee_id + "'></td>"
 						+ "<input type='hidden' name='avoList[" + index + "].external' value='0'></td>"
@@ -469,7 +469,7 @@ const emptyApprovalLine = () => {
 					</tr>
 					<tr>
 						<th>소속</th>
-						<td>${loginuser.fk_department_id}</td>
+						<td>${loginuser.department_name}</td>
 					</tr>
 					<tr>
 						<th>기안일</th>
@@ -549,8 +549,8 @@ const emptyApprovalLine = () => {
 	
 				    		var html = "<tr>"
 				    	 			+ "<td class='levelno'>" + (index + 1) + "</td>"
-				    				+ "<td class='department'>" + emp.fk_department_id + "</td>"
-				    				+ "<td class='position'>" + emp.gradelevel + "</td>"
+				    				+ "<td class='department'>" + emp.department_name + "</td>"
+				    				+ "<td class='position'>" + emp.grade + "</td>"
 				    				+ "<td class='name'>" + emp.name + "</td></tr>";
 				    			
 		    				recipientTblBody.append(html);

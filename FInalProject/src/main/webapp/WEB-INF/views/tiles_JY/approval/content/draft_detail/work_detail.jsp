@@ -237,14 +237,16 @@ const cancelDraft = () => {
 				
 				let html = "";
 				internalList.forEach(el => {
-					html = "<td>" + el.position + "</td>";
+					html = "<td>" + el.grade + "</td>";
 					$("tr.in.position").append(html);
 					
 					let approval_status = "";
-					if (el.approval_status == 1)
+					if (el.approval_status == 1) {
 						approval_status = "<img src='<%=ctxPath%>/resources/images/sign/"+el.signimg+"' width='100'/>";
-					else if (el.approval_status == 2) 
+					}
+					else if (el.approval_status == 2) {
 						approval_status = "<h3 class='text-danger'>반려</h3>";
+					} 
 
 					html = "<td>"+approval_status+"</td>";					
 					$("tr.in.approval_status").append(html);
@@ -279,14 +281,16 @@ const cancelDraft = () => {
 			<script>
 				html = "";
 				externalList.forEach(el => {
-					html = "<td>" + el.position + "</td>";
+					html = "<td>" + el.grade + "</td>";
 					$("tr.ex.position").append(html);
 					
 					let approval_status = "";
-					if (el.approval_status == 1)
-						approval_status = "<img src='<%=ctxPath%>/resources/images/"+el.signimg+"' width='100'/>";
-					else if (el.approval_status == 2) 
+					if (el.approval_status == 1) {
+						approval_status = "<img src='<%=ctxPath%>/resources/images/sign/"+el.signimg+"' width='100'/>";
+					}
+					else if (el.approval_status == 2) {
 						approval_status = "<h3 class='text-danger'>반려</h3>";
+					} 
 
 					html = "<td>"+approval_status+"</td>";					
 					$("tr.ex.approval_status").append(html);
@@ -391,7 +395,7 @@ const cancelDraft = () => {
 								<c:if test="${not empty avo.empimg}">
 									<td class='profile' rowspan='2'><img style='border-radius: 50%; display: inline-block' src='<%=ctxPath%>/resources/images/empImg/${avo.empimg}' width="100" height="100"/></td>
 								</c:if>
-								<td><h6>${avo.name}&nbsp;${avo.position}</h6></td>
+								<td><h6>${avo.name}&nbsp;${avo.grade}</h6></td>
 								<td id='date'><span style='color: #b3b3b3'>${avo.approval_date}</span></td>
 							</tr>
 							<tr>

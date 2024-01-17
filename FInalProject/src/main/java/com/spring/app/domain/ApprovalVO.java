@@ -14,9 +14,10 @@ public class ApprovalVO {
 	private int outside; // 결재선 성격(0: 내부결재, 1:외부결재)
 	
 	private String name; // 결재자 이름(join)
-	private String department; // 결재자 부서(join)
+	private String department_name; // 결재자 부서(join)
 	private String department_id; // 결재자 부서(join)
 	private String position; // 결재자 직급(join)
+	private String grade; // 결재자 직급(join)
 	private String signimg; // 결재자 서명 이미지(join)
 	private String empimg; // 결재자 프로필이미지(join)
 	
@@ -94,6 +95,14 @@ public class ApprovalVO {
 		this.position = position;
 	}
 	
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -102,12 +111,12 @@ public class ApprovalVO {
 		this.name = name;
 	}
 	
-	public String getDepartment() {
-		return department;
+	public String getDepartment_name() {
+		return department_name;
 	}
 	
-	public void setDepartment(String department) {
-		this.department = department;
+	public void setDepartment_name(String department_name) {
+		this.department_name = department_name;
 	}
 	
 	public String getDepartment_id() {

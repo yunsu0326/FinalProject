@@ -102,8 +102,8 @@ function getAprvLine(aprv_line_no) {
 
 				var html = "<tr>"
 			 			 + "<td class='levelno'>" + (index+1) + "</td>"
-						 + "<td class='department'>" + emp.fk_department_id + "</td>"
-						 + "<td class='position'>" + emp.gradelevel + "</td>"
+						 + "<td class='department'>" + emp.department_name + "</td>"
+						 + "<td class='position'>" + emp.grade + "</td>"
 						 + "<input type='hidden' name='fk_approval_empno" + (index+1) + "' value='" + emp.emplyee_id + "'/></td>"
 						 + "<td class='name'>" + emp.name + "</td></tr>";
 					

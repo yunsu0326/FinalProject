@@ -117,6 +117,9 @@ public interface ApprovalService {
 	// 결재 처리하기
 	boolean updateApproval(ApprovalVO avo);
 
+	// JOIN 을 통해 가져올 로그인한 유저의 정보
+	EmployeesVO getLoginuser(String empno);
+	
 	// 공통결재라인(수신처) 가져오기
 	List<EmployeesVO> getRecipientList(String type_no);
 
@@ -152,5 +155,7 @@ public interface ApprovalService {
 
 	// 첨부파일 삭제하기
 	boolean deleteFiles(Map<String, Object> paraMap);
+
+	
 
 }
