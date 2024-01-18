@@ -172,7 +172,7 @@
 
 		<div class="icon_set mr-3">
 			<span class="material-icons icon_img" style="font-size: 28pt;">account_circle</span>
-			<span class="icon_text">${sessionScope.loginuser.email} 님의 계정정보</span>
+			<span class="icon_text">${sessionScope.loginuser.name} 님</span>
 		</div>
 
 		<div class="icon_set mr-3">

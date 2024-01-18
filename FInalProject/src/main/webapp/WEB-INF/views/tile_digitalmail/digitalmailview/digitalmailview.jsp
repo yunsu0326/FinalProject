@@ -242,10 +242,7 @@
   
   </style>
   <c:if test="${requestScope.type ne 'fk_sender_email' and requestScope.type ne 'time' and requestScope.type ne 'senddel'}">
-  ${requestScope.type}
-  
-  
-    <input type="text" value="${requestScope.type}"/>
+ 
     
 	<div class="emailList_settings">
 	<!--왼쪽 세팅-->
@@ -370,11 +367,19 @@
 											                <tr>
 											                    <th>받은사람</th>
 											                    <td>
-												                    <div style="display: flex; flex-wrap: wrap;">
-																	<c:forEach var="fk_recipient_email" items="${emailVO.fk_recipient_email_split}" varStatus="status">
-																	    <div class="o_span">${fk_recipient_email}</div>
-																	</c:forEach>   
-																    </div>
+												                    <c:if test="${emailVO.individual ne '1'}"> 
+													                    <div style="display: flex; flex-wrap: wrap;">
+																		<c:forEach var="fk_recipient_email" items="${emailVO.fk_recipient_email_split}" varStatus="status">
+																		    <div class="o_span">${fk_recipient_email}</div>
+																		</c:forEach>   
+																	    </div>
+																	</c:if>
+																	<c:if test="${emailVO.individual eq '1'}"> 
+													                    <div style="display: flex; flex-wrap: wrap;">
+																		    <div class="o_span">${sessionScope.loginuser.email}:${sessionScope.loginuser.name}</div> 
+																	    </div>
+																	</c:if>
+																	
 											                    </td>
 										                    </tr>
 															<tr>
@@ -382,22 +387,31 @@
 																<td>
 																	<c:if test="${not empty emailVO.fk_reference_email}">
 																		<div style="display: flex; flex-wrap: wrap;">
+														                <c:if test="${emailVO.individual ne '1'}">   	
 														                  	<c:forEach var="Fk_reference_email" items="${emailVO.fk_reference_email_split}" varStatus="status">
 																				<div class="o_span">${Fk_reference_email}</div>
 																			</c:forEach>
+																		</c:if>
+																		<c:if test="${emailVO.individual eq '1'}">   	
+																			
+																		</c:if>
 																		</div>
 																	</c:if> 
 																</td>
 															</tr>              
 															<c:if test="${not empty emailVO.fk_hidden_reference_email}">
-											                	<c:forEach var="Fk_hidden_reference_email" items="${emailVO.fk_hidden_reference_email_split}" varStatus="status">
-															    	<c:if test="${Fk_hidden_reference_email == sessionScope.loginuser.email}">
-																		<tr>																																	               
-												                    		<th>숨은참조자</th>
-												               	    		<td><div class="o_span">${sessionScope.loginuser.email}</div></td>	
-																		</tr>
+																<c:if test="${emailVO.individual ne '1'}">
+													                <c:if test="${emailVO.individual ne '1'}">	
+													                	<c:forEach var="Fk_hidden_reference_email" items="${emailVO.fk_hidden_reference_email_split}" varStatus="status">
+																	    	<c:if test="${Fk_hidden_reference_email == sessionScope.loginuser.email}">
+																				<tr>																																	               
+														                    		<th>숨은참조자</th>
+														               	    		<td><div class="o_span">${sessionScope.loginuser.email}</div></td>	
+																				</tr>
+																			</c:if>
+																	    </c:forEach>
 																	</c:if>
-															    </c:forEach>
+																</c:if>
 															</c:if>
 															<tr>
 																<th>첨부파일</th>
@@ -572,6 +586,9 @@
 											                <c:if test="${emailVO.category==3}">
 											                	<span class="material-icons-outlined ml-2 event${emailVO.email_receipt_read_count}" style="color: blue; font-size: 12pt;">공지사항</span>
 											                </c:if>
+											                <c:if test="${emailVO.individual==1}">
+											                	<span class="material-icons-outlined ml-2 event${emailVO.email_receipt_read_count}" style="color: black; font-size: 12pt;">개인별전송</span>
+											                </c:if>
 												            </h5>
 												            <h5 class='text-left' style="font-size: 12px;">읽음여부 : ${requestScope.emailVO.email_total_read_count}명</h5>
 															<h5 class='text-left' style="font-size: 12px;">시간 : ${requestScope.emailVO.send_time}</h5>
@@ -602,16 +619,17 @@
 																	</c:if> 
 																</td>
 															</tr>              
-															<c:if test="${not empty emailVO.fk_hidden_reference_email}">
-											                	<c:forEach var="Fk_hidden_reference_email" items="${emailVO.fk_hidden_reference_email_split}" varStatus="status">
-															    	<c:if test="${Fk_hidden_reference_email == sessionScope.loginuser.email}">
-																		<tr>																																	               
-												                    		<th>숨은참조자</th>
-												               	    		<td><div class="o_span">${sessionScope.loginuser.email}</div></td>	
-																		</tr>
-																	</c:if>
-															    </c:forEach>
-															</c:if>
+															<tr>																																	               
+																<th>숨은참조자</th>
+																<td>
+												                	<div style="display: flex; flex-wrap: wrap;">
+													                	<c:forEach var="Fk_hidden_reference_email" items="${emailVO.fk_hidden_reference_email_split}" varStatus="status">	
+														               		<div class="o_span">${Fk_hidden_reference_email}</div>
+																	    </c:forEach>
+																    </div>
+															    </td>	
+															    </tr>
+															
 															<tr>
 																<th>첨부파일</th>
 																<td>
