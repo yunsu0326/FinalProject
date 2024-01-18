@@ -30,6 +30,7 @@ import com.spring.app.common.digitalmail.util.DigitalmailFileManager;
 import com.spring.app.common.digitalmail.util.SWUtil;
 import com.spring.app.digitalmail.domain.EmailVO;
 import com.spring.app.digitalmail.service.DigitalmailService;
+import com.spring.app.domain.CommentVO;
 import com.spring.app.domain.EmployeesVO;
 
 @Controller
@@ -591,8 +592,10 @@ public class DigitalmailController {
 		String send_email_seq = request.getParameter("send_email_seq");
 		// //System.out.println("send_email_seq=>"+send_email_seq);
 		String pwd = service.getEmailPwd(send_email_seq);
-		// //System.out.println("pwd=>"+pwd);
-		jsonObj.put("pwd", pwd);
+		System.out.println("pwd=>"+pwd);
+		
+		jsonObj.put("pwd",pwd);
+		
 		return jsonObj.toString();
 		
 	}
@@ -602,13 +605,19 @@ public class DigitalmailController {
     public ModelAndView requiredLogin_digitalmailview(HttpServletRequest request, HttpServletResponse response, ModelAndView mav) {
     	
     	String send_email_seq = request.getParameter("send_email_seq");
+    	String type = request.getParameter("type");
+    	
+    	System.out.println("type=>"+type);
+    	
     	HttpSession session = request.getSession();
 		
+    	
     	EmployeesVO loginuser = (EmployeesVO)session.getAttribute("loginuser");
     	// //System.out.println(loginuser.getEmail());
 		Map<String, String> paraMap = new HashMap<>();
 		
 		paraMap.put("send_email_seq", send_email_seq);
+		paraMap.put("type", type);
 		paraMap.put("MyEmail", loginuser.getEmail());
     			
     	mav = service.digitalmailview(mav,paraMap);
@@ -833,19 +842,43 @@ public class DigitalmailController {
 	@PostMapping(value="/receipt_favorites_update.gw", produces="text/plain;charset=UTF-8")
 	public String receipt_favorites_update(HttpServletRequest request) {
 		
+		String type = request.getParameter("type");
+		System.out.println("type=>"+type);
+		
 		String receipt_mail_seq = request.getParameter("receipt_mail_seq");
+		System.out.println("receipt_mail_seq=>"+receipt_mail_seq);
 		
-		String receipt_favorites = service.select_receipt_favorites(receipt_mail_seq);
+		String receipt_favorites = "";
+		int n = 0;
+		String receipt_favorites_update = "";
 		
-		Map<String, String> paraMap = new HashMap<>();
-		
-		paraMap.put("receipt_mail_seq", receipt_mail_seq);
-		paraMap.put("receipt_favorites", receipt_favorites);
-		////System.out.println(paraMap);
-		
-		int n = service.receipt_favorites_update(paraMap);
-		
-		String receipt_favorites_update = service.select_receipt_favorites(receipt_mail_seq);
+		if(type.equals("fk_sender_email")) {
+			receipt_favorites = service.select_send_favorites(receipt_mail_seq);
+			Map<String, String> paraMap = new HashMap<>();
+			paraMap.put("receipt_mail_seq", receipt_mail_seq);
+			paraMap.put("receipt_favorites", receipt_favorites);
+			////System.out.println(paraMap);
+			
+			n = service.send_favorites_update(paraMap);
+			System.out.println("n=>"+n);
+			if(n==1) {
+				receipt_favorites_update = service.select_send_favorites(receipt_mail_seq);
+			}
+		}
+		else {
+			receipt_favorites = service.select_receipt_favorites(receipt_mail_seq);	
+			Map<String, String> paraMap = new HashMap<>();
+			
+			paraMap.put("receipt_mail_seq", receipt_mail_seq);
+			paraMap.put("receipt_favorites", receipt_favorites);
+			////System.out.println(paraMap);
+			
+			n = service.receipt_favorites_update(paraMap);
+			
+			if(n==1) {
+				receipt_favorites_update = service.select_receipt_favorites(receipt_mail_seq);
+			}
+		}
 		
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("receipt_favorites", receipt_favorites_update);
@@ -878,18 +911,46 @@ public class DigitalmailController {
 	public String receipt_important_update(HttpServletRequest request) {
 		
 		String receipt_mail_seq = request.getParameter("receipt_mail_seq");
+		String type = request.getParameter("type");
+		System.out.println("type=>"+type);
+		System.out.println("receipt_mail_seq=>"+receipt_mail_seq);
+		String receipt_important = "";
+		int n = 0;
+		String receipt_important_update = "";
 		
-		String receipt_important = service.select_receipt_important(receipt_mail_seq);
+		if(type.equals("fk_sender_email")) {
+			receipt_important = service.select_send_important(receipt_mail_seq);
+			Map<String, String> paraMap = new HashMap<>();
+			
+			paraMap.put("receipt_mail_seq", receipt_mail_seq);
+			paraMap.put("receipt_important", receipt_important);
+			////System.out.println(paraMap);
+			
+			n = service.send_important_update(paraMap);
+			System.out.println("n=>"+n);
+			if(n==1) {
+				receipt_important_update = service.select_send_important(receipt_mail_seq);
+				System.out.println("이거 뜨나?");
+				
+			}
+		}
+		else {
+			
+			receipt_important = service.select_receipt_important(receipt_mail_seq);
+			
+			Map<String, String> paraMap = new HashMap<>();
+			
+			paraMap.put("receipt_mail_seq", receipt_mail_seq);
+			paraMap.put("receipt_important", receipt_important);
+			////System.out.println(paraMap);
+			
+			n = service.receipt_important_update(paraMap);
+			
+			receipt_important_update = service.select_receipt_important(receipt_mail_seq);
+			
+			
+		}
 		
-		Map<String, String> paraMap = new HashMap<>();
-		
-		paraMap.put("receipt_mail_seq", receipt_mail_seq);
-		paraMap.put("receipt_important", receipt_important);
-		////System.out.println(paraMap);
-		
-		int n = service.receipt_important_update(paraMap);
-		
-		String receipt_important_update = service.select_receipt_important(receipt_mail_seq);
 		
 		JSONObject jsonObj = new JSONObject();
 		jsonObj.put("receipt_important", receipt_important_update);
@@ -1050,10 +1111,17 @@ public class DigitalmailController {
 		
 		String receipt_mail_seq = request.getParameter("receipt_mail_seq");
 		
-		Map<String, String> paraMap = new HashMap<>();
+		String type = request.getParameter("type");
 		
-
-		int n = service.onedel(receipt_mail_seq);
+		Map<String, String> paraMap = new HashMap<>();
+		int n = 0;
+		if(type.equals("fk_sender_email")) {
+			 n = service.onesenddel(receipt_mail_seq);
+		}
+		else {
+			 n = service.onedel(receipt_mail_seq);
+		}
+		
 		
 		//System.out.println("onedel n =>"+n);
 		
@@ -1062,6 +1130,58 @@ public class DigitalmailController {
 		
 		return jsonObj.toString();
 	}
+	
+	@ResponseBody
+	@PostMapping(value="/timedel.gw", produces="text/plain;charset=UTF-8")
+	public String timedel(HttpServletRequest request) {
+		
+		String send_email_seq = request.getParameter("send_email_seq");
+		String orgfilename = request.getParameter("orgfilename");
+		
+		Map<String, String> paraMap = new HashMap<>();
+		
+		int n = service.timedel(send_email_seq);
+		int timedel = 0;
+		
+		if(orgfilename == "") {
+			// System.out.println("널입니다.");
+			orgfilename = "";
+			timedel = service.timedelete(send_email_seq);
+		}
+		else {
+			String root = "C:\\git\\FinalProject\\FInalProject\\src\\main\\webapp";
+			String path = root+"\\resources\\file\\email"+File.separator;
+			paraMap.put("path", path); // 삭제해야할 파일이 저장된 경로
+			paraMap.put("fileName", orgfilename); // 삭제해야할 파일명
+			timedel = service.HaveFiletimedelete(send_email_seq,paraMap);
+		}
+		
+		System.out.println("orgfilename"+orgfilename);
+		
+		//System.out.println("onedel n =>"+n);
+		
+		JSONObject jsonObj = new JSONObject();
+		jsonObj.put("n", timedel);
+		
+		return jsonObj.toString();
+	}
+	
+	// ==== #184. Spring scheduler (스프링스케줄러02)를 사용하여 어노테이션을 특정 URL 사이트로 연결하기 ==== -->
+	@GetMapping(value="/Alarmdel.gw")
+	public ModelAndView Alarmdel(ModelAndView mav, HttpServletRequest request) {
+
+		String message = "알람뜨나?";
+		String loc = request.getContextPath() + "/index.gw";
+
+		mav.addObject("message", message);
+		mav.addObject("loc", loc);
+
+		mav.setViewName("msg");
+
+		return mav;
+	}
+	
+
 	
 	
 

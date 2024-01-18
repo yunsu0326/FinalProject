@@ -879,6 +879,13 @@
       where send_email_seq = #{send_email_seq}
    </select>
    
+      <!-- 메일 하나 가져오기 -->
+   <select id="SelectSendEmail" parameterType="HashMap" resultType="com.spring.app.digitalmail.domain.EmailVO"> 
+      select * 
+      from tbl_email
+      where send_email_seq = #{send_email_seq}
+   </select>
+   
    <!-- email_totalcnt_update 하기 -->
     <update id="email_totalcnt_update" parameterType="String">
        UPDATE tbl_email
@@ -895,8 +902,7 @@
               fk_recipient_email = #{MyEmail} 
             OR fk_reference_email = #{MyEmail}  
             OR fk_hidden_reference_email = #{MyEmail}
-            OR fk_sender_email = #{MyEmail} <!-- 나중에 지울것 -->
-       )
+		)
    </select>
    
    <!-- 임시저장된 리스트 갯수 채번 --> 
@@ -1040,6 +1046,21 @@
       where receipt_mail_seq = #{receipt_mail_seq}
    </select>
    
+   <!-- receipt_favorites 값 가져오기 -->
+   <select id="select_send_favorites" parameterType="String" resultType="String">
+      select sender_favorites
+      from tbl_email
+      where send_email_seq = #{receipt_mail_seq}
+   </select>
+   
+   <!-- receipt_favorites 값 가져오기 -->
+   <select id="select_send_important" parameterType="String" resultType="String">
+      select sender_important
+      from tbl_email
+      where send_email_seq = #{receipt_mail_seq}
+   </select>
+   
+   
    <!-- email_receipt_read_count update 하기 -->
    <update id="receipt_favorites_update" parameterType="HashMap">
        update tbl_receipt_email set receipt_favorites =
@@ -1053,6 +1074,34 @@
               
            </choose>
        where receipt_mail_seq = #{receipt_mail_seq}
+   </update>
+   
+   <!-- email_receipt_read_count update 하기 -->
+   <update id="send_favorites_update" parameterType="HashMap">
+       update tbl_email set sender_favorites =
+           <choose>
+               <when test='receipt_favorites == "0"'>
+                   1
+               </when>
+               <when test='receipt_favorites == "1"'>
+                   0
+               </when>
+           </choose>
+       where send_email_seq = #{receipt_mail_seq}
+   </update>
+   
+   <!-- email_receipt_read_count update 하기 -->
+   <update id="send_important_update" parameterType="HashMap">
+       update tbl_email set sender_important =
+           <choose>
+               <when test='receipt_important == "0"'>
+                   1
+               </when>
+               <when test='receipt_important == "1"'>
+                   0
+               </when>
+           </choose>
+       where send_email_seq = #{receipt_mail_seq}
    </update>
    
    <!-- email_receipt_read_count update 하기 -->
@@ -1132,12 +1181,18 @@
    </update>
    
       <!-- receipt_important update 하기 -->
-   <update id="onedel" parameterType="HashMap">
+   <update id="onedel" parameterType="String">
        update tbl_receipt_email set receipt_delete = 1
        where receipt_mail_seq = #{receipt_mail_seq}
    </update>
    
-      <delete id="emailstop_del" parameterType="HashMap">
+   <!-- receipt_important update 하기 -->
+   <update id="onesenddel" parameterType="String">
+       update tbl_email set sender_delete = 1
+       where send_email_seq = #{receipt_mail_seq}
+   </update>
+   
+   <delete id="emailstop_del" parameterType="HashMap">
       delete from tbl_emailstop
       <if test="receipt_mail_seq_arr != null">
         WHERE send_emailSTOP_seq IN
@@ -1146,6 +1201,38 @@
            </foreach>
        </if>      
    </delete>
+   
+   <delete id="timedel" parameterType="String">
+      delete from tbl_receipt_email
+      where fk_send_email_seq IN ${send_email_seq}
+   </delete>
+   
+   <delete id="timedelete" parameterType="String">
+      delete from tbl_email
+      where send_email_seq IN ${send_email_seq}
+   </delete>
+   
+   <select id="senderdelcheck" resultType="com.spring.app.digitalmail.domain.EmailVO"> 
+   	   select *
+	   from tbl_email
+       where sender_delete = 2 
+   </select>
+   
+   
+   <select id="reallcheck" resultType="String" parameterType="String"> 
+   	   select count(*)
+	   from tbl_receipt_email
+	   where fk_send_email_seq = ${seq}
+   </select>
+   
+   <select id="redelcheck" resultType="String" parameterType="String"> 
+   	   select count(*)
+	   from tbl_receipt_email
+	   where fk_send_email_seq = ${seq}
+	   and receipt_delete = 2
+   </select>
+   
+   
    
    
 </mapper>

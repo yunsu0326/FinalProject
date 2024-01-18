@@ -1,14 +1,23 @@
 package com.spring.app.digitalmail.service;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.app.digitalmail.model.DigitalmailDAO;
+import com.spring.app.common.digitalmail.util.DigitalmailFileManager;
 import com.spring.app.digitalmail.domain.EmailStopVO;
 import com.spring.app.digitalmail.domain.EmailVO;
 
@@ -21,6 +30,8 @@ public class DigitalmailService_imple implements DigitalmailService {
  	@Autowired  
 	private DigitalmailDAO dao;
 	
+ 	@Autowired
+ 	private DigitalmailFileManager fileManager;
 	// 내가 받은 총 메일 갯수
 	@Override
 	public int getTotalCount(Map<String, String> paraMap) {
@@ -99,27 +110,44 @@ public class DigitalmailService_imple implements DigitalmailService {
 	// 이메일 한개 보는 페이지
 	@Override
 	public ModelAndView digitalmailview(ModelAndView mav, Map<String, String> paraMap) {
-		EmailVO emailVO = dao.SelectEmail(paraMap);
-		////System.out.println("이거 떠야되는데 =>"+emailVO.getEmail_subject());
-		EmailVO emailVO2 = dao.getseqfav(paraMap);
-		String cnt = emailVO2.getEmail_receipt_read_count();
-		String receipt_mail_seq = emailVO2.getReceipt_mail_seq();
-		////System.out.println(cnt);
-		if (cnt.equals("0")) {
-			////System.out.println("이거되나?");
-			int n = dao.email_receipt_read_count_update(receipt_mail_seq);
-			////System.out.println("n=>"+n);
-			if(n == 1) {
-				int totalcnt = dao.email_totalcnt_update(paraMap);
-				if(totalcnt == 1) {
-					////System.out.println("totalcnt=>"+totalcnt);
-					emailVO = dao.SelectEmail(paraMap);
-					emailVO2 = dao.getseqfav(paraMap);
+		EmailVO emailVO =null;
+		EmailVO emailVO2 =null;
+		String type = paraMap.get("type");
+		if(type.equals("fk_sender_email")||type.equals("senddel")||type.equals("time")) {
+			emailVO = dao.SelectSendEmail(paraMap);
+			
+			
+			
+		}
+		else {
+			emailVO = dao.SelectEmail(paraMap);
+			////System.out.println("이거 떠야되는데 =>"+emailVO.getEmail_subject());
+			emailVO2 = dao.getseqfav(paraMap);
+			
+			String cnt = emailVO2.getEmail_receipt_read_count();
+			String receipt_mail_seq = emailVO2.getReceipt_mail_seq();
+			////System.out.println(cnt);
+			if (cnt.equals("0")) {
+				////System.out.println("이거되나?");
+				int n = dao.email_receipt_read_count_update(receipt_mail_seq);
+				////System.out.println("n=>"+n);
+				if(n == 1) {
+					int totalcnt = dao.email_totalcnt_update(paraMap);
+					if(totalcnt == 1) {
+						////System.out.println("totalcnt=>"+totalcnt);
+						emailVO = dao.SelectEmail(paraMap);
+						emailVO2 = dao.getseqfav(paraMap);
+						mav.addObject("emailVO2", emailVO2);
+					}
 				}
 			}
-		} 
+			else {
+				mav.addObject("emailVO2", emailVO2);
+			}
+		}
+	
 		mav.addObject("emailVO", emailVO);
-		mav.addObject("emailVO2", emailVO2);
+		mav.addObject("type", type);
 		mav.setViewName("digitalmailview/digitalmailview.tiles_digitalmail");
 		return mav;
 	}
@@ -295,5 +323,142 @@ public class DigitalmailService_imple implements DigitalmailService {
 			int del = dao.emailstop_del(receipt_mailMap);
 			return del;
 		}
-	
+		
+		@Override
+		public String select_send_favorites(String receipt_mail_seq) {
+			String receipt_favorites = dao.select_send_favorites(receipt_mail_seq);
+			return receipt_favorites;
+		}
+		
+		@Override
+		public int send_favorites_update(Map<String, String> paraMap) {
+			int n = dao.send_favorites_update(paraMap);
+			return n;
+		}
+		@Override
+		public String select_send_important(String receipt_mail_seq) {
+			String receipt_important = dao.select_send_important(receipt_mail_seq);
+			return receipt_important;
+		}
+		
+		@Override
+		public int send_important_update(Map<String, String> paraMap) {
+			int n = dao.send_important_update(paraMap);
+			return n;
+		}
+		@Override
+		public int onesenddel(String receipt_mail_seq) {
+			int n = dao.onesenddel(receipt_mail_seq);
+			return n;
+		}
+		
+		@Override
+		public int timedel(String send_email_seq) {
+			int n = dao.timedel(send_email_seq);
+			return n;
+		}
+		
+		@Override
+		public int timedelete(String send_email_seq) {
+			int n = dao.timedelete(send_email_seq);
+			return n;
+		}
+		
+		@Override
+		public int HaveFiletimedelete(String send_email_seq, Map<String, String> paraMap) {
+			int n1=0 , n2=0;
+			n1 = dao.timedelete(send_email_seq);
+			if(n1==1) {
+				String path = paraMap.get("path");
+				String fileName = paraMap.get("fileName");
+				String[] fileName_arr = fileName.split("\\,");
+				if( fileName != null && !"".equals(fileName) ) {
+					for(int i = 0; i<fileName_arr.length; i++) {
+						fileName = fileName_arr[i];
+						try {
+							fileManager.doFileDelete(fileName, path);
+							n2++;
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			return n2;
+		}
+
+		@Override
+		@Scheduled(cron="0 30 6 * * *")
+//		@Scheduled(cron="0 * * * * *")
+		public void Alarmdel() {
+			// !!! <주의> !!!
+			// 스케줄러로 사용되어지는 메소드는 반드시 파라미터는 없어야 한다.!!!!!
+			
+			// == 현재 시각을 나타내기 ==
+			Calendar currentDate = Calendar.getInstance(); // 현재날짜와 시간을 얻어온다.
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String currentTime = dateFormat.format(currentDate.getTime());
+			
+			System.out.println("현재시각 => " + currentTime);
+			String seq = "";
+			String alllen = "";
+			String dellen = "";
+			int n1,n2 = 0;
+			try {
+				List<EmailVO> EmailVOList = dao.senderdelcheck();
+				
+				if(EmailVOList.size()!=0 || EmailVOList != null) {
+					
+					for(int i=0; i<EmailVOList.size(); i++) {
+						seq = EmailVOList.get(i).getSend_email_seq();
+						
+						alllen = dao.reallcheck(seq);
+						dellen = dao.redelcheck(seq);
+						
+						System.out.println("alllen,dellen=>"+alllen+dellen);
+						if(alllen.equals(dellen)) {
+							n1 = dao.timedel(seq);
+							if(n1>0) {
+								n2 = dao.timedelete(seq);
+								if(EmailVOList.get(i).getOrgfilename() != null) {
+									String fileName = EmailVOList.get(i).getOrgfilename();
+									String[] fileName_arr = fileName.split("\\,");
+									String root = "C:\\git\\FinalProject\\FInalProject\\src\\main\\webapp";
+									String path = root+"\\resources\\file\\email"+File.separator;
+									if( fileName != null && !"".equals(fileName) ) {
+										for(int j = 0; j<fileName_arr.length; j++) {
+											fileName = fileName_arr[j];
+											System.out.println("fileName=>"+fileName);
+											try {
+												fileManager.doFileDelete(fileName, path);
+											}catch(Exception e) {
+												e.printStackTrace();
+											}
+										}
+									}
+									
+								}
+							
+							}
+							else {
+								System.out.println("삭제실패");
+							}
+							
+						}
+						
+					}
+				}
+				
+				
+				
+				Desktop.getDesktop().browse(new URI("http://localhost:9090/FinalProject/Alarmdel.gw")); 
+			} catch (IOException e) { 
+				e.printStackTrace(); 
+			} catch (URISyntaxException e) {
+				e.printStackTrace(); 
+			}
+			
+		}
+		
+		
 }

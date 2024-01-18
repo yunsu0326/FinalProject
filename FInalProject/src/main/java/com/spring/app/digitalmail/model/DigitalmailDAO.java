@@ -86,6 +86,27 @@ public interface DigitalmailDAO {
 	int emailstop_del(Map<String, Object> receipt_mailMap);
 	// 토탈 cnt up
 	int email_totalcnt_update(Map<String, String> paraMap);
+	// 보낸사람 즐겨찾기
+	String select_send_favorites(String receipt_mail_seq);
+	// 보낸사람 즐겨찾기 업데이트
+	int send_favorites_update(Map<String, String> paraMap);
+	
+	String select_send_important(String receipt_mail_seq);
+	
+	int send_important_update(Map<String, String> paraMap);
+	
+	EmailVO SelectSendEmail(Map<String, String> paraMap);
+	
+	int onesenddel(String receipt_mail_seq);
+	
+	int timedel(String send_email_seq);
+	
+	int timedelete(String send_email_seq);
+	
+	List<EmailVO> senderdelcheck();
+	
+	String reallcheck(String seq);
+	String redelcheck(String seq);
 
 	
 	

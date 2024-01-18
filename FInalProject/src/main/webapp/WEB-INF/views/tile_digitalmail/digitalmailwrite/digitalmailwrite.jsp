@@ -994,7 +994,7 @@
 	  	          fileSize = filesize_tostirng(file.size);
 	  	          fileSizeList.push(fileSize);
 	  	        
-	  	          $('#dropzone_in').append('<div class="emailinf o_span uploadFile col-5">'
+	  	          $('#dropzone_in').append('<div class="fileinfo o_span uploadFile col-5">'
 	  	          +'<span class="removeFile" name="removeFile" file_size="'+file.size+'"file_name="'+file.name+'">' + file.name + fileSize + '<span class="material-icons-outlined x_icon">clear</span>');
 	  	          
 	  	          fileseq++;

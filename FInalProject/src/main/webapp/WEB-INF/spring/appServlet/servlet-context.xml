@@ -13,6 +13,8 @@
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
 	
+	
+	<task:annotation-driven/>
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<mvc:annotation-driven />
 

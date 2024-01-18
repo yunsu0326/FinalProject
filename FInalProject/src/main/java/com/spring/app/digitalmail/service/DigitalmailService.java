@@ -67,6 +67,23 @@ public interface DigitalmailService {
 	int total_email_receipt_read_count_update(Map<String, Object> receipt_mailMap);
 	// 이메일 한개 지우기
 	int onedel(String receipt_mail_seq);
+	// 좋아요 설정
+	String select_send_favorites(String receipt_mail_seq);
+	// 보낸사람 즐겨찾기
+	int send_favorites_update(Map<String, String> paraMap);
+	// 보낸사람 중요도
+	String select_send_important(String receipt_mail_seq);
 	
+	int send_important_update(Map<String, String> paraMap);
+	
+	int onesenddel(String receipt_mail_seq);
+	
+	int timedel(String send_email_seq);
+	
+	int timedelete(String send_email_seq);
+	
+	int HaveFiletimedelete(String send_email_seq, Map<String, String> paraMap);
+	
+	void Alarmdel();
 
 }

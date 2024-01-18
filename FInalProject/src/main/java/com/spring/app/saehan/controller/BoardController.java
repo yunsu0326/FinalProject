@@ -1124,7 +1124,7 @@ public class BoardController {
 	@PostMapping(value = "/comment_Del.gw", produces = "text/plain;charset=UTF-8")
 	public String comment_Del(ModelAndView mav, HttpServletRequest request) {
 		String seq = request.getParameter("seq");
-
+		
 		Map<String, String> paraMap = new HashMap<>();
 
 		paraMap.put("seq", seq);

@@ -315,6 +315,75 @@ public class DigitalmailDAO_imple implements DigitalmailDAO {
 		return n;
 	}
 
+	@Override
+	public String select_send_favorites(String receipt_mail_seq) {
+		String receipt_favorites = sqlsession.selectOne("digitalmail.select_send_favorites", receipt_mail_seq);
+		return receipt_favorites;
+	}
+	
+	
+	@Override
+	public int send_favorites_update(Map<String, String> paraMap) {
+		int n = sqlsession.update("digitalmail.send_favorites_update", paraMap);
+		return n;
+	}
+
+	@Override
+	public String select_send_important(String receipt_mail_seq) {
+		String receipt_important = sqlsession.selectOne("digitalmail.select_send_important", receipt_mail_seq);
+		return receipt_important;
+	}
+	
+	@Override
+	public int send_important_update(Map<String, String> paraMap) {
+		int n = sqlsession.update("digitalmail.send_important_update", paraMap);
+		return n;
+	}
+	
+	
+	@Override
+	public EmailVO SelectSendEmail(Map<String, String> paraMap) {
+		EmailVO emailVO = sqlsession.selectOne("digitalmail.SelectSendEmail",paraMap);
+		return emailVO;
+	}
+
+	@Override
+	public int onesenddel(String receipt_mail_seq) {
+		int n = sqlsession.update("digitalmail.onesenddel", receipt_mail_seq);
+		return n;
+	}
+
+	@Override
+	public int timedel(String send_email_seq) {
+		int n = sqlsession.delete("digitalmail.timedel", send_email_seq);
+		return n;
+	}
+
+	@Override
+	public int timedelete(String send_email_seq) {
+		int n = sqlsession.delete("digitalmail.timedelete", send_email_seq);
+		return n;
+	}
+	
+	// 
+	@Override
+	public List<EmailVO> senderdelcheck() {
+		List<EmailVO> EmailVOList = sqlsession.selectList("digitalmail.senderdelcheck");
+		return EmailVOList;
+	}
+
+	@Override
+	public String reallcheck(String seq) {
+		String alllen = sqlsession.selectOne("digitalmail.reallcheck",seq);
+		return alllen;
+	}
+
+	@Override
+	public String redelcheck(String seq) {
+		String dellen = sqlsession.selectOne("digitalmail.redelcheck",seq);
+		return dellen;
+	}
+
 
 	
 	
