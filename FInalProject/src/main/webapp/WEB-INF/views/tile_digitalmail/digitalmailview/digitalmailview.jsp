@@ -370,16 +370,11 @@
 											                <tr>
 											                    <th>받은사람</th>
 											                    <td>
-												                <c:if test="${emailVO.individual eq '0'}">
 												                    <div style="display: flex; flex-wrap: wrap;">
 																	<c:forEach var="fk_recipient_email" items="${emailVO.fk_recipient_email_split}" varStatus="status">
 																	    <div class="o_span">${fk_recipient_email}</div>
 																	</c:forEach>   
 																    </div>
-																</c:if>
-																<c:if test="${emailVO.individual eq '1'}">
-																	<div class="o_span">${requestScope}</div>
-																</c:if>
 											                    </td>
 										                    </tr>
 															<tr>
