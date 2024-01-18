@@ -263,20 +263,13 @@
 	        success:function(json){
 	        	if(json.pwd != null || json.pwd != "null"){
 	        		alert("비밀 메일입니다. 암호를 입력해주세요.=>"+json.pwd);
-	        		location.href="<%=ctxPath%>/digitalmailview.gw?send_email_seq="+send_email_seq+"&type="+'${requestScope.type}';
-	  				<%--  
-	        		if(value == json.pwd){
-	  					if(mailRecipientNo!=null){
-	  						location.href="<%=ctxPath%>/mail/viewMail.on?mailNo="+mailno+"&mailRecipientNo"+mailRecipientNo;
-	  					}
-	  					else{
-	  						location.href="<%=ctxPath%>/mail/viewMail.on?mailNo="+mailno;
-	  					}
-	  				  }
-	  				  else{
-	  					  swal("잘못된 암호입니다. 다시 확인해주세요.");
-	  				  }
-	  				  --%>	 
+	        		var enteredPwd = prompt("비밀 메일입니다. 암호를 입력해주세요.");
+	        		if (enteredPwd === json.pwd) {
+	                    alert("암호가 일치합니다.");
+	                    location.href="<%=ctxPath%>/digitalmailview.gw?send_email_seq="+send_email_seq+"&type="+'${requestScope.type}';
+	                } else {
+	                    alert("암호가 일치하지 않습니다. 다시 시도해주세요.");
+	                }
 	  			}
 	        	else{
 	        		alert("비밀 메일이 아닙니다."+ json.pwd);
