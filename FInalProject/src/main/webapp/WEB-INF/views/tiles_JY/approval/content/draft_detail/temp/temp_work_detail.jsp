@@ -62,11 +62,11 @@ function showList() {
 					</tr>
 					<tr>
 						<th>기안일</th>
-						<td></td>
+						<td>${fn:substring(draftMap.dvo.draft_date,0,10)}</td>
 					</tr>
 					<tr>
 						<th>문서번호</th>
-						<td></td>
+						<td>${draftMap.dvo.draft_no}</td>
 					</tr>
 				</table>
 			</div>

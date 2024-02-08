@@ -712,6 +712,10 @@ public class ApprovalController {
 		
 		EmployeesVO loginuser = JYUtil.getLoginUser(request);
 		
+		String empno = loginuser.getEmployee_id();
+		
+		loginuser = service.getLoginuser(empno);
+		
 		// 공통 결재라인 가져오기
 		List<EmployeesVO> recipientList = service.getRecipientList(fk_draft_type_no);
 		JSONArray recipientArr = new JSONArray();
@@ -739,6 +743,7 @@ public class ApprovalController {
 		// 임시저장 문서 정보 가져오기
 		Map<String, Object> draftMap = service.getTempDraftDetail(dvo);
 		mav.addObject("draftMap", draftMap);
+		mav.addObject("loginuser", loginuser);
 		
 		switch (fk_draft_type_no) {
 		
